@@ -1,110 +1,122 @@
 
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Calendar, MapPin, Package, Clock } from 'lucide-react';
+import { Clock, MapPin, CalendarIcon, Package, CheckCircle2, XCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Donation } from '@/lib/types';
-import { format } from 'date-fns';
 
 interface DonationCardProps {
   donation: Donation;
-  onReserve?: (id: string) => void;
   isOrphanage?: boolean;
 }
 
-const DonationCard = ({ donation, onReserve, isOrphanage = false }: DonationCardProps) => {
-  const [isReserving, setIsReserving] = useState(false);
-  const navigate = useNavigate();
-  
-  const handleViewDetails = () => {
-    navigate(`/donations/${donation.id}`);
+const formatDate = (date: Date) => {
+  return new Date(date).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+};
+
+const formatTime = (date: Date) => {
+  return new Date(date).toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+};
+
+const DonationCard = ({ donation, isOrphanage = false }: DonationCardProps) => {
+  const isExpired = new Date(donation.expiryDate) < new Date();
+  const statusClasses = {
+    available: 'bg-green-100 text-green-700',
+    reserved: 'bg-blue-100 text-blue-700',
+    completed: 'bg-sage-100 text-sage-700',
+    expired: 'bg-red-100 text-red-700',
   };
-  
-  const handleReserve = async () => {
-    if (!onReserve) return;
-    
-    setIsReserving(true);
-    try {
-      await onReserve(donation.id);
-    } catch (error) {
-      console.error('Failed to reserve donation', error);
-      // Show error toast
-    } finally {
-      setIsReserving(false);
-    }
-  };
-  
-  // Format dates for display
-  const formattedExpiryDate = format(new Date(donation.expiryDate), 'MMM dd, yyyy');
-  const formattedPickupStart = format(new Date(donation.pickupTimeStart), 'h:mm a');
-  const formattedPickupEnd = format(new Date(donation.pickupTimeEnd), 'h:mm a');
-  
+
   return (
-    <div className="bg-white rounded-lg shadow overflow-hidden card-hover border border-border h-full flex flex-col">
-      {donation.imageUrl ? (
-        <div className="h-48 overflow-hidden">
+    <div 
+      className={`bg-white rounded-xl border border-border shadow-sm transition-all hover:shadow-md ${
+        isExpired && donation.status !== 'completed' ? 'opacity-70' : ''
+      }`}
+    >
+      {donation.imageUrl && (
+        <div className="relative h-48 rounded-t-xl overflow-hidden">
           <img 
             src={donation.imageUrl} 
             alt={donation.title} 
-            className="w-full h-full object-cover transition-transform hover:scale-105 duration-300"
+            className="w-full h-full object-cover"
           />
-        </div>
-      ) : (
-        <div className="h-48 bg-sage-100 flex items-center justify-center">
-          <Package className="h-16 w-16 text-sage-300" />
+          <div className="absolute top-3 right-3">
+            <span className={`px-3 py-1 rounded-full text-xs font-medium ${statusClasses[donation.status]}`}>
+              {donation.status.charAt(0).toUpperCase() + donation.status.slice(1)}
+            </span>
+          </div>
         </div>
       )}
-      
-      <div className="p-6 flex-grow flex flex-col">
-        <div className="mb-4">
-          <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${
-            donation.status === 'available' ? 'bg-green-100 text-green-800' :
-            donation.status === 'reserved' ? 'bg-orange-100 text-orange-800' :
-            donation.status === 'completed' ? 'bg-blue-100 text-blue-800' :
-            'bg-gray-100 text-gray-800'
-          }`}>
-            {donation.status.charAt(0).toUpperCase() + donation.status.slice(1)}
-          </span>
-        </div>
+
+      <div className="p-5">
+        {!donation.imageUrl && (
+          <div className="mb-4 flex justify-between items-center">
+            <span className={`px-3 py-1 rounded-full text-xs font-medium ${statusClasses[donation.status]}`}>
+              {donation.status.charAt(0).toUpperCase() + donation.status.slice(1)}
+            </span>
+          </div>
+        )}
         
-        <h3 className="text-xl font-medium mb-2">{donation.title}</h3>
+        <h3 className="text-lg font-semibold mb-2 truncate">{donation.title}</h3>
         
-        <p className="text-muted-foreground line-clamp-2 mb-4">
+        <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
           {donation.description}
         </p>
         
-        <div className="space-y-3 mt-auto">
-          <div className="flex items-center text-sm text-muted-foreground">
-            <MapPin className="w-4 h-4 mr-2 flex-shrink-0" />
+        <div className="space-y-2">
+          <div className="flex items-center text-sm">
+            <Package className="w-4 h-4 mr-2 text-sage-500" />
+            <span>{donation.quantity}</span>
+          </div>
+          
+          <div className="flex items-center text-sm">
+            <CalendarIcon className="w-4 h-4 mr-2 text-sage-500" />
+            <span>Expires: {formatDate(donation.expiryDate)}</span>
+          </div>
+          
+          <div className="flex items-center text-sm">
+            <MapPin className="w-4 h-4 mr-2 text-sage-500" />
             <span className="truncate">{donation.pickupAddress}</span>
           </div>
           
-          <div className="flex items-center text-sm text-muted-foreground">
-            <Calendar className="w-4 h-4 mr-2 flex-shrink-0" />
-            <span>Expires: {formattedExpiryDate}</span>
-          </div>
-          
-          <div className="flex items-center text-sm text-muted-foreground">
-            <Clock className="w-4 h-4 mr-2 flex-shrink-0" />
-            <span>Pickup: {formattedPickupStart} - {formattedPickupEnd}</span>
+          <div className="flex items-center text-sm">
+            <Clock className="w-4 h-4 mr-2 text-sage-500" />
+            <span>
+              Pickup: {formatTime(donation.pickupTimeStart)} - {formatTime(donation.pickupTimeEnd)}
+            </span>
           </div>
         </div>
         
-        <div className="mt-6 flex space-x-3">
-          <button 
-            onClick={handleViewDetails}
-            className="btn-outline text-center flex-1"
-          >
-            View Details
-          </button>
-          
-          {isOrphanage && donation.status === 'available' && (
-            <button 
-              onClick={handleReserve}
-              disabled={isReserving}
-              className="btn-primary text-center flex-1"
-            >
-              {isReserving ? 'Reserving...' : 'Reserve'}
+        <div className="mt-4 pt-4 border-t border-border">
+          {isOrphanage && donation.status === 'available' ? (
+            <button className="w-full py-2 px-4 bg-sage-500 text-white rounded-md hover:bg-sage-600 transition-colors text-center text-sm font-medium">
+              Reserve Donation
             </button>
+          ) : donation.status === 'reserved' ? (
+            <div>
+              <p className="text-sm text-muted-foreground mb-2">
+                {isOrphanage 
+                  ? 'You have reserved this donation.' 
+                  : `Reserved by: ${donation.reservedByName}`}
+              </p>
+              <div className="flex space-x-2">
+                <button className="flex-1 py-2 px-3 bg-sage-500 text-white rounded-md hover:bg-sage-600 transition-colors text-center text-sm font-medium">
+                  {isOrphanage ? 'Confirm Pickup' : 'Mark as Completed'}
+                </button>
+                <button className="py-2 px-3 border border-red-200 text-red-500 rounded-md hover:bg-red-50 transition-colors text-center text-sm font-medium">
+                  Cancel
+                </button>
+              </div>
+            </div>
+          ) : (
+            <Link to={`/donations/${donation.id}`} className="block w-full py-2 px-4 bg-secondary text-foreground rounded-md hover:bg-secondary/80 transition-colors text-center text-sm font-medium">
+              View Details
+            </Link>
           )}
         </div>
       </div>
