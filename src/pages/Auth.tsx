@@ -30,65 +30,63 @@ const Auth = () => {
   };
   
   return (
-    <div className="min-h-screen">
+    <div className="min-vh-100 d-flex flex-column">
       <Navbar />
       
-      <section className="pt-28 pb-16 px-4">
-        <div className="container mx-auto max-w-6xl">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
-            <div className="hidden md:block">
-              <div className="relative">
-                <div className="absolute -top-6 -left-6 w-full h-full rounded-xl bg-sage-200/50 -z-10"></div>
+      <section className="py-5 mt-5">
+        <div className="container py-4">
+          <div className="row g-5 align-items-center">
+            <div className="col-lg-6 d-none d-lg-block">
+              <div className="position-relative">
+                <div className="position-absolute top-0 start-0 w-100 h-100 bg-sage-200 opacity-50 rounded translate-x-n10 translate-y-n10"></div>
                 <img 
                   src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=2070&auto=format&fit=crop" 
                   alt="Food donation" 
-                  className="rounded-xl shadow-lg h-full w-full object-cover"
+                  className="img-fluid rounded shadow-sm"
                 />
               </div>
             </div>
             
-            <div className="md:pl-8">
-              <div className="max-w-md mx-auto md:mx-0">
-                <h1 className="text-3xl font-bold mb-2">
+            <div className="col-lg-6">
+              <div className="px-4 py-5">
+                <h1 className="fw-bold mb-2">
                   {authType === 'login' ? 'Welcome Back' : 'Join FoodShare'}
                 </h1>
                 
-                <p className="text-muted-foreground mb-8">
+                <p className="text-muted mb-4">
                   {authType === 'login' 
                     ? 'Sign in to your account to continue your journey in reducing food waste and helping those in need.'
                     : 'Create an account to start sharing surplus food or accessing donations for your orphanage.'}
                 </p>
                 
-                <div className="mb-8">
-                  <div className="flex p-1 bg-secondary rounded-lg">
-                    <button
-                      onClick={() => setAuthType('login')}
-                      className={`flex-1 py-2 text-center rounded-md transition-colors ${
-                        authType === 'login' ? 'bg-white shadow-sm' : ''
-                      }`}
-                    >
-                      Sign In
-                    </button>
-                    <button
-                      onClick={() => setAuthType('register')}
-                      className={`flex-1 py-2 text-center rounded-md transition-colors ${
-                        authType === 'register' ? 'bg-white shadow-sm' : ''
-                      }`}
-                    >
-                      Register
-                    </button>
-                  </div>
+                <div className="bg-light rounded p-1 d-inline-flex mb-4">
+                  <button
+                    onClick={() => setAuthType('login')}
+                    className={`btn ${
+                      authType === 'login' ? 'btn-white shadow-sm' : 'btn-light'
+                    } rounded-3`}
+                  >
+                    Sign In
+                  </button>
+                  <button
+                    onClick={() => setAuthType('register')}
+                    className={`btn ${
+                      authType === 'register' ? 'btn-white shadow-sm' : 'btn-light'
+                    } rounded-3 ms-1`}
+                  >
+                    Register
+                  </button>
                 </div>
                 
                 <AuthForm type={authType} onSuccess={handleSuccess} />
                 
-                <p className="text-center mt-8 text-muted-foreground">
+                <p className="text-center mt-4 text-muted">
                   {authType === 'login' ? (
                     <>
                       Don't have an account yet?{' '}
                       <button 
                         onClick={toggleAuthType}
-                        className="text-sage-500 hover:text-sage-600 font-medium"
+                        className="btn btn-link text-sage-500 p-0 border-0"
                       >
                         Create one now
                       </button>
@@ -98,7 +96,7 @@ const Auth = () => {
                       Already have an account?{' '}
                       <button 
                         onClick={toggleAuthType}
-                        className="text-sage-500 hover:text-sage-600 font-medium"
+                        className="btn btn-link text-sage-500 p-0 border-0"
                       >
                         Sign in
                       </button>
