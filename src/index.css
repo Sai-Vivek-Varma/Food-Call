@@ -1,89 +1,31 @@
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Import Bootstrap */
+@import 'bootstrap/dist/css/bootstrap.min.css';
 
-@layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 150 74.8% 15.3%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 150 74.8% 15.3%;
-    --radius: 0.5rem;
-  }
-
-  .dark {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 150 54.8% 45.3%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 150 54.8% 45.3%;
-  }
+/* Custom Sage color palette */
+:root {
+  --sage-50: #f4f7f7;
+  --sage-100: #e6eded;
+  --sage-200: #c5d1d0;
+  --sage-300: #a5b5b3;
+  --sage-400: #859997;
+  --sage-500: #657e7b;
+  --sage-600: #4e6260;
+  --sage-700: #3e4e4c;
+  --sage-800: #2f3a38;
+  --sage-900: #1f2524;
+  --sage-950: #0f1312;
 }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1;
-  }
-
-  h1 {
-    @apply text-3xl md:text-4xl font-bold;
-  }
-
-  h2 {
-    @apply text-2xl md:text-3xl font-bold;
-  }
-
-  h3 {
-    @apply text-xl md:text-2xl font-bold;
-  }
+/* Base styles */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  color: #333;
+  background-color: #f8f9fa;
 }
 
-@layer components {
-  .btn-primary {
-    @apply px-6 py-3 bg-sage-500 text-white rounded-md hover:bg-sage-600 transition-colors font-medium text-center;
-  }
-
-  .btn-outline {
-    @apply px-6 py-3 border border-sage-200 text-sage-700 rounded-md hover:bg-sage-50 transition-colors font-medium text-center;
-  }
-
-  .card-hover {
-    @apply transition-all duration-300 hover:shadow-md hover:border-sage-200;
-  }
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
 }
 
 /* Animation classes */
@@ -130,21 +72,32 @@
   }
 }
 
-/* Custom Sage color palette */
-:root {
-  --sage-50: #f4f7f7;
-  --sage-100: #e6eded;
-  --sage-200: #c5d1d0;
-  --sage-300: #a5b5b3;
-  --sage-400: #859997;
-  --sage-500: #657e7b;
-  --sage-600: #4e6260;
-  --sage-700: #3e4e4c;
-  --sage-800: #2f3a38;
-  --sage-900: #1f2524;
-  --sage-950: #0f1312;
+/* Custom button styles */
+.btn-sage {
+  background-color: var(--sage-500);
+  border-color: var(--sage-500);
+  color: white;
 }
 
+.btn-sage:hover {
+  background-color: var(--sage-600);
+  border-color: var(--sage-600);
+  color: white;
+}
+
+.btn-outline-sage {
+  background-color: transparent;
+  border-color: var(--sage-500);
+  color: var(--sage-600);
+}
+
+.btn-outline-sage:hover {
+  background-color: var(--sage-50);
+  border-color: var(--sage-500);
+  color: var(--sage-700);
+}
+
+/* Custom background colors */
 .bg-sage-50 { background-color: var(--sage-50); }
 .bg-sage-100 { background-color: var(--sage-100); }
 .bg-sage-200 { background-color: var(--sage-200); }
@@ -157,6 +110,7 @@
 .bg-sage-900 { background-color: var(--sage-900); }
 .bg-sage-950 { background-color: var(--sage-950); }
 
+/* Custom text colors */
 .text-sage-50 { color: var(--sage-50); }
 .text-sage-100 { color: var(--sage-100); }
 .text-sage-200 { color: var(--sage-200); }
@@ -169,6 +123,7 @@
 .text-sage-900 { color: var(--sage-900); }
 .text-sage-950 { color: var(--sage-950); }
 
+/* Custom border colors */
 .border-sage-50 { border-color: var(--sage-50); }
 .border-sage-100 { border-color: var(--sage-100); }
 .border-sage-200 { border-color: var(--sage-200); }
