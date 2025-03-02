@@ -1,142 +1,188 @@
 
 import { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { User, Package, Heart, LogIn, Menu, X } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Menu, X, User, LogOut } from 'lucide-react';
+import { User as UserType } from '@/lib/types';
 
 const Navbar = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [user, setUser] = useState<UserType | null>(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   
-  // Mock authentication state (would be replaced with real auth)
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  
-  // Handle scroll for navbar styling
   useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 10) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
-    };
+    // Close menu when route changes
+    setIsMenuOpen(false);
     
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // For demo purposes
-  useEffect(() => {
-    // Check if we have a user in localStorage (this is just for demo)
-    const user = localStorage.getItem('foodShareUser');
-    setIsAuthenticated(!!user);
-  }, [location]);
+    // Check if user is logged in
+    const userJson = localStorage.getItem('foodShareUser');
+    if (userJson) {
+      try {
+        const parsedUser = JSON.parse(userJson);
+        setUser(parsedUser);
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+      }
+    }
+  }, [location.pathname]);
   
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
+  const handleLogout = () => {
+    localStorage.removeItem('foodShareUser');
+    setUser(null);
+    setIsDropdownOpen(false);
+    navigate('/');
   };
-
-  const navLinks = [
-    { name: 'Home', path: '/' },
-    { name: 'How It Works', path: '/how-it-works' },
-    { name: 'Donations', path: '/donations' },
-  ];
-
+  
   return (
-    <header 
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-white/90 backdrop-blur-md shadow-sm' : 'bg-transparent'
-      }`}
-    >
-      <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-        {/* Logo */}
-        <Link to="/" className="flex items-center space-x-2">
-          <Heart className="w-8 h-8 text-sage-500" />
-          <span className="text-xl font-medium">FoodShare</span>
-        </Link>
-        
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-8">
-          {navLinks.map((link) => (
-            <Link
-              key={link.path}
-              to={link.path}
-              className={`text-base font-medium transition-colors hover:text-sage-500 ${
-                location.pathname === link.path ? 'text-sage-500' : 'text-foreground'
-              }`}
-            >
-              {link.name}
-            </Link>
-          ))}
+    <header className="fixed w-full top-0 bg-white/90 backdrop-blur-md z-50 border-b border-border">
+      <div className="container mx-auto max-w-6xl px-4">
+        <div className="flex items-center justify-between h-16">
+          <Link to="/" className="text-xl font-bold text-sage-700 flex items-center">
+            <span className="text-sage-500">Food</span>Share
+          </Link>
           
-          {isAuthenticated ? (
-            <div className="flex items-center space-x-4">
-              <Link
-                to="/dashboard"
-                className="text-base font-medium text-foreground transition-colors hover:text-sage-500"
-              >
-                Dashboard
-              </Link>
-              <Link
-                to="/dashboard"
-                className="flex items-center justify-center w-10 h-10 rounded-full bg-sage-100"
-              >
-                <User className="w-5 h-5 text-sage-500" />
-              </Link>
-            </div>
-          ) : (
-            <Link to="/auth" className="btn-primary flex items-center space-x-2">
-              <LogIn className="w-4 h-4" />
-              <span>Sign In</span>
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center space-x-1">
+            <Link 
+              to="/" 
+              className={`px-4 py-2 rounded-md text-sm font-medium ${
+                location.pathname === '/' 
+                  ? 'text-sage-700 bg-sage-50' 
+                  : 'text-foreground hover:text-sage-700 hover:bg-sage-50/80'
+              } transition-colors`}
+            >
+              Home
             </Link>
-          )}
-        </nav>
-        
-        {/* Mobile Menu Button */}
-        <button 
-          onClick={toggleMobileMenu}
-          className="md:hidden text-foreground p-2"
-          aria-label="Toggle menu"
-        >
-          {isMobileMenuOpen ? (
-            <X className="w-6 h-6" />
-          ) : (
-            <Menu className="w-6 h-6" />
-          )}
-        </button>
-      </div>
-      
-      {/* Mobile Navigation */}
-      {isMobileMenuOpen && (
-        <div className="md:hidden bg-white absolute w-full left-0 top-16 border-t animate-fade-in shadow-md">
-          <div className="container mx-auto px-4 py-4 flex flex-col space-y-4">
-            {navLinks.map((link) => (
-              <Link
-                key={link.path}
-                to={link.path}
-                className={`text-base font-medium transition-colors p-2 hover:bg-sage-50 rounded-md ${
-                  location.pathname === link.path ? 'text-sage-500' : 'text-foreground'
-                }`}
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                {link.name}
-              </Link>
-            ))}
+            <Link 
+              to="/how-it-works" 
+              className={`px-4 py-2 rounded-md text-sm font-medium ${
+                location.pathname === '/how-it-works' 
+                  ? 'text-sage-700 bg-sage-50' 
+                  : 'text-foreground hover:text-sage-700 hover:bg-sage-50/80'
+              } transition-colors`}
+            >
+              How It Works
+            </Link>
+            <Link 
+              to="/donations" 
+              className={`px-4 py-2 rounded-md text-sm font-medium ${
+                location.pathname === '/donations' 
+                  ? 'text-sage-700 bg-sage-50' 
+                  : 'text-foreground hover:text-sage-700 hover:bg-sage-50/80'
+              } transition-colors`}
+            >
+              Donations
+            </Link>
             
-            {isAuthenticated ? (
-              <Link
-                to="/dashboard"
-                className="text-base font-medium p-2 hover:bg-sage-50 rounded-md flex items-center space-x-2"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                <User className="w-5 h-5 text-sage-500" />
-                <span>Dashboard</span>
-              </Link>
+            {user ? (
+              <div className="relative ml-2">
+                <button
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  className="flex items-center space-x-2 px-4 py-2 rounded-md text-sm font-medium text-foreground hover:text-sage-700 hover:bg-sage-50/80 transition-colors"
+                >
+                  <User className="w-4 h-4" />
+                  <span>{user.name.split(' ')[0]}</span>
+                </button>
+                
+                {isDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 border border-border">
+                    <Link
+                      to="/dashboard"
+                      className="block px-4 py-2 text-sm text-foreground hover:bg-sage-50"
+                      onClick={() => setIsDropdownOpen(false)}
+                    >
+                      Dashboard
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                    >
+                      Sign Out
+                    </button>
+                  </div>
+                )}
+              </div>
             ) : (
               <Link 
                 to="/auth" 
-                className="btn-primary flex justify-center"
-                onClick={() => setIsMobileMenuOpen(false)}
+                className="ml-2 px-4 py-2 bg-sage-500 text-white rounded-md hover:bg-sage-600 transition-colors text-sm font-medium"
+              >
+                Sign In
+              </Link>
+            )}
+          </nav>
+          
+          {/* Mobile Menu Button */}
+          <button
+            className="md:hidden p-2"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+          >
+            {isMenuOpen ? (
+              <X className="w-6 h-6 text-foreground" />
+            ) : (
+              <Menu className="w-6 h-6 text-foreground" />
+            )}
+          </button>
+        </div>
+      </div>
+      
+      {/* Mobile Navigation */}
+      {isMenuOpen && (
+        <div className="md:hidden bg-white border-t border-border">
+          <div className="container mx-auto px-4 py-3 space-y-1">
+            <Link 
+              to="/" 
+              className={`block px-3 py-2 rounded-md text-base font-medium ${
+                location.pathname === '/' 
+                  ? 'text-sage-700 bg-sage-50' 
+                  : 'text-foreground hover:text-sage-700 hover:bg-sage-50/80'
+              } transition-colors`}
+            >
+              Home
+            </Link>
+            <Link 
+              to="/how-it-works" 
+              className={`block px-3 py-2 rounded-md text-base font-medium ${
+                location.pathname === '/how-it-works' 
+                  ? 'text-sage-700 bg-sage-50' 
+                  : 'text-foreground hover:text-sage-700 hover:bg-sage-50/80'
+              } transition-colors`}
+            >
+              How It Works
+            </Link>
+            <Link 
+              to="/donations" 
+              className={`block px-3 py-2 rounded-md text-base font-medium ${
+                location.pathname === '/donations' 
+                  ? 'text-sage-700 bg-sage-50' 
+                  : 'text-foreground hover:text-sage-700 hover:bg-sage-50/80'
+              } transition-colors`}
+            >
+              Donations
+            </Link>
+            
+            {user ? (
+              <>
+                <Link 
+                  to="/dashboard" 
+                  className="block px-3 py-2 rounded-md text-base font-medium text-foreground hover:text-sage-700 hover:bg-sage-50/80 transition-colors"
+                >
+                  Dashboard
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="flex w-full items-center px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-red-50 transition-colors"
+                >
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Sign Out
+                </button>
+              </>
+            ) : (
+              <Link 
+                to="/auth" 
+                className="block px-3 py-2 bg-sage-500 text-white rounded-md hover:bg-sage-600 transition-colors text-base font-medium text-center mt-3"
               >
                 Sign In
               </Link>
