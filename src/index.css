@@ -135,3 +135,42 @@ h1, h2, h3, h4, h5, h6 {
 .border-sage-800 { border-color: var(--sage-800); }
 .border-sage-900 { border-color: var(--sage-900); }
 .border-sage-950 { border-color: var(--sage-950); }
+
+/* Bootstrap overrides and utilities */
+.btn {
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.375rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.card {
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.card-img-top {
+  height: 200px;
+  object-fit: cover;
+}
+
+.form-control:focus, .btn:focus {
+  box-shadow: 0 0 0 0.25rem rgba(101, 126, 123, 0.25);
+  border-color: var(--sage-400);
+}
+
+/* Utilities for spacing and layout */
+.object-fit-cover {
+  object-fit: cover;
+}
+
+.min-vh-100 {
+  min-height: 100vh;
+}
+
+.translate-x-n10 {
+  transform: translateX(-10px);
+}
+
+.translate-y-n10 {
+  transform: translateY(-10px);
+}
