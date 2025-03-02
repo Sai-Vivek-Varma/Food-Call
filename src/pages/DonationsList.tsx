@@ -1,40 +1,38 @@
 
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { Filter, Search, Package, Loader } from 'lucide-react';
 import { toast } from 'sonner';
-import { Search, Filter, Package } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import DonationCard from '@/components/DonationCard';
-import { Donation, User } from '@/lib/types';
+import { Donation } from '@/lib/types';
 
 const DonationsList = () => {
   const [donations, setDonations] = useState<Donation[]>([]);
   const [filteredDonations, setFilteredDonations] = useState<Donation[]>([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState<'all' | 'available' | 'reserved'>('all');
   const [isLoading, setIsLoading] = useState(true);
-  const [user, setUser] = useState<User | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterStatus, setFilterStatus] = useState<string>('available');
+  const [userType, setUserType] = useState<'donor' | 'orphanage' | null>(null);
   const navigate = useNavigate();
   
-  // Add scroll-to-top when the page loads
   useEffect(() => {
     window.scrollTo(0, 0);
     
-    // Check if user is authenticated
-    const userJson = localStorage.getItem('foodShareUser');
-    if (userJson) {
-      try {
-        const parsedUser = JSON.parse(userJson);
-        setUser(parsedUser);
-      } catch (error) {
-        console.error('Error parsing user data:', error);
+    // Check if user is authenticated and set user type
+    try {
+      const userJson = localStorage.getItem('foodShareUser');
+      if (userJson) {
+        const user = JSON.parse(userJson);
+        setUserType(user.role);
       }
+    } catch (error) {
+      console.error('Error parsing user data:', error);
     }
     
     // Simulate fetching donations
     setTimeout(() => {
-      // Mock donations data that would come from API
       const mockDonations: Donation[] = [
         {
           id: '1',
@@ -61,7 +59,7 @@ const DonationsList = () => {
           pickupTimeStart: new Date(new Date().setHours(19, 0)),
           pickupTimeEnd: new Date(new Date().setHours(21, 0)),
           donorId: 'donor-2',
-          donorName: 'Bella Restaurant',
+          donorName: 'Taste of Italy Restaurant',
           status: 'available',
           createdAt: new Date(),
           imageUrl: 'https://images.unsplash.com/photo-1528207776546-365bb710ee93?q=80&w=2670&auto=format&fit=crop',
@@ -69,17 +67,17 @@ const DonationsList = () => {
         {
           id: '3',
           title: 'Fresh Fruits and Vegetables',
-          description: 'Surplus produce from our grocery store including apples, oranges, carrots, and lettuce. All fresh and in excellent condition.',
-          quantity: 'Approximately 15kg assorted produce',
-          expiryDate: new Date(new Date().setDate(new Date().getDate() + 3)),
-          pickupAddress: '789 Market Street, Uptown',
-          pickupTimeStart: new Date(new Date().setHours(10, 0)),
+          description: 'Assorted fresh produce including apples, oranges, carrots, and potatoes. All in good condition.',
+          quantity: 'Approximately 15kg',
+          expiryDate: new Date(new Date().setDate(new Date().getDate() + 4)),
+          pickupAddress: '78 Green Lane, Market District',
+          pickupTimeStart: new Date(new Date().setHours(9, 0)),
           pickupTimeEnd: new Date(new Date().setHours(12, 0)),
           donorId: 'donor-3',
-          donorName: 'Fresh Market Grocery',
+          donorName: 'Farmer\'s Market Collective',
           status: 'available',
           createdAt: new Date(),
-          imageUrl: 'https://images.unsplash.com/photo-1610348725531-843dff563e2c?q=80&w=2070&auto=format&fit=crop',
+          imageUrl: 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?q=80&w=2670&auto=format&fit=crop',
         },
         {
           id: '4',
@@ -95,54 +93,112 @@ const DonationsList = () => {
           status: 'reserved',
           reservedBy: 'orphanage-1',
           reservedByName: 'Hope Children\'s Home',
-          createdAt: new Date(new Date().setDate(new Date().getDate() - 5)),
+          createdAt: new Date(new Date().setDate(new Date().getDate() - 2)),
           imageUrl: 'https://images.unsplash.com/photo-1584263347416-85a696b4eda7?q=80&w=2670&auto=format&fit=crop',
         },
         {
           id: '5',
           title: 'Dairy Products',
-          description: 'Selection of yogurts, cheese, and milk products approaching best-before date but still fresh and safe.',
-          quantity: '30 units of various dairy products',
-          expiryDate: new Date(new Date().setDate(new Date().getDate() + 2)),
-          pickupAddress: '56 Farm Road, Countryside',
+          description: 'Fresh milk, yogurt, and cheese. All properly refrigerated and sealed.',
+          quantity: '20 liters of milk, 5kg of cheese, 30 yogurt cups',
+          expiryDate: new Date(new Date().setDate(new Date().getDate() + 1)),
+          pickupAddress: '56 Dairy Road, Farm District',
           pickupTimeStart: new Date(new Date().setHours(8, 0)),
-          pickupTimeEnd: new Date(new Date().setHours(11, 0)),
+          pickupTimeEnd: new Date(new Date().setHours(10, 0)),
           donorId: 'donor-5',
-          donorName: 'Local Dairy Co-op',
+          donorName: 'Countryside Dairy',
+          status: 'completed',
+          reservedBy: 'orphanage-2',
+          reservedByName: 'Sunshine Orphanage',
+          createdAt: new Date(new Date().setDate(new Date().getDate() - 5)),
+          imageUrl: 'https://images.unsplash.com/photo-1628088062856-d1c6c15368f3?q=80&w=2670&auto=format&fit=crop',
+        },
+        {
+          id: '6',
+          title: 'Packaged Meals from Hotel Event',
+          description: 'Prepared but unused packaged meals from a conference. Includes chicken, rice, and vegetables.',
+          quantity: '35 individual meals',
+          expiryDate: new Date(new Date().setDate(new Date().getDate() + 1)),
+          pickupAddress: '100 Grand Avenue, Hotel District',
+          pickupTimeStart: new Date(new Date().setHours(20, 0)),
+          pickupTimeEnd: new Date(new Date().setHours(22, 0)),
+          donorId: 'donor-6',
+          donorName: 'Grand Hotel & Conference Center',
           status: 'available',
-          createdAt: new Date(new Date().setDate(new Date().getDate() - 1)),
-          imageUrl: 'https://images.unsplash.com/photo-1628088062140-d4c3c540c1a3?q=80&w=2070&auto=format&fit=crop',
+          createdAt: new Date(new Date().setHours(new Date().getHours() - 5)),
+          imageUrl: 'https://images.unsplash.com/photo-1511690656952-34342bb7c2f2?q=80&w=2564&auto=format&fit=crop',
         },
       ];
       
       setDonations(mockDonations);
-      setFilteredDonations(mockDonations);
       setIsLoading(false);
-    }, 1500);
-  }, [navigate]);
+    }, 1000);
+  }, []);
   
+  // Apply filters and search whenever donations, searchTerm, or filterStatus changes
   useEffect(() => {
-    // Filter donations based on search term and status filter
-    let filtered = donations;
+    let filtered = [...donations];
     
-    if (statusFilter !== 'all') {
-      filtered = filtered.filter(donation => donation.status === statusFilter);
+    // Apply status filter
+    if (filterStatus !== 'all') {
+      filtered = filtered.filter(donation => donation.status === filterStatus);
     }
     
+    // Apply search term
     if (searchTerm) {
-      const lowercaseSearchTerm = searchTerm.toLowerCase();
-      filtered = filtered.filter(donation => 
-        donation.title.toLowerCase().includes(lowercaseSearchTerm) ||
-        donation.description.toLowerCase().includes(lowercaseSearchTerm) ||
-        donation.donorName.toLowerCase().includes(lowercaseSearchTerm)
+      const term = searchTerm.toLowerCase();
+      filtered = filtered.filter(
+        donation => 
+          donation.title.toLowerCase().includes(term) ||
+          donation.description.toLowerCase().includes(term) ||
+          donation.donorName.toLowerCase().includes(term)
       );
     }
     
     setFilteredDonations(filtered);
-  }, [searchTerm, statusFilter, donations]);
+  }, [donations, searchTerm, filterStatus]);
   
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
+  const handleReserveDonation = async (donationId: string) => {
+    // Check if user is authenticated
+    const userJson = localStorage.getItem('foodShareUser');
+    if (!userJson) {
+      toast.error('You must be logged in to reserve a donation');
+      navigate('/auth');
+      return;
+    }
+    
+    // Ensure the user is an orphanage
+    const user = JSON.parse(userJson);
+    if (user.role !== 'orphanage') {
+      toast.error('Only orphanages can reserve donations');
+      return;
+    }
+    
+    // Simulate API call
+    return new Promise<void>((resolve, reject) => {
+      setTimeout(() => {
+        try {
+          // Update the local state to reflect the reservation
+          setDonations(prevDonations => 
+            prevDonations.map(donation => 
+              donation.id === donationId 
+                ? {
+                    ...donation,
+                    status: 'reserved',
+                    reservedBy: user.id,
+                    reservedByName: user.organization || user.name,
+                  }
+                : donation
+            )
+          );
+          
+          toast.success('Donation reserved successfully! The donor has been notified.');
+          resolve();
+        } catch (error) {
+          reject(error);
+        }
+      }, 1000);
+    });
   };
   
   return (
@@ -157,42 +213,41 @@ const DonationsList = () => {
             </span>
             <h1 className="text-3xl font-bold mb-2">Browse Food Donations</h1>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Find and reserve available food donations for your organization. All listings show 
-              real-time availability and detailed information.
+              Discover available food donations from various donors. Reserve what your orphanage needs or 
+              see what's already been claimed.
             </p>
           </div>
           
-          <div className="flex flex-col md:flex-row gap-4 mb-8">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+          <div className="mb-8 flex flex-col md:flex-row justify-between space-y-4 md:space-y-0">
+            <div className="relative md:w-1/2">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
               <input
                 type="text"
-                placeholder="Search donations..."
                 value={searchTerm}
-                onChange={handleSearch}
-                className="w-full pl-10 pr-4 py-2 rounded-md border border-input focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all"
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Search donations by title, description, or donor"
+                className="pl-10 w-full px-4 py-2 rounded-md border border-input focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all"
               />
             </div>
             
-            <div className="w-full md:w-48">
-              <div className="relative">
-                <select
-                  value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value as 'all' | 'available' | 'reserved')}
-                  className="w-full px-4 py-2 rounded-md border border-input appearance-none focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all"
-                >
-                  <option value="all">All</option>
-                  <option value="available">Available</option>
-                  <option value="reserved">Reserved</option>
-                </select>
-                <Filter className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
-              </div>
+            <div className="flex items-center space-x-3">
+              <Filter className="text-muted-foreground w-5 h-5" />
+              <select
+                value={filterStatus}
+                onChange={(e) => setFilterStatus(e.target.value)}
+                className="px-4 py-2 rounded-md border border-input focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all"
+              >
+                <option value="available">Available Only</option>
+                <option value="reserved">Reserved Only</option>
+                <option value="completed">Completed Only</option>
+                <option value="all">All Donations</option>
+              </select>
             </div>
           </div>
           
           {isLoading ? (
             <div className="flex flex-col items-center justify-center py-16">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sage-500 mb-4"></div>
+              <Loader className="w-10 h-10 text-sage-500 animate-spin mb-4" />
               <p className="text-muted-foreground">Loading donations...</p>
             </div>
           ) : filteredDonations.length === 0 ? (
@@ -201,29 +256,38 @@ const DonationsList = () => {
               <h3 className="text-xl font-medium mb-2">No Donations Found</h3>
               <p className="text-muted-foreground text-center max-w-md mb-6">
                 {searchTerm 
-                  ? `No donations matching "${searchTerm}" were found.` 
-                  : 'There are no donations available with the selected filters.'}
+                  ? 'No donations match your search criteria. Try different keywords or clear your search.' 
+                  : filterStatus !== 'all'
+                    ? `No ${filterStatus} donations at the moment. Try a different filter or check back later.`
+                    : 'There are no donations available at the moment. Please check back later.'}
               </p>
-              <button
-                onClick={() => {
-                  setSearchTerm('');
-                  setStatusFilter('all');
-                }}
-                className="px-6 py-2 bg-sage-500 text-white rounded-md hover:bg-sage-600 transition-colors"
-              >
-                Clear Filters
-              </button>
+              {userType === 'donor' && (
+                <Link to="/donate" className="btn-primary">
+                  Create a Donation
+                </Link>
+              )}
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredDonations.map(donation => (
-                <DonationCard
-                  key={donation.id}
-                  donation={donation}
-                  isOrphanage={user?.role === 'orphanage'}
-                />
-              ))}
-            </div>
+            <>
+              {userType === 'donor' && (
+                <div className="flex justify-end mb-6">
+                  <Link to="/donate" className="btn-primary">
+                    Create a Donation
+                  </Link>
+                </div>
+              )}
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredDonations.map((donation) => (
+                  <DonationCard
+                    key={donation.id}
+                    donation={donation}
+                    onReserve={handleReserveDonation}
+                    isOrphanage={userType === 'orphanage'}
+                  />
+                ))}
+              </div>
+            </>
           )}
         </div>
       </section>

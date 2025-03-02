@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { Package, Upload, Calendar, Clock, MapPin, Info, X } from 'lucide-react';
+import { Package, Upload, Calendar, Clock, MapPin, Info } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
