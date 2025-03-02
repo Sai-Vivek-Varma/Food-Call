@@ -91,10 +91,10 @@ const AuthForm = ({ type, onSuccess }: AuthFormProps) => {
   };
   
   return (
-    <form onSubmit={handleSubmit} className="needs-validation" noValidate>
+    <form onSubmit={handleSubmit} className="space-y-4">
       {type === 'register' && (
-        <div className="mb-3">
-          <label htmlFor="name" className="form-label">
+        <div>
+          <label htmlFor="name" className="block text-sm font-medium text-foreground mb-1">
             Name
           </label>
           <input
@@ -103,15 +103,14 @@ const AuthForm = ({ type, onSuccess }: AuthFormProps) => {
             type="text"
             value={formData.name}
             onChange={handleChange}
-            className="form-control"
+            className="w-full px-4 py-2 rounded-md border border-input focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all"
             placeholder="Enter your full name"
-            required
           />
         </div>
       )}
       
-      <div className="mb-3">
-        <label htmlFor="email" className="form-label">
+      <div>
+        <label htmlFor="email" className="block text-sm font-medium text-foreground mb-1">
           Email
         </label>
         <input
@@ -120,32 +119,29 @@ const AuthForm = ({ type, onSuccess }: AuthFormProps) => {
           type="email"
           value={formData.email}
           onChange={handleChange}
-          className="form-control"
+          className="w-full px-4 py-2 rounded-md border border-input focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all"
           placeholder="Enter your email"
-          required
         />
       </div>
       
-      <div className="mb-3">
-        <label htmlFor="password" className="form-label">
+      <div>
+        <label htmlFor="password" className="block text-sm font-medium text-foreground mb-1">
           Password
         </label>
-        <div className="input-group">
+        <div className="relative">
           <input
             id="password"
             name="password"
             type={showPassword ? 'text' : 'password'}
             value={formData.password}
             onChange={handleChange}
-            className="form-control"
+            className="w-full px-4 py-2 rounded-md border border-input focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all"
             placeholder="Enter your password"
-            required
           />
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="btn btn-outline-secondary"
-            aria-label={showPassword ? "Hide password" : "Show password"}
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"
           >
             {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
           </button>
@@ -154,8 +150,8 @@ const AuthForm = ({ type, onSuccess }: AuthFormProps) => {
       
       {type === 'register' && (
         <>
-          <div className="mb-3">
-            <label htmlFor="role" className="form-label">
+          <div>
+            <label htmlFor="role" className="block text-sm font-medium text-foreground mb-1">
               Role
             </label>
             <select
@@ -163,8 +159,7 @@ const AuthForm = ({ type, onSuccess }: AuthFormProps) => {
               name="role"
               value={formData.role}
               onChange={handleChange}
-              className="form-select"
-              required
+              className="w-full px-4 py-2 rounded-md border border-input focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all"
             >
               <option value="donor">Food Donor</option>
               <option value="orphanage">Orphanage</option>
@@ -172,8 +167,8 @@ const AuthForm = ({ type, onSuccess }: AuthFormProps) => {
           </div>
           
           {formData.role === 'orphanage' && (
-            <div className="mb-3">
-              <label htmlFor="organization" className="form-label">
+            <div>
+              <label htmlFor="organization" className="block text-sm font-medium text-foreground mb-1">
                 Organization Name
               </label>
               <input
@@ -182,9 +177,8 @@ const AuthForm = ({ type, onSuccess }: AuthFormProps) => {
                 type="text"
                 value={formData.organization}
                 onChange={handleChange}
-                className="form-control"
+                className="w-full px-4 py-2 rounded-md border border-input focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all"
                 placeholder="Enter your organization name"
-                required
               />
             </div>
           )}
@@ -194,13 +188,13 @@ const AuthForm = ({ type, onSuccess }: AuthFormProps) => {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="btn btn-sage w-100 py-2 mt-3"
+        className="w-full bg-sage-500 text-white py-2 rounded-md hover:bg-sage-600 transition-all mt-6 flex items-center justify-center"
       >
         {isSubmitting ? (
-          <span className="d-flex align-items-center justify-content-center">
-            <Loader2 className="spinner-border spinner-border-sm me-2" />
+          <>
+            <Loader2 className="w-5 h-5 mr-2 animate-spin" />
             {type === 'login' ? 'Signing in...' : 'Creating account...'}
-          </span>
+          </>
         ) : (
           type === 'login' ? 'Sign In' : 'Create Account'
         )}

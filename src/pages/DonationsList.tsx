@@ -146,70 +146,60 @@ const DonationsList = () => {
   };
   
   return (
-    <div className="min-vh-100 d-flex flex-column">
+    <div className="min-h-screen">
       <Navbar />
       
-      <section className="py-5 mt-5">
-        <div className="container py-4">
-          <div className="text-center mb-5">
-            <span className="badge bg-sage-100 text-sage-700 fw-medium mb-3">
+      <section className="pt-28 pb-16 px-4">
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-10">
+            <span className="inline-block px-4 py-2 rounded-full bg-sage-100 text-sage-700 font-medium text-sm mb-4">
               Available Donations
             </span>
-            <h1 className="fw-bold mb-3">Browse Food Donations</h1>
-            <p className="text-muted w-md-75 mx-auto">
+            <h1 className="text-3xl font-bold mb-2">Browse Food Donations</h1>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
               Find and reserve available food donations for your organization. All listings show 
               real-time availability and detailed information.
             </p>
           </div>
           
-          <div className="row g-3 mb-4">
-            <div className="col-md-9">
-              <div className="input-group">
-                <span className="input-group-text bg-white border-end-0">
-                  <Search size={18} className="text-muted" />
-                </span>
-                <input
-                  type="text"
-                  className="form-control border-start-0"
-                  placeholder="Search donations..."
-                  value={searchTerm}
-                  onChange={handleSearch}
-                />
-              </div>
+          <div className="flex flex-col md:flex-row gap-4 mb-8">
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+              <input
+                type="text"
+                placeholder="Search donations..."
+                value={searchTerm}
+                onChange={handleSearch}
+                className="w-full pl-10 pr-4 py-2 rounded-md border border-input focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all"
+              />
             </div>
             
-            <div className="col-md-3">
-              <div className="input-group">
+            <div className="w-full md:w-48">
+              <div className="relative">
                 <select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value as 'all' | 'available' | 'reserved')}
-                  className="form-select"
+                  className="w-full px-4 py-2 rounded-md border border-input appearance-none focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all"
                 >
-                  <option value="all">All Donations</option>
+                  <option value="all">All</option>
                   <option value="available">Available</option>
                   <option value="reserved">Reserved</option>
                 </select>
-                <span className="input-group-text bg-white">
-                  <Filter size={18} className="text-muted" />
-                </span>
+                <Filter className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
               </div>
             </div>
           </div>
           
           {isLoading ? (
-            <div className="text-center py-5">
-              <div className="spinner-border text-sage-500 mb-3" role="status">
-                <span className="visually-hidden">Loading...</span>
-              </div>
-              <p className="text-muted">Loading donations...</p>
+            <div className="flex flex-col items-center justify-center py-16">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sage-500 mb-4"></div>
+              <p className="text-muted-foreground">Loading donations...</p>
             </div>
           ) : filteredDonations.length === 0 ? (
-            <div className="card border-0 shadow-sm p-5 text-center">
-              <div className="mb-4">
-                <Package size={48} className="text-sage-300" />
-              </div>
-              <h3 className="fw-medium mb-3">No Donations Found</h3>
-              <p className="text-muted mb-4">
+            <div className="flex flex-col items-center justify-center bg-white rounded-xl border border-border shadow-sm p-16">
+              <Package className="w-16 h-16 text-sage-200 mb-4" />
+              <h3 className="text-xl font-medium mb-2">No Donations Found</h3>
+              <p className="text-muted-foreground text-center max-w-md mb-6">
                 {searchTerm 
                   ? `No donations matching "${searchTerm}" were found.` 
                   : 'There are no donations available with the selected filters.'}
@@ -219,20 +209,19 @@ const DonationsList = () => {
                   setSearchTerm('');
                   setStatusFilter('all');
                 }}
-                className="btn btn-sage mx-auto"
+                className="px-6 py-2 bg-sage-500 text-white rounded-md hover:bg-sage-600 transition-colors"
               >
                 Clear Filters
               </button>
             </div>
           ) : (
-            <div className="row g-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredDonations.map(donation => (
-                <div className="col-md-6 col-lg-4" key={donation.id}>
-                  <DonationCard
-                    donation={donation}
-                    isOrphanage={user?.role === 'orphanage'}
-                  />
-                </div>
+                <DonationCard
+                  key={donation.id}
+                  donation={donation}
+                  isOrphanage={user?.role === 'orphanage'}
+                />
               ))}
             </div>
           )}
