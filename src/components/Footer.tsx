@@ -4,100 +4,98 @@ import { Facebook, Twitter, Instagram, Mail } from 'lucide-react';
 
 const Footer = () => {
   return (
-    <footer className="bg-sage-900 text-white py-5 mt-auto">
-      <div className="container">
-        <div className="row g-4">
-          <div className="col-lg-4 col-md-6">
-            <Link to="/" className="text-decoration-none d-inline-block mb-3">
-              <span className="h3 fw-bold">
-                <span className="text-sage-300">Food</span>Share
-              </span>
+    <footer className="bg-sage-900 text-white">
+      <div className="container mx-auto max-w-6xl px-4 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div className="space-y-4">
+            <Link to="/" className="text-2xl font-bold inline-block">
+              <span className="text-sage-300">Food</span>Share
             </Link>
-            <p className="text-sage-300 mb-4">
+            <p className="text-sage-300">
               Connecting surplus food with those who need it most. Together, we can reduce waste and fight hunger.
             </p>
-            <div className="d-flex gap-3">
-              <a href="#" className="text-sage-300 hover-text-white">
-                <Facebook size={20} />
+            <div className="flex space-x-4">
+              <a href="#" className="text-sage-300 hover:text-white transition-colors">
+                <Facebook className="w-5 h-5" />
               </a>
-              <a href="#" className="text-sage-300 hover-text-white">
-                <Twitter size={20} />
+              <a href="#" className="text-sage-300 hover:text-white transition-colors">
+                <Twitter className="w-5 h-5" />
               </a>
-              <a href="#" className="text-sage-300 hover-text-white">
-                <Instagram size={20} />
+              <a href="#" className="text-sage-300 hover:text-white transition-colors">
+                <Instagram className="w-5 h-5" />
               </a>
-              <a href="mailto:contact@foodshare.org" className="text-sage-300 hover-text-white">
-                <Mail size={20} />
+              <a href="mailto:contact@foodshare.org" className="text-sage-300 hover:text-white transition-colors">
+                <Mail className="w-5 h-5" />
               </a>
             </div>
           </div>
           
-          <div className="col-lg-2 col-md-6">
-            <h5 className="mb-3">Quick Links</h5>
-            <ul className="list-unstyled">
-              <li className="mb-2">
-                <Link to="/" className="text-sage-300 text-decoration-none hover-text-white">
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link to="/" className="text-sage-300 hover:text-white transition-colors">
                   Home
                 </Link>
               </li>
-              <li className="mb-2">
-                <Link to="/about" className="text-sage-300 text-decoration-none hover-text-white">
+              <li>
+                <Link to="/about" className="text-sage-300 hover:text-white transition-colors">
                   About Us
                 </Link>
               </li>
-              <li className="mb-2">
-                <Link to="/how-it-works" className="text-sage-300 text-decoration-none hover-text-white">
+              <li>
+                <Link to="/how-it-works" className="text-sage-300 hover:text-white transition-colors">
                   How It Works
                 </Link>
               </li>
-              <li className="mb-2">
-                <Link to="/donations" className="text-sage-300 text-decoration-none hover-text-white">
+              <li>
+                <Link to="/donations" className="text-sage-300 hover:text-white transition-colors">
                   Browse Donations
                 </Link>
               </li>
             </ul>
           </div>
           
-          <div className="col-lg-2 col-md-6">
-            <h5 className="mb-3">For Users</h5>
-            <ul className="list-unstyled">
-              <li className="mb-2">
-                <Link to="/auth" className="text-sage-300 text-decoration-none hover-text-white">
+          <div>
+            <h3 className="text-lg font-semibold mb-4">For Users</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link to="/auth" className="text-sage-300 hover:text-white transition-colors">
                   Sign In / Register
                 </Link>
               </li>
-              <li className="mb-2">
-                <Link to="/donate" className="text-sage-300 text-decoration-none hover-text-white">
+              <li>
+                <Link to="/donate" className="text-sage-300 hover:text-white transition-colors">
                   Donate Food
                 </Link>
               </li>
-              <li className="mb-2">
-                <Link to="/dashboard" className="text-sage-300 text-decoration-none hover-text-white">
+              <li>
+                <Link to="/dashboard" className="text-sage-300 hover:text-white transition-colors">
                   Dashboard
                 </Link>
               </li>
-              <li className="mb-2">
-                <Link to="/faq" className="text-sage-300 text-decoration-none hover-text-white">
+              <li>
+                <Link to="/faq" className="text-sage-300 hover:text-white transition-colors">
                   FAQ
                 </Link>
               </li>
             </ul>
           </div>
           
-          <div className="col-lg-4 col-md-6">
-            <h5 className="mb-3">Contact</h5>
-            <ul className="list-unstyled">
-              <li className="text-sage-300 mb-2">
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Contact</h3>
+            <ul className="space-y-2">
+              <li className="text-sage-300">
                 123 Community Lane,<br />
                 Food District, FD 12345
               </li>
-              <li className="mb-2">
-                <a href="tel:+15551234567" className="text-sage-300 text-decoration-none hover-text-white">
+              <li>
+                <a href="tel:+15551234567" className="text-sage-300 hover:text-white transition-colors">
                   +1 (555) 123-4567
                 </a>
               </li>
-              <li className="mb-2">
-                <a href="mailto:contact@foodshare.org" className="text-sage-300 text-decoration-none hover-text-white">
+              <li>
+                <a href="mailto:contact@foodshare.org" className="text-sage-300 hover:text-white transition-colors">
                   contact@foodshare.org
                 </a>
               </li>
@@ -105,18 +103,18 @@ const Footer = () => {
           </div>
         </div>
         
-        <div className="border-top border-sage-700 mt-4 pt-4 d-flex flex-column flex-md-row justify-content-between align-items-center">
-          <p className="text-sage-400 small mb-3 mb-md-0">
+        <div className="border-t border-sage-700 mt-10 pt-6 flex flex-col md:flex-row justify-between items-center">
+          <p className="text-sage-400 text-sm">
             &copy; {new Date().getFullYear()} FoodShare. All rights reserved.
           </p>
-          <div className="d-flex gap-4">
-            <Link to="/terms" className="text-sage-400 small text-decoration-none hover-text-white">
+          <div className="mt-4 md:mt-0 flex space-x-6">
+            <Link to="/terms" className="text-sage-400 hover:text-white text-sm transition-colors">
               Terms of Service
             </Link>
-            <Link to="/privacy" className="text-sage-400 small text-decoration-none hover-text-white">
+            <Link to="/privacy" className="text-sage-400 hover:text-white text-sm transition-colors">
               Privacy Policy
             </Link>
-            <Link to="/cookies" className="text-sage-400 small text-decoration-none hover-text-white">
+            <Link to="/cookies" className="text-sage-400 hover:text-white text-sm transition-colors">
               Cookie Policy
             </Link>
           </div>
