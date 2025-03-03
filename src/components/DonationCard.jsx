@@ -1,12 +1,13 @@
 
-import { Clock, MapPin, CalendarIcon, Package, CheckCircle2, XCircle } from 'lucide-react';
+import React from 'react';
 import { Link } from 'react-router-dom';
+import { Calendar, MapPin, Clock, ArrowRight } from 'lucide-react';
 
 const formatDate = (date) => {
   return new Date(date).toLocaleDateString('en-US', {
-    year: 'numeric',
     month: 'short',
     day: 'numeric',
+    year: 'numeric',
   });
 };
 
@@ -17,67 +18,59 @@ const formatTime = (date) => {
   });
 };
 
-const DonationCard = ({ donation, isOrphanage = false }) => {
+const DonationCard = ({ donation, isOrphanage }) => {
   const isExpired = new Date(donation.expiryDate) < new Date();
-  const statusClasses = {
-    available: 'bg-green-100 text-green-700',
-    reserved: 'bg-blue-100 text-blue-700',
-    completed: 'bg-sage-100 text-sage-700',
-    expired: 'bg-red-100 text-red-700',
-  };
+  const isAvailable = donation.status === 'available' && !isExpired;
 
   return (
-    <div 
-      className={`bg-white rounded-xl border border-border shadow-sm transition-all hover:shadow-md ${
-        isExpired && donation.status !== 'completed' ? 'opacity-70' : ''
-      }`}
-    >
+    <div className="bg-white rounded-xl overflow-hidden border border-border shadow-sm card-hover animate-fade-up">
       {donation.imageUrl && (
-        <div className="relative h-48 rounded-t-xl overflow-hidden">
-          <img 
-            src={donation.imageUrl} 
-            alt={donation.title} 
+        <div className="h-48 relative">
+          <img
+            src={donation.imageUrl}
+            alt={donation.title}
             className="w-full h-full object-cover"
           />
           <div className="absolute top-3 right-3">
-            <span className={`px-3 py-1 rounded-full text-xs font-medium ${statusClasses[donation.status]}`}>
-              {donation.status.charAt(0).toUpperCase() + donation.status.slice(1)}
+            <span
+              className={`px-3 py-1 rounded-full text-xs font-medium ${
+                isExpired && donation.status === 'available'
+                  ? 'bg-red-100 text-red-700'
+                  : donation.status === 'available'
+                  ? 'bg-green-100 text-green-700'
+                  : donation.status === 'reserved'
+                  ? 'bg-blue-100 text-blue-700'
+                  : 'bg-sage-100 text-sage-700'
+              }`}
+            >
+              {isExpired && donation.status === 'available'
+                ? 'Expired'
+                : donation.status.charAt(0).toUpperCase() +
+                  donation.status.slice(1)}
             </span>
           </div>
         </div>
       )}
 
       <div className="p-5">
-        {!donation.imageUrl && (
-          <div className="mb-4 flex justify-between items-center">
-            <span className={`px-3 py-1 rounded-full text-xs font-medium ${statusClasses[donation.status]}`}>
-              {donation.status.charAt(0).toUpperCase() + donation.status.slice(1)}
-            </span>
-          </div>
-        )}
-        
-        <h3 className="text-lg font-semibold mb-2 truncate">{donation.title}</h3>
-        
-        <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
+        <h3 className="text-lg font-semibold mb-2 line-clamp-1">{donation.title}</h3>
+        <p className="text-muted-foreground mb-4 text-sm line-clamp-2">
           {donation.description}
         </p>
-        
-        <div className="space-y-2">
+
+        <div className="space-y-2 mb-4">
           <div className="flex items-center text-sm">
-            <Package className="w-4 h-4 mr-2 text-sage-500" />
-            <span>{donation.quantity}</span>
+            <Calendar className="w-4 h-4 mr-2 text-sage-500" />
+            <span>
+              Expires: <span className="font-medium">{formatDate(donation.expiryDate)}</span>
+            </span>
           </div>
-          
-          <div className="flex items-center text-sm">
-            <CalendarIcon className="w-4 h-4 mr-2 text-sage-500" />
-            <span>Expires: {formatDate(donation.expiryDate)}</span>
-          </div>
-          
+
           <div className="flex items-center text-sm">
             <MapPin className="w-4 h-4 mr-2 text-sage-500" />
             <span className="truncate">{donation.pickupAddress}</span>
           </div>
-          
+
           <div className="flex items-center text-sm">
             <Clock className="w-4 h-4 mr-2 text-sage-500" />
             <span>
@@ -85,33 +78,18 @@ const DonationCard = ({ donation, isOrphanage = false }) => {
             </span>
           </div>
         </div>
-        
-        <div className="mt-4 pt-4 border-t border-border">
-          {isOrphanage && donation.status === 'available' ? (
-            <button className="w-full py-2 px-4 bg-sage-500 text-white rounded-md hover:bg-sage-600 transition-colors text-center text-sm font-medium">
-              Reserve Donation
-            </button>
-          ) : donation.status === 'reserved' ? (
-            <div>
-              <p className="text-sm text-muted-foreground mb-2">
-                {isOrphanage 
-                  ? 'You have reserved this donation.' 
-                  : `Reserved by: ${donation.reservedByName}`}
-              </p>
-              <div className="flex space-x-2">
-                <button className="flex-1 py-2 px-3 bg-sage-500 text-white rounded-md hover:bg-sage-600 transition-colors text-center text-sm font-medium">
-                  {isOrphanage ? 'Confirm Pickup' : 'Mark as Completed'}
-                </button>
-                <button className="py-2 px-3 border border-red-200 text-red-500 rounded-md hover:bg-red-50 transition-colors text-center text-sm font-medium">
-                  Cancel
-                </button>
-              </div>
-            </div>
-          ) : (
-            <Link to={`/donations/${donation.id}`} className="block w-full py-2 px-4 bg-secondary text-foreground rounded-md hover:bg-secondary/80 transition-colors text-center text-sm font-medium">
-              View Details
-            </Link>
-          )}
+
+        <div className="flex items-center justify-between pt-3 border-t border-border">
+          <div className="text-sm font-medium text-sage-700">
+            By {donation.donorName}
+          </div>
+          <Link
+            to={`/donations/${donation.id}`}
+            className="inline-flex items-center text-sage-600 hover:text-sage-700 transition-colors text-sm font-medium"
+          >
+            View Details
+            <ArrowRight className="w-4 h-4 ml-1" />
+          </Link>
         </div>
       </div>
     </div>
