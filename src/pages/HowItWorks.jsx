@@ -1,295 +1,164 @@
 
-import { useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Package, User, Calendar, ArrowRight, MapPin, Check } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { CheckCircle, ListTodo, UserCog, Building, UserCheck, PlayCircle, Clock } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
 const HowItWorks = () => {
   useEffect(() => {
+    // Add scroll-to-top when the page loads
     window.scrollTo(0, 0);
   }, []);
+
+  const donorSteps = [
+    {
+      title: 'Create an Account',
+      description: 'Register as a food donor by providing your organization details and contact information.',
+      icon: UserCog,
+    },
+    {
+      title: 'Add Donation Details',
+      description: 'Fill in all the necessary information about your surplus food, including quantity, expiry date, and pickup instructions.',
+      icon: ListTodo,
+    },
+    {
+      title: 'Schedule Pickup',
+      description: 'Set a convenient time window when orphanages can come to collect the food donation.',
+      icon: Clock,
+    },
+    {
+      title: 'Complete Donation',
+      description: 'Meet the orphanage representative at the scheduled time and mark the donation as completed.',
+      icon: CheckCircle,
+    },
+  ];
+
+  const orphanageSteps = [
+    {
+      title: 'Register Your Orphanage',
+      description: 'Create an account and verify your orphanage details to gain access to available donations.',
+      icon: Building,
+    },
+    {
+      title: 'Browse Available Donations',
+      description: 'View all active food donations in your area and filter by location, food type, or pickup time.',
+      icon: ListTodo,
+    },
+    {
+      title: 'Reserve Food Donations',
+      description: 'Reserve the donations that meet your needs and coordinate pickup with the donor.',
+      icon: UserCheck,
+    },
+    {
+      title: 'Collect and Confirm',
+      description: 'Collect the food at the scheduled time and confirm the successful pickup in the app.',
+      icon: CheckCircle,
+    },
+  ];
 
   return (
     <div className="min-h-screen">
       <Navbar />
       
-      {/* Hero Section */}
-      <section className="pt-28 pb-16 px-4 bg-gradient-to-b from-sage-50 to-white">
+      <section className="pt-28 pb-16 px-4 animate__animated animate__fadeIn">
         <div className="container mx-auto max-w-6xl">
-          <div className="text-center">
-            <span className="inline-block px-4 py-2 rounded-full bg-sage-100 text-sage-700 font-medium text-sm mb-6 animate-fade-in">
-              Our Process
-            </span>
-            <h1 className="font-bold mb-6 animate-fade-up">
-              How <span className="text-sage-500">Food Call</span> Works
-            </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-10 animate-slide-in" style={{animationDelay: "200ms"}}>
-              Our platform makes it easy to connect surplus food with orphanages in need.
-              Just follow these simple steps to make a difference.
-            </p>
-          </div>
-        </div>
-      </section>
-      
-      {/* Step-by-Step Process */}
-      <section className="py-16 md:py-24 px-4">
-        <div className="container mx-auto max-w-6xl">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center mb-20">
-            <div className="order-2 md:order-1">
-              <span className="inline-block px-4 py-2 rounded-full bg-sage-100 text-sage-700 font-medium text-sm mb-4">
-                Step 1
-              </span>
-              <h2 className="text-2xl md:text-3xl font-bold mb-4">Create Your Account</h2>
-              <p className="text-muted-foreground mb-6">
-                Sign up as either a Food Donor or an Orphanage. Food donors can be restaurants, 
-                grocery stores, catering services, or anyone with surplus food to share. Orphanages can register 
-                to access available donations.
-              </p>
-              <ul className="space-y-3 mb-8">
-                <li className="flex items-start">
-                  <Check className="w-5 h-5 text-sage-500 mr-3 mt-0.5" />
-                  <span>Quick, easy registration process</span>
-                </li>
-                <li className="flex items-start">
-                  <Check className="w-5 h-5 text-sage-500 mr-3 mt-0.5" />
-                  <span>Verification process for orphanages</span>
-                </li>
-                <li className="flex items-start">
-                  <Check className="w-5 h-5 text-sage-500 mr-3 mt-0.5" />
-                  <span>Personalized dashboard based on your role</span>
-                </li>
-              </ul>
-              <Link to="/auth" className="inline-flex items-center px-6 py-3 bg-sage-500 text-white rounded-md hover:bg-sage-600 transition-colors">
-                Create Account
-                <ArrowRight className="ml-2 w-4 h-4" />
-              </Link>
-            </div>
-            <div className="order-1 md:order-2">
-              <div className="relative">
-                <div className="absolute -top-6 -right-6 w-full h-full rounded-xl bg-sage-200/50 -z-10"></div>
-                <img 
-                  src="https://images.unsplash.com/photo-1616587226157-48e49175ee20?q=80&w=2070&auto=format&fit=crop" 
-                  alt="Creating account" 
-                  className="rounded-xl shadow-lg h-full w-full object-cover"
-                />
-              </div>
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center mb-20">
-            <div className="order-1">
-              <div className="relative">
-                <div className="absolute -top-6 -left-6 w-full h-full rounded-xl bg-sage-200/50 -z-10"></div>
-                <img 
-                  src="https://images.unsplash.com/photo-1621330396173-e41b1cafd17f?q=80&w=2070&auto=format&fit=crop" 
-                  alt="Listing donation" 
-                  className="rounded-xl shadow-lg h-full w-full object-cover"
-                />
-              </div>
-            </div>
-            <div className="order-2">
-              <span className="inline-block px-4 py-2 rounded-full bg-sage-100 text-sage-700 font-medium text-sm mb-4">
-                Step 2
-              </span>
-              <h2 className="text-2xl md:text-3xl font-bold mb-4">List Your Donation</h2>
-              <p className="text-muted-foreground mb-6">
-                Food donors can easily create detailed listings for surplus food. Provide information
-                about the type of food, quantity, expiration date, and pickup details to help orphanages
-                determine if they can use your donation.
-              </p>
-              <ul className="space-y-3 mb-8">
-                <li className="flex items-start">
-                  <Check className="w-5 h-5 text-sage-500 mr-3 mt-0.5" />
-                  <span>Simple form to complete with all necessary details</span>
-                </li>
-                <li className="flex items-start">
-                  <Check className="w-5 h-5 text-sage-500 mr-3 mt-0.5" />
-                  <span>Option to upload photos of the food</span>
-                </li>
-                <li className="flex items-start">
-                  <Check className="w-5 h-5 text-sage-500 mr-3 mt-0.5" />
-                  <span>Set pickup time windows that work for you</span>
-                </li>
-              </ul>
-              <Link to="/donate" className="inline-flex items-center px-6 py-3 bg-sage-500 text-white rounded-md hover:bg-sage-600 transition-colors">
-                Create Donation
-                <ArrowRight className="ml-2 w-4 h-4" />
-              </Link>
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center mb-20">
-            <div className="order-2 md:order-1">
-              <span className="inline-block px-4 py-2 rounded-full bg-sage-100 text-sage-700 font-medium text-sm mb-4">
-                Step 3
-              </span>
-              <h2 className="text-2xl md:text-3xl font-bold mb-4">Browse & Reserve Donations</h2>
-              <p className="text-muted-foreground mb-6">
-                Orphanages can browse all available donations in their area and reserve the ones that
-                meet their needs. You'll see real-time availability, detailed information, and pickup instructions.
-              </p>
-              <ul className="space-y-3 mb-8">
-                <li className="flex items-start">
-                  <Check className="w-5 h-5 text-sage-500 mr-3 mt-0.5" />
-                  <span>Search and filter donations by various criteria</span>
-                </li>
-                <li className="flex items-start">
-                  <Check className="w-5 h-5 text-sage-500 mr-3 mt-0.5" />
-                  <span>One-click reservation process</span>
-                </li>
-                <li className="flex items-start">
-                  <Check className="w-5 h-5 text-sage-500 mr-3 mt-0.5" />
-                  <span>Get notifications for new donations that match your needs</span>
-                </li>
-              </ul>
-              <Link to="/donations" className="inline-flex items-center px-6 py-3 bg-sage-500 text-white rounded-md hover:bg-sage-600 transition-colors">
-                Browse Donations
-                <ArrowRight className="ml-2 w-4 h-4" />
-              </Link>
-            </div>
-            <div className="order-1 md:order-2">
-              <div className="relative">
-                <div className="absolute -top-6 -right-6 w-full h-full rounded-xl bg-sage-200/50 -z-10"></div>
-                <img 
-                  src="https://images.unsplash.com/photo-1563807894768-f28bee0d37b6?q=80&w=2070&auto=format&fit=crop" 
-                  alt="Browsing donations" 
-                  className="rounded-xl shadow-lg h-full w-full object-cover"
-                />
-              </div>
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-            <div className="order-1">
-              <div className="relative">
-                <div className="absolute -top-6 -left-6 w-full h-full rounded-xl bg-sage-200/50 -z-10"></div>
-                <img 
-                  src="https://images.unsplash.com/photo-1593113598332-cd59a0c3015c?q=80&w=2070&auto=format&fit=crop" 
-                  alt="Pickup coordination" 
-                  className="rounded-xl shadow-lg h-full w-full object-cover"
-                />
-              </div>
-            </div>
-            <div className="order-2">
-              <span className="inline-block px-4 py-2 rounded-full bg-sage-100 text-sage-700 font-medium text-sm mb-4">
-                Step 4
-              </span>
-              <h2 className="text-2xl md:text-3xl font-bold mb-4">Coordinate Pickup & Complete</h2>
-              <p className="text-muted-foreground mb-6">
-                Once a donation is reserved, both parties can coordinate the food pickup process through
-                our platform. After the successful pickup, mark the donation as completed to track your impact.
-              </p>
-              <ul className="space-y-3 mb-8">
-                <li className="flex items-start">
-                  <Check className="w-5 h-5 text-sage-500 mr-3 mt-0.5" />
-                  <span>In-app messaging between donor and recipient</span>
-                </li>
-                <li className="flex items-start">
-                  <Check className="w-5 h-5 text-sage-500 mr-3 mt-0.5" />
-                  <span>Pickup confirmation system</span>
-                </li>
-                <li className="flex items-start">
-                  <Check className="w-5 h-5 text-sage-500 mr-3 mt-0.5" />
-                  <span>Impact tracking and donation history</span>
-                </li>
-              </ul>
-              <Link to="/dashboard" className="inline-flex items-center px-6 py-3 bg-sage-500 text-white rounded-md hover:bg-sage-600 transition-colors">
-                View Dashboard
-                <ArrowRight className="ml-2 w-4 h-4" />
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-      
-      {/* FAQ Section */}
-      <section className="py-16 md:py-24 px-4 bg-sage-50">
-        <div className="container mx-auto max-w-3xl">
+          {/* Hero Section */}
           <div className="text-center mb-16">
             <span className="inline-block px-4 py-2 rounded-full bg-sage-100 text-sage-700 font-medium text-sm mb-4">
-              Common Questions
+              Our Process
             </span>
-            <h2 className="font-bold mb-6">Frequently Asked Questions</h2>
-            <p className="text-muted-foreground">
-              Find answers to the most common questions about using Food Call.
+            <h1 className="text-4xl font-bold mb-4">How Food Call Works</h1>
+            <p className="text-muted-foreground max-w-2xl mx-auto mb-8">
+              Food Call connects food donors with orphanages to reduce food waste and help feed children in need.
+              Our platform makes it easy to donate and receive surplus food.
             </p>
-          </div>
-          
-          <div className="space-y-6">
-            <div className="bg-white p-6 rounded-xl border border-border">
-              <h3 className="text-lg font-semibold mb-2">Is there a cost to use Food Call?</h3>
-              <p className="text-muted-foreground">
-                No, Food Call is completely free for both food donors and orphanages. We're a nonprofit 
-                platform dedicated to reducing food waste and helping those in need.
-              </p>
-            </div>
-            
-            <div className="bg-white p-6 rounded-xl border border-border">
-              <h3 className="text-lg font-semibold mb-2">What types of food can be donated?</h3>
-              <p className="text-muted-foreground">
-                Any type of edible, unexpired food can be donated. This includes prepared meals, fresh produce, 
-                baked goods, canned foods, and packaged items. All food must meet local health and safety guidelines.
-              </p>
-            </div>
-            
-            <div className="bg-white p-6 rounded-xl border border-border">
-              <h3 className="text-lg font-semibold mb-2">How is food safety ensured?</h3>
-              <p className="text-muted-foreground">
-                Donors are required to follow food safety guidelines and provide accurate information about 
-                the food being donated, including preparation date and proper storage. Orphanages are encouraged 
-                to inspect all donations upon pickup.
-              </p>
-            </div>
-            
-            <div className="bg-white p-6 rounded-xl border border-border">
-              <h3 className="text-lg font-semibold mb-2">Can individuals donate food?</h3>
-              <p className="text-muted-foreground">
-                Yes! While we work with many restaurants and grocery stores, individuals can also donate 
-                surplus food. All donors must create an account and follow our guidelines for food safety.
-              </p>
+            <div className="flex justify-center">
+              <button className="flex items-center px-6 py-3 bg-sage-500 text-white rounded-md hover:bg-sage-600 transition-colors">
+                <PlayCircle className="w-5 h-5 mr-2" />
+                Watch Video Tutorial
+              </button>
             </div>
           </div>
           
-          <div className="text-center mt-10">
-            <Link to="/faq" className="inline-flex items-center px-6 py-3 border border-sage-200 text-sage-700 rounded-md hover:bg-sage-50 transition-colors">
-              View All FAQs
-              <ArrowRight className="ml-2 w-4 h-4" />
-            </Link>
-          </div>
-        </div>
-      </section>
-      
-      {/* CTA Section */}
-      <section className="py-16 md:py-24 px-4">
-        <div className="container mx-auto max-w-6xl">
-          <div className="bg-sage-500 rounded-2xl overflow-hidden">
-            <div className="grid grid-cols-1 md:grid-cols-2">
-              <div className="p-12 md:p-16 flex flex-col justify-center">
-                <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-                  Ready to Join Food Call?
-                </h2>
-                <p className="text-white/90 mb-8 text-lg">
-                  Whether you're looking to donate food or access donations for your orphanage,
-                  our platform makes it simple to get started. Join our community today!
-                </p>
-                <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-                  <Link to="/auth" className="bg-white text-sage-500 px-6 py-3 rounded-md hover:bg-white/90 transition-all duration-300 font-medium text-center">
-                    Create an Account
-                  </Link>
-                  <Link to="/contact" className="border border-white text-white px-6 py-3 rounded-md hover:bg-white/10 transition-all duration-300 font-medium text-center">
-                    Contact Support
-                  </Link>
+          {/* For Donors Section */}
+          <div className="mb-20">
+            <h2 className="text-3xl font-bold mb-10 text-center">For Food Donors</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {donorSteps.map((step, index) => (
+                <div key={index} className="bg-white rounded-xl border border-border shadow-sm p-6 transition-transform hover:-translate-y-1 animate__animated animate__fadeIn" style={{ animationDelay: `${index * 0.1}s` }}>
+                  <div className="w-12 h-12 flex items-center justify-center bg-sage-100 text-sage-600 rounded-full mb-4">
+                    <step.icon className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-2">{step.title}</h3>
+                  <p className="text-muted-foreground">{step.description}</p>
                 </div>
+              ))}
+            </div>
+          </div>
+          
+          {/* For Orphanages Section */}
+          <div className="mb-20">
+            <h2 className="text-3xl font-bold mb-10 text-center">For Orphanages</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {orphanageSteps.map((step, index) => (
+                <div key={index} className="bg-white rounded-xl border border-border shadow-sm p-6 transition-transform hover:-translate-y-1 animate__animated animate__fadeIn" style={{ animationDelay: `${index * 0.1}s` }}>
+                  <div className="w-12 h-12 flex items-center justify-center bg-sage-100 text-sage-600 rounded-full mb-4">
+                    <step.icon className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-2">{step.title}</h3>
+                  <p className="text-muted-foreground">{step.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          {/* FAQ Section */}
+          <div className="mb-20">
+            <h2 className="text-3xl font-bold mb-10 text-center">Frequently Asked Questions</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="bg-white rounded-xl border border-border shadow-sm p-6 transition-all hover:border-sage-500 animate__animated animate__fadeIn">
+                <h3 className="text-xl font-semibold mb-3">What types of food can be donated?</h3>
+                <p className="text-muted-foreground">
+                  Any edible surplus food that is still safe to consume can be donated. This includes fresh produce, baked goods, dairy products with valid expiry dates, canned foods, and prepared meals that have been properly stored.
+                </p>
               </div>
               
-              <div className="relative h-60 md:h-auto">
-                <img 
-                  src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=2070&auto=format&fit=crop" 
-                  alt="Happy children" 
-                  className="absolute inset-0 h-full w-full object-cover"
-                />
+              <div className="bg-white rounded-xl border border-border shadow-sm p-6 transition-all hover:border-sage-500 animate__animated animate__fadeIn" style={{ animationDelay: '0.1s' }}>
+                <h3 className="text-xl font-semibold mb-3">How is food safety ensured?</h3>
+                <p className="text-muted-foreground">
+                  Donors are required to follow proper food handling and storage guidelines. All donations must include accurate expiry information, and orphanages are encouraged to inspect food upon pickup to ensure quality and safety.
+                </p>
               </div>
+              
+              <div className="bg-white rounded-xl border border-border shadow-sm p-6 transition-all hover:border-sage-500 animate__animated animate__fadeIn" style={{ animationDelay: '0.2s' }}>
+                <h3 className="text-xl font-semibold mb-3">Is there a minimum donation amount?</h3>
+                <p className="text-muted-foreground">
+                  No, there's no minimum requirement. Whether you have a small amount of surplus food or a large quantity, all donations are welcome as they all contribute to reducing food waste and helping those in need.
+                </p>
+              </div>
+              
+              <div className="bg-white rounded-xl border border-border shadow-sm p-6 transition-all hover:border-sage-500 animate__animated animate__fadeIn" style={{ animationDelay: '0.3s' }}>
+                <h3 className="text-xl font-semibold mb-3">How can I verify an orphanage's authenticity?</h3>
+                <p className="text-muted-foreground">
+                  All orphanages on our platform undergo a verification process before being approved. Donors can view orphanage profiles, which include official registration information, contact details, and ratings from previous donations.
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          {/* Call to Action */}
+          <div className="bg-sage-50 rounded-2xl p-10 text-center animate__animated animate__fadeIn">
+            <h2 className="text-3xl font-bold mb-4">Ready to Make a Difference?</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto mb-8">
+              Join our community of food donors and orphanages working together to reduce food waste and feed children in need.
+            </p>
+            <div className="flex flex-col sm:flex-row justify-center gap-4">
+              <button className="px-6 py-3 bg-sage-500 text-white rounded-md hover:bg-sage-600 transition-colors">
+                Register as a Donor
+              </button>
+              <button className="px-6 py-3 border border-sage-500 text-sage-700 rounded-md hover:bg-sage-100 transition-colors">
+                Register as an Orphanage
+              </button>
             </div>
           </div>
         </div>

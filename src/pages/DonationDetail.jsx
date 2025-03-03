@@ -1,25 +1,33 @@
 
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
-import { toast } from 'sonner';
-import { Calendar, Clock, MapPin, Package, User, Phone, Mail, ArrowLeft, MessageCircle, Share, HeartHandshake } from 'lucide-react';
+import { useParams, Link } from 'react-router-dom';
+import { 
+  MapPin, 
+  Clock, 
+  CalendarIcon, 
+  Package, 
+  Building, 
+  ArrowLeft, 
+  Share2, 
+  ShieldCheck,
+  AlertTriangle
+} from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
 const DonationDetail = () => {
+  const { id } = useParams();
   const [donation, setDonation] = useState(null);
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isReserving, setIsReserving] = useState(false);
-  const { id } = useParams();
-  const navigate = useNavigate();
+  const [similarDonations, setSimilarDonations] = useState([]);
   
-  // Add scroll-to-top when the page loads
   useEffect(() => {
+    // Add scroll-to-top when the page loads
     window.scrollTo(0, 0);
     
     // Check if user is authenticated
-    const userJson = localStorage.getItem('foodShareUser');
+    const userJson = localStorage.getItem('foodCallUser');
     if (userJson) {
       try {
         const parsedUser = JSON.parse(userJson);
@@ -29,39 +37,84 @@ const DonationDetail = () => {
       }
     }
     
-    // Fetch donation data
-    setIsLoading(true);
-    
+    // Simulate fetching donation details
     setTimeout(() => {
-      // Mock donation data that would come from API
-      const mockDonation = {
-        id: id,
-        title: 'Fresh Bread from Local Bakery',
-        description: 'Assorted bread including sourdough, white, and whole grain loaves. Baked fresh this morning. Perfect for serving with meals or making sandwiches. All breads are wrapped individually and in excellent condition.',
-        quantity: '20 loaves',
-        expiryDate: new Date(new Date().setDate(new Date().getDate() + 2)),
-        pickupAddress: '123 Baker Street, City Center',
-        pickupTimeStart: new Date(new Date().setHours(14, 0)),
-        pickupTimeEnd: new Date(new Date().setHours(17, 0)),
-        donorId: 'donor-1',
-        donorName: 'City Bakery',
-        donorPhone: '+1 (555) 123-4567',
-        donorEmail: 'citybakery@example.com',
-        status: 'available',
-        createdAt: new Date(),
-        imageUrl: 'https://images.unsplash.com/photo-1608198093002-ad4e005484ec?q=80&w=2532&auto=format&fit=crop',
-        additionalNotes: 'Please bring your own boxes or bags for carrying the bread. The back entrance is preferable for pickup - there will be a sign.'
-      };
+      // Mock donation data that would come from API based on the ID
+      const mockDonations = [
+        {
+          id: '1',
+          title: 'Fresh Bread from Local Bakery',
+          description: 'Assorted bread including sourdough, white, and whole grain loaves. Baked fresh this morning. Perfect for breakfast or sandwiches. All items are properly packaged and maintained in clean conditions.',
+          quantity: '20 loaves',
+          expiryDate: new Date(new Date().setDate(new Date().getDate() + 2)),
+          pickupAddress: '123 Baker Street, City Center',
+          pickupInstructions: 'Enter through the side door and ask for John at the reception desk. Please bring your own bags or containers.',
+          pickupTimeStart: new Date(new Date().setHours(14, 0)),
+          pickupTimeEnd: new Date(new Date().setHours(17, 0)),
+          donorId: 'donor-1',
+          donorName: 'City Bakery',
+          donorPhone: '(555) 123-4567',
+          donorAddress: '123 Baker Street, City Center',
+          donorDescription: 'Local bakery specializing in artisanal breads and pastries. We\'ve been operating in the community for over 15 years.',
+          status: 'available',
+          createdAt: new Date(),
+          imageUrl: 'https://images.unsplash.com/photo-1608198093002-ad4e005484ec?q=80&w=2532&auto=format&fit=crop',
+        },
+        {
+          id: '2',
+          title: 'Rice and Pasta from Restaurant',
+          description: 'Excess rice and pasta prepared for a catering event. Still in sealed containers and refrigerated. Food was prepared today and has been kept at the appropriate temperature. Includes white rice, brown rice, and various pasta shapes.',
+          quantity: '10kg of rice, 5kg of pasta',
+          expiryDate: new Date(new Date().setDate(new Date().getDate() + 1)),
+          pickupAddress: '45 Main St, Downtown',
+          pickupInstructions: 'Please come to the back entrance marked "Deliveries". Ring the bell and someone will assist you.',
+          pickupTimeStart: new Date(new Date().setHours(19, 0)),
+          pickupTimeEnd: new Date(new Date().setHours(21, 0)),
+          donorId: 'donor-2',
+          donorName: 'Bella Restaurant',
+          donorPhone: '(555) 987-6543',
+          donorAddress: '45 Main St, Downtown',
+          donorDescription: 'Italian restaurant serving authentic dishes since 2010. We focus on using fresh ingredients and traditional recipes.',
+          status: 'available',
+          createdAt: new Date(),
+          imageUrl: 'https://images.unsplash.com/photo-1528207776546-365bb710ee93?q=80&w=2670&auto=format&fit=crop',
+        },
+        {
+          id: '3',
+          title: 'Fresh Fruits and Vegetables',
+          description: 'Surplus produce from our grocery store including apples, oranges, carrots, and lettuce. All fresh and in excellent condition. These items are overstock and would otherwise be discarded. Everything has been inspected for quality.',
+          quantity: 'Approximately 15kg assorted produce',
+          expiryDate: new Date(new Date().setDate(new Date().getDate() + 3)),
+          pickupAddress: '789 Market Street, Uptown',
+          pickupInstructions: 'Come to the customer service desk and ask for the manager on duty. Please bring your own boxes or bags.',
+          pickupTimeStart: new Date(new Date().setHours(10, 0)),
+          pickupTimeEnd: new Date(new Date().setHours(12, 0)),
+          donorId: 'donor-3',
+          donorName: 'Fresh Market Grocery',
+          donorPhone: '(555) 456-7890',
+          donorAddress: '789 Market Street, Uptown',
+          donorDescription: 'Local grocery store specializing in fresh produce and organic foods. We work directly with local farmers to provide the best quality.',
+          status: 'available',
+          createdAt: new Date(),
+          imageUrl: 'https://images.unsplash.com/photo-1610348725531-843dff563e2c?q=80&w=2070&auto=format&fit=crop',
+        },
+      ];
       
-      setDonation(mockDonation);
+      const foundDonation = mockDonations.find(d => d.id === id);
+      setDonation(foundDonation || mockDonations[0]); // Default to first donation if ID not found
+      
+      // Get similar donations (other donations not matching the current one)
+      const otherDonations = mockDonations.filter(d => d.id !== (foundDonation?.id || mockDonations[0].id));
+      setSimilarDonations(otherDonations.slice(0, 2)); // Get up to 2 similar donations
+      
       setIsLoading(false);
     }, 1000);
-  }, [id, navigate]);
+  }, [id]);
   
   const formatDate = (date) => {
     return new Date(date).toLocaleDateString('en-US', {
       year: 'numeric',
-      month: 'long',
+      month: 'short',
       day: 'numeric',
     });
   };
@@ -73,64 +126,18 @@ const DonationDetail = () => {
     });
   };
   
-  const handleReservation = () => {
-    if (!user) {
-      toast.error('Please sign in to reserve this donation');
-      navigate('/auth');
-      return;
-    }
-    
-    if (user.role !== 'orphanage') {
-      toast.error('Only orphanages can reserve donations');
-      return;
-    }
-    
-    setIsReserving(true);
-    
-    // Simulate API call to reserve donation
-    setTimeout(() => {
-      toast.success('Donation reserved successfully!');
-      
-      // Update local donation data
-      setDonation(prev => ({
-        ...prev,
-        status: 'reserved',
-        reservedBy: user.id,
-        reservedByName: user.organization || user.name
-      }));
-      
-      setIsReserving(false);
-    }, 1500);
-  };
-  
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: `Food Call - ${donation.title}`,
-        text: `Check out this food donation: ${donation.title}`,
-        url: window.location.href,
-      })
-      .then(() => console.log('Successful share'))
-      .catch((error) => console.log('Error sharing', error));
-    } else {
-      // Fallback for browsers that don't support navigator.share
-      navigator.clipboard.writeText(window.location.href);
-      toast.success('Link copied to clipboard!');
-    }
-  };
+  const isExpired = donation && new Date(donation.expiryDate) < new Date();
+  const isOrphanage = user?.role === 'orphanage';
   
   if (isLoading) {
     return (
       <div className="min-h-screen">
         <Navbar />
-        <div className="pt-28 pb-16 px-4">
-          <div className="container mx-auto max-w-4xl">
-            <div className="flex flex-col items-center justify-center py-16">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sage-500 mb-4"></div>
-              <p className="text-muted-foreground">Loading donation details...</p>
-            </div>
+        <section className="pt-28 pb-16 px-4">
+          <div className="container mx-auto max-w-6xl flex justify-center items-center py-16">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sage-500"></div>
           </div>
-        </div>
+        </section>
         <Footer />
       </div>
     );
@@ -140,10 +147,11 @@ const DonationDetail = () => {
     return (
       <div className="min-h-screen">
         <Navbar />
-        <div className="pt-28 pb-16 px-4">
-          <div className="container mx-auto max-w-4xl">
-            <div className="bg-white rounded-xl border border-border shadow-sm p-12 animate-fade-up text-center">
-              <h1 className="text-3xl font-bold text-red-500 mb-4">Donation Not Found</h1>
+        <section className="pt-28 pb-16 px-4">
+          <div className="container mx-auto max-w-6xl">
+            <div className="bg-white rounded-xl border border-border shadow-sm p-12 text-center">
+              <AlertTriangle className="w-16 h-16 mx-auto text-yellow-400 mb-4" />
+              <h1 className="text-3xl font-bold mb-4">Donation Not Found</h1>
               <p className="text-muted-foreground mb-8">
                 The donation you're looking for doesn't exist or has been removed.
               </p>
@@ -153,265 +161,276 @@ const DonationDetail = () => {
               </Link>
             </div>
           </div>
-        </div>
+        </section>
         <Footer />
       </div>
     );
   }
   
-  const isExpired = new Date(donation.expiryDate) < new Date();
-  const canReserve = donation.status === 'available' && !isExpired && user?.role === 'orphanage';
-  
   return (
     <div className="min-h-screen">
       <Navbar />
       
-      <section className="pt-28 pb-16 px-4">
-        <div className="container mx-auto max-w-4xl">
-          <div className="mb-6">
-            <Link to="/donations" className="inline-flex items-center text-sage-600 hover:text-sage-700">
+      <section className="pt-28 pb-16 px-4 animate__animated animate__fadeIn">
+        <div className="container mx-auto max-w-6xl">
+          <div className="mb-8">
+            <Link to="/donations" className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Donations
             </Link>
           </div>
           
-          <div className="bg-white rounded-xl border border-border shadow-sm overflow-hidden animate-fade-up">
-            {donation.imageUrl && (
-              <div className="w-full h-80 relative">
-                <img 
-                  src={donation.imageUrl} 
-                  alt={donation.title} 
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute top-4 right-4">
-                  <span className={`px-4 py-2 rounded-full text-sm font-medium ${
-                    donation.status === 'available' 
-                      ? 'bg-green-100 text-green-700' 
-                      : donation.status === 'reserved' 
-                      ? 'bg-blue-100 text-blue-700' 
-                      : 'bg-red-100 text-red-700'
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Main Content Column */}
+            <div className="lg:col-span-2">
+              {/* Donation Images */}
+              <div className="bg-white rounded-xl border border-border shadow-sm overflow-hidden mb-8">
+                {donation.imageUrl ? (
+                  <div className="h-80 w-full">
+                    <img 
+                      src={donation.imageUrl} 
+                      alt={donation.title} 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div className="h-80 w-full bg-secondary flex items-center justify-center">
+                    <Package className="w-20 h-20 text-muted-foreground" />
+                  </div>
+                )}
+              </div>
+              
+              {/* Donation Details */}
+              <div className="bg-white rounded-xl border border-border shadow-sm p-8 mb-8">
+                <div className="flex flex-wrap items-center justify-between mb-4">
+                  <h1 className="text-3xl font-bold">{donation.title}</h1>
+                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                    isExpired ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'
                   }`}>
-                    {donation.status.charAt(0).toUpperCase() + donation.status.slice(1)}
+                    {isExpired ? 'Expired' : 'Available'}
                   </span>
                 </div>
-              </div>
-            )}
-            
-            <div className="p-6 md:p-8">
-              <div className="flex flex-col md:flex-row md:items-center justify-between mb-6">
-                <h1 className="text-2xl md:text-3xl font-bold mb-2 md:mb-0">{donation.title}</h1>
-                <div className="flex space-x-2">
-                  <button
-                    onClick={handleShare}
-                    className="p-2 text-sage-500 border border-sage-200 rounded-md hover:bg-sage-50"
-                    aria-label="Share this donation"
-                  >
-                    <Share className="w-5 h-5" />
-                  </button>
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-                <div className="md:col-span-2">
-                  <div className="prose max-w-none mb-6">
-                    <h3 className="text-lg font-semibold mb-2">Description</h3>
-                    <p className="text-muted-foreground">{donation.description}</p>
-                  </div>
-                  
-                  {donation.additionalNotes && (
-                    <div className="mt-6">
-                      <h3 className="text-lg font-semibold mb-2">Additional Notes</h3>
-                      <p className="text-muted-foreground">{donation.additionalNotes}</p>
-                    </div>
-                  )}
+                
+                <div className="mb-6">
+                  <h2 className="text-lg font-semibold mb-2">Description</h2>
+                  <p className="text-muted-foreground whitespace-pre-line">
+                    {donation.description}
+                  </p>
                 </div>
                 
-                <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                   <div>
-                    <h3 className="text-lg font-semibold mb-3">Donation Details</h3>
-                    <ul className="space-y-3">
-                      <li className="flex items-center text-sm">
+                    <h2 className="text-lg font-semibold mb-3">Donation Details</h2>
+                    <div className="space-y-3">
+                      <div className="flex items-center">
                         <Package className="w-5 h-5 mr-3 text-sage-500" />
                         <div>
-                          <span className="block text-muted-foreground">Quantity</span>
-                          <span className="font-medium">{donation.quantity}</span>
+                          <p className="text-sm text-muted-foreground">Quantity</p>
+                          <p className="font-medium">{donation.quantity}</p>
                         </div>
-                      </li>
-                      <li className="flex items-center text-sm">
-                        <Calendar className="w-5 h-5 mr-3 text-sage-500" />
+                      </div>
+                      
+                      <div className="flex items-center">
+                        <CalendarIcon className="w-5 h-5 mr-3 text-sage-500" />
                         <div>
-                          <span className="block text-muted-foreground">Expiry Date</span>
-                          <span className={`font-medium ${isExpired ? 'text-red-500' : ''}`}>
-                            {formatDate(donation.expiryDate)}
-                            {isExpired && ' (Expired)'}
-                          </span>
+                          <p className="text-sm text-muted-foreground">Expiry Date</p>
+                          <p className="font-medium">{formatDate(donation.expiryDate)}</p>
                         </div>
-                      </li>
-                      <li className="flex items-center text-sm">
-                        <Clock className="w-5 h-5 mr-3 text-sage-500" />
+                      </div>
+                      
+                      <div className="flex items-center">
+                        <Building className="w-5 h-5 mr-3 text-sage-500" />
                         <div>
-                          <span className="block text-muted-foreground">Pickup Time</span>
-                          <span className="font-medium">
-                            {formatTime(donation.pickupTimeStart)} - {formatTime(donation.pickupTimeEnd)}
-                          </span>
+                          <p className="text-sm text-muted-foreground">Donated By</p>
+                          <p className="font-medium">{donation.donorName}</p>
                         </div>
-                      </li>
-                      <li className="flex items-start text-sm">
-                        <MapPin className="w-5 h-5 mr-3 mt-0.5 text-sage-500" />
-                        <div>
-                          <span className="block text-muted-foreground">Pickup Address</span>
-                          <span className="font-medium">{donation.pickupAddress}</span>
-                        </div>
-                      </li>
-                    </ul>
-                  </div>
-                  
-                  <div>
-                    <h3 className="text-lg font-semibold mb-3">Donor Information</h3>
-                    <ul className="space-y-3">
-                      <li className="flex items-center text-sm">
-                        <User className="w-5 h-5 mr-3 text-sage-500" />
-                        <span>{donation.donorName}</span>
-                      </li>
-                      {donation.status === 'reserved' && user?.id === donation.reservedBy && (
-                        <>
-                          <li className="flex items-center text-sm">
-                            <Phone className="w-5 h-5 mr-3 text-sage-500" />
-                            <a href={`tel:${donation.donorPhone}`} className="text-sage-600 hover:underline">
-                              {donation.donorPhone}
-                            </a>
-                          </li>
-                          <li className="flex items-center text-sm">
-                            <Mail className="w-5 h-5 mr-3 text-sage-500" />
-                            <a href={`mailto:${donation.donorEmail}`} className="text-sage-600 hover:underline">
-                              {donation.donorEmail}
-                            </a>
-                          </li>
-                        </>
-                      )}
-                    </ul>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Reservation Section */}
-              {donation.status === 'available' && !isExpired ? (
-                <div className="border-t border-border pt-6 mt-6">
-                  <div className="bg-sage-50 p-6 rounded-lg mb-6">
-                    <div className="flex items-start">
-                      <HeartHandshake className="w-6 h-6 text-sage-500 mr-4 flex-shrink-0 mt-1" />
-                      <div>
-                        <h3 className="font-semibold mb-2">This donation is available</h3>
-                        <p className="text-muted-foreground text-sm">
-                          As an orphanage, you can reserve this donation for pickup. 
-                          Once reserved, you'll receive contact information to coordinate with the donor.
-                        </p>
                       </div>
                     </div>
                   </div>
                   
-                  <div className="flex flex-col sm:flex-row gap-4">
-                    {user ? (
-                      <>
-                        <button
-                          onClick={handleReservation}
-                          disabled={!canReserve || isReserving}
-                          className={`flex-1 py-3 px-6 rounded-md text-white font-medium flex items-center justify-center ${
-                            canReserve 
-                              ? 'bg-sage-500 hover:bg-sage-600' 
-                              : 'bg-gray-300 cursor-not-allowed'
-                          }`}
-                        >
-                          {isReserving ? (
-                            <>
-                              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
-                              Processing...
-                            </>
-                          ) : (
-                            'Reserve This Donation'
-                          )}
-                        </button>
-                        {user.role !== 'orphanage' && (
-                          <div className="text-sm text-red-500 mt-2 sm:mt-0 sm:self-center">
-                            Only orphanages can reserve donations
-                          </div>
-                        )}
-                        <button
-                          className="py-3 px-6 border border-sage-200 rounded-md text-sage-700 hover:bg-sage-50 font-medium flex items-center justify-center"
-                        >
-                          <MessageCircle className="w-5 h-5 mr-2" />
-                          Contact Donor
-                        </button>
-                      </>
+                  <div>
+                    <h2 className="text-lg font-semibold mb-3">Pickup Information</h2>
+                    <div className="space-y-3">
+                      <div className="flex items-center">
+                        <MapPin className="w-5 h-5 mr-3 text-sage-500" />
+                        <div>
+                          <p className="text-sm text-muted-foreground">Address</p>
+                          <p className="font-medium">{donation.pickupAddress}</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center">
+                        <Clock className="w-5 h-5 mr-3 text-sage-500" />
+                        <div>
+                          <p className="text-sm text-muted-foreground">Pickup Time</p>
+                          <p className="font-medium">
+                            {formatTime(donation.pickupTimeStart)} - {formatTime(donation.pickupTimeEnd)}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                {donation.pickupInstructions && (
+                  <div className="mb-6">
+                    <h2 className="text-lg font-semibold mb-2">Pickup Instructions</h2>
+                    <p className="text-muted-foreground bg-secondary p-4 rounded-md">
+                      {donation.pickupInstructions}
+                    </p>
+                  </div>
+                )}
+                
+                <div className="flex justify-end space-x-3">
+                  <button className="px-4 py-2 border border-border rounded-md hover:bg-secondary transition-colors">
+                    <Share2 className="w-5 h-5" />
+                  </button>
+                  {isOrphanage && !isExpired && (
+                    <button className="px-6 py-2 bg-sage-500 text-white rounded-md hover:bg-sage-600 transition-colors">
+                      Reserve Donation
+                    </button>
+                  )}
+                </div>
+              </div>
+              
+              {/* Donor Information */}
+              <div className="bg-white rounded-xl border border-border shadow-sm p-8">
+                <h2 className="text-xl font-semibold mb-4">About the Donor</h2>
+                <div className="flex items-center mb-4">
+                  <div className="w-14 h-14 rounded-full bg-sage-100 flex items-center justify-center mr-4">
+                    <Building className="w-6 h-6 text-sage-500" />
+                  </div>
+                  <div>
+                    <h3 className="font-medium">{donation.donorName}</h3>
+                    <p className="text-sm text-muted-foreground">{donation.donorAddress}</p>
+                  </div>
+                </div>
+                
+                {donation.donorDescription && (
+                  <p className="text-muted-foreground mb-4">
+                    {donation.donorDescription}
+                  </p>
+                )}
+                
+                <div className="p-4 bg-sage-50 rounded-md flex items-center mb-4">
+                  <ShieldCheck className="w-6 h-6 text-sage-500 mr-3" />
+                  <p className="text-sm">
+                    This donor has been verified and is a trusted member of our platform.
+                  </p>
+                </div>
+                
+                {isOrphanage && (
+                  <div>
+                    <h3 className="font-medium mb-2">Contact Information</h3>
+                    <p className="text-sm mb-4">
+                      <span className="text-muted-foreground">Phone: </span>
+                      {donation.donorPhone}
+                    </p>
+                    <button className="w-full py-2 px-4 border border-sage-500 text-sage-700 rounded-md hover:bg-sage-50 transition-colors text-center text-sm font-medium">
+                      Message Donor
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+            
+            {/* Sidebar Column */}
+            <div>
+              {/* Action Card */}
+              <div className="bg-white rounded-xl border border-border shadow-sm p-6 mb-8 sticky top-28">
+                <h2 className="text-xl font-semibold mb-4">Donation Status</h2>
+                
+                {isExpired ? (
+                  <div className="p-4 bg-red-50 text-red-700 rounded-md mb-4">
+                    <div className="flex items-center mb-2">
+                      <AlertTriangle className="w-5 h-5 mr-2" />
+                      <h3 className="font-medium">This donation has expired</h3>
+                    </div>
+                    <p className="text-sm">
+                      This donation is no longer available for reservation as it has passed its expiry date.
+                    </p>
+                  </div>
+                ) : (
+                  <>
+                    <div className="p-4 bg-green-50 text-green-700 rounded-md mb-4">
+                      <p className="font-medium">Available for Reservation</p>
+                    </div>
+                    
+                    {isOrphanage ? (
+                      <button className="w-full py-3 px-4 bg-sage-500 text-white rounded-md hover:bg-sage-600 transition-colors text-center font-medium mb-4">
+                        Reserve Donation
+                      </button>
                     ) : (
-                      <Link 
-                        to="/auth" 
-                        className="flex-1 py-3 px-6 bg-sage-500 rounded-md text-white hover:bg-sage-600 font-medium text-center"
-                      >
+                      <Link to="/auth" className="block w-full py-3 px-4 bg-sage-500 text-white rounded-md hover:bg-sage-600 transition-colors text-center font-medium mb-4">
                         Sign In to Reserve
                       </Link>
                     )}
-                  </div>
+                  </>
+                )}
+                
+                <div className="text-sm text-muted-foreground">
+                  <p className="mb-2">
+                    <span className="font-medium">Listed on:</span> {formatDate(donation.createdAt)}
+                  </p>
+                  <p>
+                    <span className="font-medium">Reference ID:</span> {donation.id}
+                  </p>
                 </div>
-              ) : donation.status === 'reserved' ? (
-                <div className="border-t border-border pt-6 mt-6">
-                  <div className="bg-blue-50 p-6 rounded-lg">
-                    <div className="flex items-start">
-                      <HeartHandshake className="w-6 h-6 text-blue-500 mr-4 flex-shrink-0 mt-1" />
-                      <div>
-                        <h3 className="font-semibold mb-2">
-                          {user?.id === donation.reservedBy 
-                            ? 'You have reserved this donation' 
-                            : `Reserved by ${donation.reservedByName}`}
-                        </h3>
-                        <p className="text-muted-foreground text-sm">
-                          {user?.id === donation.reservedBy 
-                            ? 'Please contact the donor to arrange pickup using the contact information provided.' 
-                            : 'This donation has already been reserved by another orphanage.'}
-                        </p>
-                        
-                        {user?.id === donation.reservedBy && (
-                          <div className="mt-4 flex flex-col sm:flex-row gap-3">
-                            <button className="py-2 px-4 bg-sage-500 text-white rounded-md hover:bg-sage-600 text-sm font-medium">
-                              Confirm Pickup
-                            </button>
-                            <button className="py-2 px-4 border border-red-300 text-red-600 rounded-md hover:bg-red-50 text-sm font-medium">
-                              Cancel Reservation
-                            </button>
+              </div>
+              
+              {/* Similar Donations */}
+              {similarDonations.length > 0 && (
+                <div className="bg-white rounded-xl border border-border shadow-sm p-6">
+                  <h2 className="text-xl font-semibold mb-4">Similar Donations</h2>
+                  
+                  <div className="space-y-4">
+                    {similarDonations.map(similar => (
+                      <Link 
+                        key={similar.id} 
+                        to={`/donations/${similar.id}`}
+                        className="block group"
+                      >
+                        <div className="flex space-x-3 p-3 rounded-md hover:bg-secondary transition-colors">
+                          {similar.imageUrl ? (
+                            <div className="w-20 h-16 rounded overflow-hidden flex-shrink-0">
+                              <img 
+                                src={similar.imageUrl} 
+                                alt={similar.title} 
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                          ) : (
+                            <div className="w-20 h-16 rounded bg-secondary flex items-center justify-center flex-shrink-0">
+                              <Package className="w-8 h-8 text-muted-foreground" />
+                            </div>
+                          )}
+                          
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-medium text-sm mb-1 truncate group-hover:text-sage-600 transition-colors">
+                              {similar.title}
+                            </h3>
+                            <p className="text-xs text-muted-foreground truncate">
+                              {similar.donorName}
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              Expires: {formatDate(similar.expiryDate)}
+                            </p>
                           </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="border-t border-border pt-6 mt-6">
-                  <div className="bg-red-50 p-6 rounded-lg">
-                    <div className="flex items-start">
-                      <Calendar className="w-6 h-6 text-red-500 mr-4 flex-shrink-0 mt-1" />
-                      <div>
-                        <h3 className="font-semibold mb-2">This donation has expired</h3>
-                        <p className="text-muted-foreground text-sm">
-                          The expiration date for this food has passed. Check other available donations.
-                        </p>
-                        
-                        <div className="mt-4">
-                          <Link 
-                            to="/donations" 
-                            className="py-2 px-4 bg-sage-500 text-white rounded-md hover:bg-sage-600 inline-block text-sm font-medium"
-                          >
-                            Browse Other Donations
-                          </Link>
                         </div>
-                      </div>
-                    </div>
+                      </Link>
+                    ))}
+                    
+                    <Link 
+                      to="/donations" 
+                      className="block text-center text-sm text-sage-600 hover:text-sage-700 font-medium mt-2"
+                    >
+                      View All Donations
+                    </Link>
                   </div>
                 </div>
               )}
             </div>
           </div>
-          
-          {/* Similar Donations - Can be implemented later */}
         </div>
       </section>
       
