@@ -105,14 +105,3 @@
     @apply bg-background text-foreground;
   }
 }
-
-/* Custom utilities */
-@layer components {
-  .btn-primary {
-    @apply px-6 py-3 bg-sage-500 text-white rounded-md hover:bg-sage-600 transition-colors text-center inline-block;
-  }
-
-  .btn-outline {
-    @apply px-6 py-3 border border-sage-200 text-foreground rounded-md hover:bg-sage-50 transition-colors text-center inline-block;
-  }
-}

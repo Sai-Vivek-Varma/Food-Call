@@ -28,7 +28,7 @@ const DonationCard = ({ donation, isOrphanage = false }) => {
 
   return (
     <div 
-      className={`bg-white rounded-xl border border-border shadow-sm transition-all hover:shadow-md ${
+      className={`bg-white rounded-xl border border-border shadow-sm transition-all hover:shadow-md animate__animated animate__fadeIn ${
         isExpired && donation.status !== 'completed' ? 'opacity-70' : ''
       }`}
     >
