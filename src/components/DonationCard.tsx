@@ -26,92 +26,95 @@ const formatTime = (date: Date) => {
 const DonationCard = ({ donation, isOrphanage = false }: DonationCardProps) => {
   const isExpired = new Date(donation.expiryDate) < new Date();
   const statusClasses = {
-    available: 'bg-success text-white',
-    reserved: 'bg-primary text-white',
-    completed: 'bg-sage-500 text-white',
-    expired: 'bg-danger text-white',
+    available: 'bg-green-100 text-green-700',
+    reserved: 'bg-blue-100 text-blue-700',
+    completed: 'bg-sage-100 text-sage-700',
+    expired: 'bg-red-100 text-red-700',
   };
 
   return (
-    <div className={`card border-0 shadow-sm h-100 ${isExpired && donation.status !== 'completed' ? 'opacity-75' : ''}`}>
+    <div 
+      className={`bg-white rounded-xl border border-border shadow-sm transition-all hover:shadow-md ${
+        isExpired && donation.status !== 'completed' ? 'opacity-70' : ''
+      }`}
+    >
       {donation.imageUrl && (
-        <div className="position-relative">
+        <div className="relative h-48 rounded-t-xl overflow-hidden">
           <img 
             src={donation.imageUrl} 
             alt={donation.title} 
-            className="card-img-top"
-            style={{height: "200px", objectFit: "cover"}}
+            className="w-full h-full object-cover"
           />
-          <div className="position-absolute top-0 end-0 m-3">
-            <span className={`badge ${statusClasses[donation.status]}`}>
+          <div className="absolute top-3 right-3">
+            <span className={`px-3 py-1 rounded-full text-xs font-medium ${statusClasses[donation.status]}`}>
               {donation.status.charAt(0).toUpperCase() + donation.status.slice(1)}
             </span>
           </div>
         </div>
       )}
 
-      <div className="card-body d-flex flex-column">
+      <div className="p-5">
         {!donation.imageUrl && (
-          <div className="mb-3 d-flex justify-content-between align-items-center">
-            <span className={`badge ${statusClasses[donation.status]}`}>
+          <div className="mb-4 flex justify-between items-center">
+            <span className={`px-3 py-1 rounded-full text-xs font-medium ${statusClasses[donation.status]}`}>
               {donation.status.charAt(0).toUpperCase() + donation.status.slice(1)}
             </span>
           </div>
         )}
         
-        <h5 className="card-title fw-bold text-truncate">{donation.title}</h5>
+        <h3 className="text-lg font-semibold mb-2 truncate">{donation.title}</h3>
         
-        <p className="card-text text-muted small mb-3" style={{display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden"}}>
+        <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
           {donation.description}
         </p>
         
-        <div className="mb-3">
-          <div className="d-flex align-items-center mb-2 small">
-            <Package size={16} className="text-sage-500 me-2" />
+        <div className="space-y-2">
+          <div className="flex items-center text-sm">
+            <Package className="w-4 h-4 mr-2 text-sage-500" />
             <span>{donation.quantity}</span>
           </div>
           
-          <div className="d-flex align-items-center mb-2 small">
-            <CalendarIcon size={16} className="text-sage-500 me-2" />
+          <div className="flex items-center text-sm">
+            <CalendarIcon className="w-4 h-4 mr-2 text-sage-500" />
             <span>Expires: {formatDate(donation.expiryDate)}</span>
           </div>
           
-          <div className="d-flex align-items-center mb-2 small">
-            <MapPin size={16} className="text-sage-500 me-2" />
-            <span className="text-truncate">{donation.pickupAddress}</span>
+          <div className="flex items-center text-sm">
+            <MapPin className="w-4 h-4 mr-2 text-sage-500" />
+            <span className="truncate">{donation.pickupAddress}</span>
           </div>
           
-          <div className="d-flex align-items-center small">
-            <Clock size={16} className="text-sage-500 me-2" />
+          <div className="flex items-center text-sm">
+            <Clock className="w-4 h-4 mr-2 text-sage-500" />
             <span>
               Pickup: {formatTime(donation.pickupTimeStart)} - {formatTime(donation.pickupTimeEnd)}
             </span>
           </div>
         </div>
         
-        <div className="pt-3 border-top mt-auto">
+        <div className="mt-4 pt-4 border-t border-border">
           {isOrphanage && donation.status === 'available' ? (
-            <button className="btn btn-sage w-100">
+            <button className="w-full py-2 px-4 bg-sage-500 text-white rounded-md hover:bg-sage-600 transition-colors text-center text-sm font-medium">
               Reserve Donation
             </button>
           ) : donation.status === 'reserved' ? (
             <div>
-              <p className="small text-muted mb-2">
+              <p className="text-sm text-muted-foreground mb-2">
                 {isOrphanage 
                   ? 'You have reserved this donation.' 
                   : `Reserved by: ${donation.reservedByName}`}
               </p>
-              <div className="d-flex gap-2">
-                <button className="btn btn-sage flex-grow-1 py-1">
+              <div className="flex space-x-2">
+                <button className="flex-1 py-2 px-3 bg-sage-500 text-white rounded-md hover:bg-sage-600 transition-colors text-center text-sm font-medium">
                   {isOrphanage ? 'Confirm Pickup' : 'Mark as Completed'}
                 </button>
-                <button className="btn btn-outline-danger py-1">
+                <button className="py-2 px-3 border border-red-200 text-red-500 rounded-md hover:bg-red-50 transition-colors text-center text-sm font-medium">
                   Cancel
                 </button>
               </div>
             </div>
           ) : (
-            <Link to={`/donations/${donation.id}`} className="btn btn-outline-secondary w-100">
+            <Link to={`/donations/${donation.id}`} className="block w-full py-2 px-4 bg-secondary text-foreground rounded-md hover:bg-secondary/80 transition-colors text-center text-sm font-medium">
               View Details
             </Link>
           )}
