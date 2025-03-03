@@ -50,7 +50,7 @@ const Auth = () => {
             <div className="md:pl-8">
               <div className="max-w-md mx-auto md:mx-0">
                 <h1 className="text-3xl font-bold mb-2">
-                  {authType === 'login' ? 'Welcome Back' : 'Join FoodShare'}
+                  {authType === 'login' ? 'Welcome Back' : 'Join FoodCall'}
                 </h1>
                 
                 <p className="text-muted-foreground mb-8">
