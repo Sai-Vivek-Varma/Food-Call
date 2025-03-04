@@ -88,9 +88,6 @@
   body {
     @apply bg-background text-foreground;
   }
-  h1 {
-    @apply text-4xl md:text-5xl lg:text-6xl font-bold;
-  }
 }
 
 @layer components {
