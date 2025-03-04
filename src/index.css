@@ -1,8 +1,135 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 150 74.8% 15.3%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 150 74.8% 15.3%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 150 54.8% 45.3%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 150 54.8% 45.3%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  h1 {
+    @apply text-3xl md:text-4xl font-bold;
+  }
+
+  h2 {
+    @apply text-2xl md:text-3xl font-bold;
+  }
+
+  h3 {
+    @apply text-xl md:text-2xl font-bold;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply px-6 py-3 bg-sage-500 text-white rounded-md hover:bg-sage-600 transition-colors font-medium text-center;
+  }
+
+  .btn-outline {
+    @apply px-6 py-3 border border-sage-200 text-sage-700 rounded-md hover:bg-sage-50 transition-colors font-medium text-center;
+  }
+
+  .card-hover {
+    @apply transition-all duration-300 hover:shadow-md hover:border-sage-200;
+  }
+}
+
+/* Animation classes */
+.animate-fade-up {
+  animation: fadeUp 0.5s ease forwards;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.5s ease forwards;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Custom Sage color palette */
 :root {
   --sage-50: #eef8ef;
   --sage-100: #d8f0db;
@@ -17,121 +144,104 @@
   --sage-950: #0a130a;
 }
 
-@layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 142 71% 35%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-
-    --radius: 0.5rem;
-  }
-
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-  }
-  
-  h1 {
-    font-size: 1.875rem;
-  }
-  
-  h2 {
-    font-size: 1.75rem;
-  }
+.bg-sage-50 {
+  background-color: var(--sage-50);
+}
+.bg-sage-100 {
+  background-color: var(--sage-100);
+}
+.bg-sage-200 {
+  background-color: var(--sage-200);
+}
+.bg-sage-300 {
+  background-color: var(--sage-300);
+}
+.bg-sage-400 {
+  background-color: var(--sage-400);
+}
+.bg-sage-500 {
+  background-color: var(--sage-500);
+}
+.bg-sage-600 {
+  background-color: var(--sage-600);
+}
+.bg-sage-700 {
+  background-color: var(--sage-700);
+}
+.bg-sage-800 {
+  background-color: var(--sage-800);
+}
+.bg-sage-900 {
+  background-color: var(--sage-900);
+}
+.bg-sage-950 {
+  background-color: var(--sage-950);
 }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
+.text-sage-50 {
+  color: var(--sage-50);
+}
+.text-sage-100 {
+  color: var(--sage-100);
+}
+.text-sage-200 {
+  color: var(--sage-200);
+}
+.text-sage-300 {
+  color: var(--sage-300);
+}
+.text-sage-400 {
+  color: var(--sage-400);
+}
+.text-sage-500 {
+  color: var(--sage-500);
+}
+.text-sage-600 {
+  color: var(--sage-600);
+}
+.text-sage-700 {
+  color: var(--sage-700);
+}
+.text-sage-800 {
+  color: var(--sage-800);
+}
+.text-sage-900 {
+  color: var(--sage-900);
+}
+.text-sage-950 {
+  color: var(--sage-950);
 }
 
-@layer components {
-  .btn-primary {
-    @apply inline-block px-6 py-3 bg-sage-500 text-white font-medium rounded-md hover:bg-sage-600 transition-colors;
-  }
-  
-  .btn-outline {
-    @apply inline-block px-6 py-3 border border-sage-500 text-sage-600 font-medium rounded-md hover:bg-sage-50 transition-colors;
-  }
-  
-  .btn-secondary {
-    @apply inline-block px-6 py-3 bg-gray-100 text-gray-700 font-medium rounded-md hover:bg-gray-200 transition-colors;
-  }
-  
-  .animate-fade-up {
-    animation: fadeUp 0.8s ease forwards;
-  }
-  
-  .animate-fade-in {
-    animation: fadeIn 1s ease forwards;
-  }
-  
-  @keyframes fadeUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
+.border-sage-50 {
+  border-color: var(--sage-50);
+}
+.border-sage-100 {
+  border-color: var(--sage-100);
+}
+.border-sage-200 {
+  border-color: var(--sage-200);
+}
+.border-sage-300 {
+  border-color: var(--sage-300);
+}
+.border-sage-400 {
+  border-color: var(--sage-400);
+}
+.border-sage-500 {
+  border-color: var(--sage-500);
+}
+.border-sage-600 {
+  border-color: var(--sage-600);
+}
+.border-sage-700 {
+  border-color: var(--sage-700);
+}
+.border-sage-800 {
+  border-color: var(--sage-800);
+}
+.border-sage-900 {
+  border-color: var(--sage-900);
+}
+.border-sage-950 {
+  border-color: var(--sage-950);
 }
