@@ -28,7 +28,7 @@ const Dashboard = () => {
       const fetchDonations = async () => {
         try {
           const response = await axios.get<Donation[]>(
-            "http://localhost:5000/api/donations",
+            "https://food-call.onrender.com/api/donations",
             {
               headers: {
                 Authorization: `Bearer ${localStorage.getItem(
@@ -200,7 +200,7 @@ const Dashboard = () => {
             <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
               {filteredDonations.map((donation) => (
                 <DonationCard
-                  key={donation.id}
+                  key={donation.id || donation._id}
                   donation={donation}
                   isOrphanage={user?.role === "orphanage"}
                 />
