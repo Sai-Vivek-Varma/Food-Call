@@ -1,15 +1,11 @@
-
 const express = require('express');
 const router = express.Router();
 const Donation = require('../models/donationModel');
 const { protect } = require('../middleware/authMiddleware');
 
-// @route   POST /api/donations
-// @desc    Create a new donation
-// @access  Private (donors only)
+// Create a new donation (donors only)
 router.post('/', protect, async (req, res) => {
   try {
-    // Check if user is a donor
     if (req.user.role !== 'donor') {
       return res.status(403).json({ message: 'Only donors can create donations' });
     }
@@ -38,32 +34,28 @@ router.post('/', protect, async (req, res) => {
       imageUrl
     });
 
+    console.log("New donation inserted:", donation);
     res.status(201).json(donation);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
 
-// @route   GET /api/donations
-// @desc    Get all donations (with filters)
-// @access  Public
+// Get all donations (optionally filtered by status)
 router.get('/', async (req, res) => {
   try {
     const { status } = req.query;
-    const filter = {};
-
-    // Apply status filter if provided
-    if (status) {
-      filter.status = status;
-    }
-
-    // Get all donations
+    const filter = status ? { status } : {};
     const donations = await Donation.find(filter).sort({ createdAt: -1 });
     res.json(donations);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
+
+// Additional endpoints (GET by id, update, delete, reserve, complete, etc.)...
+// [Omitted here for brevity; use your provided code for the rest.]
+
 
 // @route   GET /api/donations/:id
 // @desc    Get a single donation by ID
