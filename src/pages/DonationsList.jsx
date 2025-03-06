@@ -1,22 +1,20 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { Search, Filter, Package } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import DonationCard from '@/components/DonationCard';
-import SearchBar from '@/components/donations/SearchBar';
-import StatusFilter from '@/components/donations/StatusFilter';
-import LoadingState from '@/components/donations/LoadingState';
-import EmptyState from '@/components/donations/EmptyState';
 import { getAllDonations } from '@/lib/api';
+import { Donation, User } from '@/lib/types';
 
 const DonationsList = () => {
-  const [donations, setDonations] = useState([]);
-  const [filteredDonations, setFilteredDonations] = useState([]);
+  const [donations, setDonations] = useState<Donation[]>([]);
+  const [filteredDonations, setFilteredDonations] = useState<Donation[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'available' | 'reserved'>('all');
   const [isLoading, setIsLoading] = useState(true);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
   const navigate = useNavigate();
   
   useEffect(() => {
@@ -70,15 +68,10 @@ const DonationsList = () => {
     setFilteredDonations(filtered);
   }, [searchTerm, statusFilter, donations]);
   
-  const handleSearch = (e) => {
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
   
-  const handleClearFilters = () => {
-    setSearchTerm('');
-    setStatusFilter('all');
-  };
-
   return (
     <div className="min-h-screen">
       <Navbar />
@@ -97,20 +90,57 @@ const DonationsList = () => {
           </div>
           
           <div className="flex flex-col md:flex-row gap-4 mb-8">
-            <SearchBar searchTerm={searchTerm} onSearch={handleSearch} />
-            <StatusFilter 
-              value={statusFilter} 
-              onChange={(e) => setStatusFilter(e.target.value)} 
-            />
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+              <input
+                type="text"
+                placeholder="Search donations..."
+                value={searchTerm}
+                onChange={handleSearch}
+                className="w-full pl-10 pr-4 py-2 rounded-md border border-input focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all"
+              />
+            </div>
+            
+            <div className="w-full md:w-48">
+              <div className="relative">
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value as 'all' | 'available' | 'reserved')}
+                  className="w-full px-4 py-2 rounded-md border border-input appearance-none focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all"
+                >
+                  <option value="all">All</option>
+                  <option value="available">Available</option>
+                  <option value="reserved">Reserved</option>
+                </select>
+                <Filter className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+              </div>
+            </div>
           </div>
           
           {isLoading ? (
-            <LoadingState />
+            <div className="flex flex-col items-center justify-center py-16">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sage-500 mb-4"></div>
+              <p className="text-muted-foreground">Loading donations...</p>
+            </div>
           ) : filteredDonations.length === 0 ? (
-            <EmptyState 
-              searchTerm={searchTerm} 
-              onClearFilters={handleClearFilters}
-            />
+            <div className="flex flex-col items-center justify-center bg-white rounded-xl border border-border shadow-sm p-16">
+              <Package className="w-16 h-16 text-sage-200 mb-4" />
+              <h3 className="text-xl font-medium mb-2">No Donations Found</h3>
+              <p className="text-muted-foreground text-center max-w-md mb-6">
+                {searchTerm 
+                  ? `No donations matching "${searchTerm}" were found.` 
+                  : 'There are no donations available with the selected filters.'}
+              </p>
+              <button
+                onClick={() => {
+                  setSearchTerm('');
+                  setStatusFilter('all');
+                }}
+                className="px-6 py-2 bg-sage-500 text-white rounded-md hover:bg-sage-600 transition-colors"
+              >
+                Clear Filters
+              </button>
+            </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredDonations.map(donation => (

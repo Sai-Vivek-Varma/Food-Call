@@ -1,15 +1,24 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { MapPin, Clock, Info } from 'lucide-react';
+import { Package, Upload, Calendar, Clock, MapPin, Info, X } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import ImageUpload from '@/components/donations/ImageUpload';
-import FormField from '@/components/donations/FormField';
 import { createDonation } from '@/lib/api';
 
+interface DonationFormData {
+  title: string;
+  description: string;
+  quantity: string;
+  expiryDate: string;
+  pickupAddress: string;
+  pickupTimeStart: string;
+  pickupTimeEnd: string;
+  image?: File;
+}
+
 const DonationForm = () => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<DonationFormData>({
     title: '',
     description: '',
     quantity: '',
@@ -19,14 +28,16 @@ const DonationForm = () => {
     pickupTimeEnd: '',
   });
   
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<Partial<DonationFormData>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [imagePreview, setImagePreview] = useState(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const navigate = useNavigate();
   
+  // Add scroll-to-top when the page loads
   useEffect(() => {
     window.scrollTo(0, 0);
     
+    // Check if user is authenticated (demo only)
     const user = localStorage.getItem('foodShareUser');
     if (!user) {
       toast.error('You must be logged in to create a donation');
@@ -34,11 +45,14 @@ const DonationForm = () => {
     }
   }, [navigate]);
   
-  const handleChange = (e) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
     
-    if (errors[name]) {
+    // Clear error when field is edited
+    if (errors[name as keyof DonationFormData]) {
       setErrors((prev) => ({
         ...prev,
         [name]: undefined,
@@ -46,25 +60,23 @@ const DonationForm = () => {
     }
   };
   
-  const handleImageChange = (e) => {
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    
     if (file) {
       setFormData((prev) => ({ ...prev, image: file }));
+      
+      // Create preview URL
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImagePreview(reader.result);
+        setImagePreview(reader.result as string);
       };
       reader.readAsDataURL(file);
     }
   };
-
-  const handleImageRemove = () => {
-    setImagePreview(null);
-    setFormData((prev) => ({ ...prev, image: undefined }));
-  };
   
-  const validate = () => {
-    const newErrors = {};
+  const validate = (): boolean => {
+    const newErrors: Partial<DonationFormData> = {};
     
     if (!formData.title) {
       newErrors.title = 'Title is required';
@@ -113,9 +125,10 @@ const DonationForm = () => {
         throw new Error('No authentication token found');
       }
 
+      // Create FormData for image upload
       const donationData = {
         ...formData,
-        image: imagePreview
+        image: imagePreview // If you're using Cloudinary or similar service
       };
 
       await createDonation(donationData, token);
@@ -149,7 +162,13 @@ const DonationForm = () => {
           
           <div className="bg-white rounded-xl border border-border shadow-sm p-6 md:p-8 animate-fade-up">
             <form onSubmit={handleSubmit} className="space-y-6">
-              <FormField label="Donation Title" error={errors.title}>
+              <div>
+                <label 
+                  htmlFor="title" 
+                  className="block text-sm font-medium text-foreground mb-1"
+                >
+                  Donation Title
+                </label>
                 <input
                   id="title"
                   name="title"
@@ -159,9 +178,18 @@ const DonationForm = () => {
                   className="w-full px-4 py-2 rounded-md border border-input focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all"
                   placeholder="e.g., Fresh Bread from Local Bakery"
                 />
-              </FormField>
+                {errors.title && (
+                  <p className="mt-1 text-sm text-red-600">{errors.title}</p>
+                )}
+              </div>
               
-              <FormField label="Description" error={errors.description}>
+              <div>
+                <label 
+                  htmlFor="description" 
+                  className="block text-sm font-medium text-foreground mb-1"
+                >
+                  Description
+                </label>
                 <textarea
                   id="description"
                   name="description"
@@ -171,9 +199,18 @@ const DonationForm = () => {
                   className="w-full px-4 py-2 rounded-md border border-input focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all"
                   placeholder="Describe the food - include details like ingredients, dietary information, etc."
                 />
-              </FormField>
+                {errors.description && (
+                  <p className="mt-1 text-sm text-red-600">{errors.description}</p>
+                )}
+              </div>
               
-              <FormField label="Quantity" error={errors.quantity}>
+              <div>
+                <label 
+                  htmlFor="quantity" 
+                  className="block text-sm font-medium text-foreground mb-1"
+                >
+                  Quantity
+                </label>
                 <input
                   id="quantity"
                   name="quantity"
@@ -183,10 +220,19 @@ const DonationForm = () => {
                   className="w-full px-4 py-2 rounded-md border border-input focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all"
                   placeholder="e.g., 20 loaves, 5kg of rice, etc."
                 />
-              </FormField>
+                {errors.quantity && (
+                  <p className="mt-1 text-sm text-red-600">{errors.quantity}</p>
+                )}
+              </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <FormField label="Expiry Date" error={errors.expiryDate}>
+                <div>
+                  <label 
+                    htmlFor="expiryDate" 
+                    className="block text-sm font-medium text-foreground mb-1"
+                  >
+                    Expiry Date
+                  </label>
                   <div className="relative">
                     <input
                       id="expiryDate"
@@ -196,17 +242,71 @@ const DonationForm = () => {
                       onChange={handleChange}
                       className="w-full px-4 py-2 rounded-md border border-input focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all"
                     />
+                    <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" />
                   </div>
-                </FormField>
+                  {errors.expiryDate && (
+                    <p className="mt-1 text-sm text-red-600">{errors.expiryDate}</p>
+                  )}
+                </div>
                 
-                <FormField label="Image (Optional)">
-                  <ImageUpload 
-                    imagePreview={imagePreview}
-                    onImageSelect={handleImageChange}
-                    onImageRemove={handleImageRemove}
-                  />
-                </FormField>
+                <div>
+                  <label 
+                    htmlFor="image" 
+                    className="block text-sm font-medium text-foreground mb-1"
+                  >
+                    Image (Optional)
+                  </label>
+                  <div className="relative">
+                    <input
+                      id="image"
+                      name="image"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                      className="sr-only"
+                    />
+                    <label
+                      htmlFor="image"
+                      className="w-full cursor-pointer px-4 py-2 rounded-md border border-dashed border-input bg-secondary/30 flex items-center justify-center hover:bg-secondary transition-all"
+                    >
+                      {imagePreview ? (
+                        <div className="w-full h-10 flex items-center justify-between">
+                          <span className="truncate text-sm">Image selected</span>
+                          <Upload className="w-5 h-5 text-muted-foreground" />
+                        </div>
+                      ) : (
+                        <div className="flex items-center">
+                          <Upload className="w-5 h-5 mr-2 text-muted-foreground" />
+                          <span>Upload Image</span>
+                        </div>
+                      )}
+                    </label>
+                  </div>
+                </div>
               </div>
+              
+              {imagePreview && (
+                <div className="mt-2">
+                  <div className="relative w-full h-48 rounded-md overflow-hidden border border-input">
+                    <img
+                      src={imagePreview}
+                      alt="Preview"
+                      className="w-full h-full object-cover"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setImagePreview(null);
+                        setFormData((prev) => ({ ...prev, image: undefined }));
+                      }}
+                      className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors"
+                      aria-label="Remove image"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              )}
               
               <div>
                 <label 
