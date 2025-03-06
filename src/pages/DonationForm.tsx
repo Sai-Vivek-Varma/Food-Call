@@ -126,20 +126,51 @@ const DonationForm = () => {
 
     setIsSubmitting(true);
 
-    // For demo purposes, just simulate API call
-    setTimeout(() => {
-      try {
-        console.log("Donation data submitted:", formData);
-
-        toast.success("Donation created successfully!");
-        navigate("/dashboard");
-      } catch (error) {
-        console.error("Failed to create donation:", error);
-        toast.error("Failed to create donation");
-      } finally {
-        setIsSubmitting(false);
+    try {
+      const token = localStorage.getItem("foodShareToken");
+      if (!token) {
+        toast.error("Authentication required. Please log in again.");
+        navigate("/auth");
+        return;
       }
-    }, 1500);
+
+      const requestData = {
+        ...formData,
+        expiryDate: new Date(formData.expiryDate).toISOString(),
+        pickupTimeStart: new Date(
+          `1970-01-01T${formData.pickupTimeStart}:00Z`
+        ).toISOString(),
+        pickupTimeEnd: new Date(
+          `1970-01-01T${formData.pickupTimeEnd}:00Z`
+        ).toISOString(),
+      };
+
+      const response = await fetch(
+        "https://food-call.onrender.com/api/donations",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(requestData),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to create donation");
+      }
+
+      toast.success("Donation created successfully!");
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Failed to create donation:", error);
+      toast.error("Failed to create donation");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
