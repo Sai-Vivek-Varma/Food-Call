@@ -1,5 +1,4 @@
-const API_URL = "https://food-call.onrender.com";
-
+const API_URL = "https://food-call.onrender.com/api";
 // Auth API calls
 export const registerUser = async (userData) => {
   const response = await fetch(`${API_URL}/users/register`, {
