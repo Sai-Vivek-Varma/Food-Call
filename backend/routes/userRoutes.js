@@ -1,28 +1,27 @@
-
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const User = require('../models/userModel');
-const jwt = require('jsonwebtoken');
-const { protect, isAdmin } = require('../middleware/authMiddleware');
+const User = require("../models/userModel");
+const jwt = require("jsonwebtoken");
+const { protect, isAdmin } = require("../middleware/authMiddleware");
 
 // Generate JWT
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: '30d'
+    expiresIn: "30d",
   });
 };
 
 // @route   POST /api/users/register
 // @desc    Register a new user
 // @access  Public
-router.post('/register', async (req, res) => {
+router.post("/register", async (req, res) => {
   try {
-    const { email, password, name, role, organization, address, phone } = req.body;
+    const { email, password, name, role, organization } = req.body;
 
     // Check if user already exists
     const userExists = await User.findOne({ email });
     if (userExists) {
-      return res.status(400).json({ message: 'User already exists' });
+      return res.status(400).json({ message: "User already exists" });
     }
 
     // Create new user
@@ -32,8 +31,6 @@ router.post('/register', async (req, res) => {
       name,
       role,
       organization,
-      address,
-      phone
     });
 
     if (user) {
@@ -43,12 +40,10 @@ router.post('/register', async (req, res) => {
         email: user.email,
         role: user.role,
         organization: user.organization,
-        address: user.address,
-        phone: user.phone,
-        token: generateToken(user._id)
+        token: generateToken(user._id),
       });
     } else {
-      res.status(400).json({ message: 'Invalid user data' });
+      res.status(400).json({ message: "Invalid user data" });
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -58,7 +53,7 @@ router.post('/register', async (req, res) => {
 // @route   POST /api/users/login
 // @desc    Authenticate user & get token
 // @access  Public
-router.post('/login', async (req, res) => {
+router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -73,12 +68,10 @@ router.post('/login', async (req, res) => {
         email: user.email,
         role: user.role,
         organization: user.organization,
-        address: user.address,
-        phone: user.phone,
-        token: generateToken(user._id)
+        token: generateToken(user._id),
       });
     } else {
-      res.status(401).json({ message: 'Invalid email or password' });
+      res.status(401).json({ message: "Invalid email or password" });
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -88,13 +81,13 @@ router.post('/login', async (req, res) => {
 // @route   GET /api/users/profile
 // @desc    Get user profile
 // @access  Private
-router.get('/profile', protect, async (req, res) => {
+router.get("/profile", protect, async (req, res) => {
   try {
-    const user = await User.findById(req.user._id).select('-password');
+    const user = await User.findById(req.user._id).select("-password");
     if (user) {
       res.json(user);
     } else {
-      res.status(404).json({ message: 'User not found' });
+      res.status(404).json({ message: "User not found" });
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -104,7 +97,7 @@ router.get('/profile', protect, async (req, res) => {
 // @route   PUT /api/users/profile
 // @desc    Update user profile
 // @access  Private
-router.put('/profile', protect, async (req, res) => {
+router.put("/profile", protect, async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
 
@@ -112,8 +105,6 @@ router.put('/profile', protect, async (req, res) => {
       user.name = req.body.name || user.name;
       user.email = req.body.email || user.email;
       user.organization = req.body.organization || user.organization;
-      user.address = req.body.address || user.address;
-      user.phone = req.body.phone || user.phone;
 
       if (req.body.password) {
         user.password = req.body.password;
@@ -127,12 +118,10 @@ router.put('/profile', protect, async (req, res) => {
         email: updatedUser.email,
         role: updatedUser.role,
         organization: updatedUser.organization,
-        address: updatedUser.address,
-        phone: updatedUser.phone,
-        token: generateToken(updatedUser._id)
+        token: generateToken(updatedUser._id),
       });
     } else {
-      res.status(404).json({ message: 'User not found' });
+      res.status(404).json({ message: "User not found" });
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -142,9 +131,9 @@ router.put('/profile', protect, async (req, res) => {
 // @route   GET /api/users
 // @desc    Get all users (admin only)
 // @access  Private/Admin
-router.get('/', protect, isAdmin, async (req, res) => {
+router.get("/", protect, isAdmin, async (req, res) => {
   try {
-    const users = await User.find({}).select('-password');
+    const users = await User.find({}).select("-password");
     res.json(users);
   } catch (error) {
     res.status(500).json({ message: error.message });

@@ -1,4 +1,3 @@
-
 // Helper functions for date manipulation and validation
 
 /**
@@ -28,10 +27,10 @@ const isDateValid = (date) => {
  * @returns {string} - Formatted date string
  */
 const formatDate = (date) => {
-  return new Date(date).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
+  return new Date(date).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
   });
 };
 
@@ -41,9 +40,9 @@ const formatDate = (date) => {
  * @returns {string} - Formatted time string
  */
 const formatTime = (date) => {
-  return new Date(date).toLocaleTimeString('en-US', {
-    hour: '2-digit',
-    minute: '2-digit'
+  return new Date(date).toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
   });
 };
 
@@ -51,5 +50,5 @@ module.exports = {
   isDatePast,
   isDateValid,
   formatDate,
-  formatTime
+  formatTime,
 };
