@@ -4,27 +4,32 @@ const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 const { protect, isAdmin } = require("../middleware/authMiddleware");
 
-// Generate JWT
+/**
+ * Generate a JWT for a given user id.
+ * Expires in 30 days.
+ */
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: "30d",
   });
 };
 
-// @route   POST /api/users/register
-// @desc    Register a new user
-// @access  Public
+/**
+ * @route   POST /api/users/register
+ * @desc    Register a new user
+ * @access  Public
+ */
 router.post("/register", async (req, res) => {
   try {
     const { email, password, name, role, organization } = req.body;
 
-    // Check if user already exists
+    // Check if a user with the same email already exists
     const userExists = await User.findOne({ email });
     if (userExists) {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    // Create new user
+    // Create the new user
     const user = await User.create({
       email,
       password,
@@ -34,6 +39,7 @@ router.post("/register", async (req, res) => {
     });
 
     if (user) {
+      // Respond with user details and JWT token
       res.status(201).json({
         _id: user._id,
         name: user.name,
@@ -50,9 +56,11 @@ router.post("/register", async (req, res) => {
   }
 });
 
-// @route   POST /api/users/login
-// @desc    Authenticate user & get token
-// @access  Public
+/**
+ * @route   POST /api/users/login
+ * @desc    Authenticate user & get token
+ * @access  Public
+ */
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -60,7 +68,7 @@ router.post("/login", async (req, res) => {
     // Find user by email
     const user = await User.findOne({ email });
 
-    // Check if user exists and password matches
+    // If user exists and password matches, return user details and token
     if (user && (await user.matchPassword(password))) {
       res.json({
         _id: user._id,
@@ -78,11 +86,14 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// @route   GET /api/users/profile
-// @desc    Get user profile
-// @access  Private
+/**
+ * @route   GET /api/users/profile
+ * @desc    Get user profile
+ * @access  Private
+ */
 router.get("/profile", protect, async (req, res) => {
   try {
+    // req.user is populated by the protect middleware after token verification
     const user = await User.findById(req.user._id).select("-password");
     if (user) {
       res.json(user);
@@ -94,9 +105,11 @@ router.get("/profile", protect, async (req, res) => {
   }
 });
 
-// @route   PUT /api/users/profile
-// @desc    Update user profile
-// @access  Private
+/**
+ * @route   PUT /api/users/profile
+ * @desc    Update user profile
+ * @access  Private
+ */
 router.put("/profile", protect, async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
@@ -128,9 +141,11 @@ router.put("/profile", protect, async (req, res) => {
   }
 });
 
-// @route   GET /api/users
-// @desc    Get all users (admin only)
-// @access  Private/Admin
+/**
+ * @route   GET /api/users
+ * @desc    Get all users (admin only)
+ * @access  Private/Admin
+ */
 router.get("/", protect, isAdmin, async (req, res) => {
   try {
     const users = await User.find({}).select("-password");

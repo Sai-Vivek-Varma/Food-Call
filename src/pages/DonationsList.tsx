@@ -1,46 +1,49 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'sonner';
-import { Search, Filter, Package } from 'lucide-react';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
-import DonationCard from '@/components/DonationCard';
-import { Donation, User } from '@/lib/types';
-import axios from 'axios';
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { Search, Filter, Package } from "lucide-react";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import DonationCard from "@/components/DonationCard";
+import { Donation, User } from "@/lib/types";
+import axios from "axios";
 
-const DonationsList = () => {
+const DonationsList: React.FC = () => {
   const [donations, setDonations] = useState<Donation[]>([]);
   const [filteredDonations, setFilteredDonations] = useState<Donation[]>([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState<'all' | 'available' | 'reserved'>('all');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState<"all" | "available" | "reserved">("all");
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    const userJson = localStorage.getItem('foodShareUser');
+
+    // Get user details from localStorage if available (for personalized view)
+    const userJson = localStorage.getItem("foodShareUser");
     if (userJson) {
       try {
         const parsedUser = JSON.parse(userJson);
         setUser(parsedUser);
       } catch (error) {
-        console.error('Error parsing user data:', error);
+        console.error("Error parsing user data:", error);
       }
     }
 
+    // Fetch donations from backend
     const fetchDonations = async () => {
       try {
-        const response = await axios.get<Donation[]>('http://localhost:5000/api/donations', {
-          headers: { Authorization: `Bearer ${localStorage.getItem('foodShareToken')}` }
+        const token = localStorage.getItem("foodShareToken");
+        const response = await axios.get<Donation[]>("http://localhost:5000/api/donations", {
+          headers: { Authorization: `Bearer ${token}` },
         });
         setDonations(response.data);
-        
         setFilteredDonations(response.data);
         setIsLoading(false);
       } catch (error) {
-        console.error('Error fetching donations:', error);
-        toast.error('Failed to fetch donations');
+        console.error("Error fetching donations:", error);
+        toast.error("Failed to fetch donations");
         setIsLoading(false);
       }
     };
@@ -48,17 +51,19 @@ const DonationsList = () => {
     fetchDonations();
   }, [navigate]);
 
+  // Filter donations based on search term and status
   useEffect(() => {
     let filtered = donations;
-    if (statusFilter !== 'all') {
-      filtered = filtered.filter(donation => donation.status === statusFilter);
+    if (statusFilter !== "all") {
+      filtered = filtered.filter((donation) => donation.status === statusFilter);
     }
     if (searchTerm) {
       const lowercaseSearchTerm = searchTerm.toLowerCase();
-      filtered = filtered.filter(donation =>
-        donation.title.toLowerCase().includes(lowercaseSearchTerm) ||
-        donation.description.toLowerCase().includes(lowercaseSearchTerm) ||
-        donation.donorName.toLowerCase().includes(lowercaseSearchTerm)
+      filtered = filtered.filter(
+        (donation) =>
+          donation.title.toLowerCase().includes(lowercaseSearchTerm) ||
+          donation.description.toLowerCase().includes(lowercaseSearchTerm) ||
+          donation.donorName.toLowerCase().includes(lowercaseSearchTerm)
       );
     }
     setFilteredDonations(filtered);
@@ -97,7 +102,7 @@ const DonationsList = () => {
               <div className="relative">
                 <select
                   value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value as 'all' | 'available' | 'reserved')}
+                  onChange={(e) => setStatusFilter(e.target.value as "all" | "available" | "reserved")}
                   className="w-full px-4 py-2 rounded-md border border-input appearance-none focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all"
                 >
                   <option value="all">All</option>
@@ -120,12 +125,12 @@ const DonationsList = () => {
               <p className="text-muted-foreground text-center max-w-md mb-6">
                 {searchTerm
                   ? `No donations matching "${searchTerm}" were found.`
-                  : 'There are no donations available with the selected filters.'}
+                  : "There are no donations available with the selected filters."}
               </p>
               <button
                 onClick={() => {
-                  setSearchTerm('');
-                  setStatusFilter('all');
+                  setSearchTerm("");
+                  setStatusFilter("all");
                 }}
                 className="px-6 py-2 bg-sage-500 text-white rounded-md hover:bg-sage-600 transition-colors"
               >
@@ -134,8 +139,13 @@ const DonationsList = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredDonations.map(donation => (
-                <DonationCard key={donation.id} donation={donation} isOrphanage={user?.role === 'orphanage'} />
+              {filteredDonations.map((donation) => (
+                // Use donation._id if available; fallback to donation.id if not
+                <DonationCard
+                  key={donation._id || donation.id}
+                  donation={donation}
+                  isOrphanage={user?.role === "orphanage"}
+                />
               ))}
             </div>
           )}

@@ -1,65 +1,67 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
+
 const donationSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
   },
   description: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
   },
   quantity: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
   },
   expiryDate: {
     type: Date,
-    required: true
+    required: true,
   },
   pickupAddress: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
   },
   pickupTimeStart: {
     type: Date,
-    required: true
+    required: true,
   },
   pickupTimeEnd: {
     type: Date,
-    required: true
+    required: true,
   },
   donorId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
+    ref: "User",
+    required: true,
   },
   donorName: {
     type: String,
-    required: true
+    required: true,
   },
   status: {
     type: String,
-    enum: ['available', 'reserved', 'completed', 'expired'],
-    default: 'available'
+    enum: ["available", "reserved", "completed", "expired"],
+    default: "available",
   },
   reservedBy: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
+    ref: "User",
   },
   reservedByName: {
-    type: String
+    type: String,
   },
   createdAt: {
     type: Date,
-    default: Date.now
+    default: Date.now,
   },
   imageUrl: {
-    type: String
-  }
+    type: String,
+  },
 });
-const Donation = mongoose.model('Donation', donationSchema);
+
+const Donation = mongoose.model("Donation", donationSchema);
 module.exports = Donation;
