@@ -1,4 +1,3 @@
-
 // This is a placeholder for image upload functionality using Cloudinary
 // To implement this fully, you would need to install cloudinary and multer packages
 

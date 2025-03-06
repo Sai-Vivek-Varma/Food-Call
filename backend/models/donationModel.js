@@ -1,6 +1,4 @@
-
 const mongoose = require('mongoose');
-
 const donationSchema = new mongoose.Schema({
   title: {
     type: String,
@@ -63,7 +61,5 @@ const donationSchema = new mongoose.Schema({
     type: String
   }
 });
-
 const Donation = mongoose.model('Donation', donationSchema);
-
 module.exports = Donation;
