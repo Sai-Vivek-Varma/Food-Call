@@ -14,7 +14,7 @@ const app = express();
 // Middleware
 app.use(
   cors({
-    origin: "http://localhost:8081",
+    origin: ["http://localhost:8081", "https://food-call.lovable.app"],
     credentials: true,
   })
 );
