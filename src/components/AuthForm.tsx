@@ -103,15 +103,8 @@ const AuthForm = ({ type, onSuccess }: AuthFormProps) => {
 
       // Call success callback
       onSuccess();
-
       // Navigate to dashboard
       navigate("/dashboard");
-
-      toast.success(
-        type === "login"
-          ? "Successfully signed in!"
-          : "Account created successfully!"
-      );
     } catch (error) {
       console.error("Auth error:", error);
       toast.error(
