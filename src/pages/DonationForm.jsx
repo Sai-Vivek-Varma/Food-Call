@@ -6,19 +6,8 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { createDonation } from '@/lib/api';
 
-interface DonationFormData {
-  title: string;
-  description: string;
-  quantity: string;
-  expiryDate: string;
-  pickupAddress: string;
-  pickupTimeStart: string;
-  pickupTimeEnd: string;
-  image?: File;
-}
-
 const DonationForm = () => {
-  const [formData, setFormData] = useState<DonationFormData>({
+  const [formData, setFormData] = useState({
     title: '',
     description: '',
     quantity: '',
@@ -28,16 +17,14 @@ const DonationForm = () => {
     pickupTimeEnd: '',
   });
   
-  const [errors, setErrors] = useState<Partial<DonationFormData>>({});
+  const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const navigate = useNavigate();
   
-  // Add scroll-to-top when the page loads
   useEffect(() => {
     window.scrollTo(0, 0);
     
-    // Check if user is authenticated (demo only)
     const user = localStorage.getItem('foodShareUser');
     if (!user) {
       toast.error('You must be logged in to create a donation');
@@ -45,14 +32,11 @@ const DonationForm = () => {
     }
   }, [navigate]);
   
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
     
-    // Clear error when field is edited
-    if (errors[name as keyof DonationFormData]) {
+    if (errors[name]) {
       setErrors((prev) => ({
         ...prev,
         [name]: undefined,
@@ -60,23 +44,22 @@ const DonationForm = () => {
     }
   };
   
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = (e) => {
     const file = e.target.files?.[0];
     
     if (file) {
       setFormData((prev) => ({ ...prev, image: file }));
       
-      // Create preview URL
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImagePreview(reader.result as string);
+        setImagePreview(reader.result);
       };
       reader.readAsDataURL(file);
     }
   };
   
-  const validate = (): boolean => {
-    const newErrors: Partial<DonationFormData> = {};
+  const validate = () => {
+    const newErrors = {};
     
     if (!formData.title) {
       newErrors.title = 'Title is required';
@@ -125,10 +108,9 @@ const DonationForm = () => {
         throw new Error('No authentication token found');
       }
 
-      // Create FormData for image upload
       const donationData = {
         ...formData,
-        image: imagePreview // If you're using Cloudinary or similar service
+        image: imagePreview
       };
 
       await createDonation(donationData, token);

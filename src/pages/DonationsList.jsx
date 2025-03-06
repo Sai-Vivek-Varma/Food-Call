@@ -6,15 +6,14 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import DonationCard from '@/components/DonationCard';
 import { getAllDonations } from '@/lib/api';
-import { Donation, User } from '@/lib/types';
 
 const DonationsList = () => {
-  const [donations, setDonations] = useState<Donation[]>([]);
-  const [filteredDonations, setFilteredDonations] = useState<Donation[]>([]);
+  const [donations, setDonations] = useState([]);
+  const [filteredDonations, setFilteredDonations] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState<'all' | 'available' | 'reserved'>('all');
+  const [statusFilter, setStatusFilter] = useState('all');
   const [isLoading, setIsLoading] = useState(true);
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
   
   useEffect(() => {
@@ -68,7 +67,7 @@ const DonationsList = () => {
     setFilteredDonations(filtered);
   }, [searchTerm, statusFilter, donations]);
   
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearch = (e) => {
     setSearchTerm(e.target.value);
   };
   
@@ -105,7 +104,7 @@ const DonationsList = () => {
               <div className="relative">
                 <select
                   value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value as 'all' | 'available' | 'reserved')}
+                  onChange={(e) => setStatusFilter(e.target.value)}
                   className="w-full px-4 py-2 rounded-md border border-input appearance-none focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all"
                 >
                   <option value="all">All</option>
