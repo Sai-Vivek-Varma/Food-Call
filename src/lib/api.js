@@ -1,7 +1,7 @@
-const API_URL = "https://food-call.onrender.com";
+const API_URL = "https://food-call.onrender.com/api";
 // Auth API calls
 export const registerUser = async (userData) => {
-  const response = await fetch(`${API_URL}/api/users/register`, {
+  const response = await fetch(`${API_URL}/users/register`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -14,7 +14,7 @@ export const registerUser = async (userData) => {
 };
 
 export const loginUser = async (credentials) => {
-  const response = await fetch(`${API_URL}/api/users/login`, {
+  const response = await fetch(`${API_URL}/users/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -28,7 +28,7 @@ export const loginUser = async (credentials) => {
 
 // Donations API calls
 export const createDonation = async (donationData, token) => {
-  const response = await fetch(`${API_URL}/api/donations`, {
+  const response = await fetch(`${API_URL}/donations`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -43,7 +43,7 @@ export const createDonation = async (donationData, token) => {
 };
 
 export const getAllDonations = async () => {
-  const response = await fetch(`${API_URL}/api/donations`);
+  const response = await fetch(`${API_URL}/donations`);
   const data = await response.json();
   if (!response.ok)
     throw new Error(data.message || "Failed to fetch donations");
@@ -51,7 +51,7 @@ export const getAllDonations = async () => {
 };
 
 export const getDonationsByDonor = async (token) => {
-  const response = await fetch(`${API_URL}/api/donations/user/donor`, {
+  const response = await fetch(`${API_URL}/donations/user/donor`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -63,7 +63,7 @@ export const getDonationsByDonor = async (token) => {
 };
 
 export const getReservedDonations = async (token) => {
-  const response = await fetch(`${API_URL}/api/donations/user/reserved`, {
+  const response = await fetch(`${API_URL}/donations/user/reserved`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -75,15 +75,12 @@ export const getReservedDonations = async (token) => {
 };
 
 export const reserveDonation = async (donationId, token) => {
-  const response = await fetch(
-    `${API_URL}/api/donations/${donationId}/reserve`,
-    {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  const response = await fetch(`${API_URL}/donations/${donationId}/reserve`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
   const data = await response.json();
   if (!response.ok)
     throw new Error(data.message || "Failed to reserve donation");
@@ -91,15 +88,12 @@ export const reserveDonation = async (donationId, token) => {
 };
 
 export const completeDonation = async (donationId, token) => {
-  const response = await fetch(
-    `${API_URL}/api/donations/${donationId}/complete`,
-    {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  const response = await fetch(`${API_URL}/donations/${donationId}/complete`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
   const data = await response.json();
   if (!response.ok)
     throw new Error(data.message || "Failed to complete donation");
