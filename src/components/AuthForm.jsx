@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -26,14 +27,19 @@ const AuthForm = ({ type, onSuccess }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setIsLoading(true);
+
+    // Create the request body based on form type
+    const requestBody = type === 'login' 
+      ? { email: formData.email, password: formData.password }
+      : formData;
     
     try {
-      const response = await fetch(`http://localhost:5000/api/auth/${type}`, {
+      const response = await fetch(`http://localhost:5000/api/users/${type}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(requestBody),
       });
 
       const data = await response.json();
@@ -46,6 +52,7 @@ const AuthForm = ({ type, onSuccess }) => {
       localStorage.setItem('foodCallUser', JSON.stringify(data.user));
       localStorage.setItem('foodCallToken', data.token);
       
+      toast.success(type === 'login' ? 'Successfully logged in!' : 'Account created successfully!');
       onSuccess();
       navigate('/dashboard');
     } catch (error) {
