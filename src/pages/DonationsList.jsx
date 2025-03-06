@@ -21,7 +21,7 @@ const DonationsList = () => {
     window.scrollTo(0, 0);
     
     // Check if user is authenticated
-    const userJson = localStorage.getItem('foodShareUser');
+    const userJson = localStorage.getItem('foodCallUser');
     if (userJson) {
       try {
         const parsedUser = JSON.parse(userJson);

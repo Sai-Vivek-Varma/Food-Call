@@ -1,196 +1,163 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { Eye, EyeOff, Loader2 } from 'lucide-react';
-import { loginUser, registerUser } from '@/lib/api';
-import { AuthFormData } from '@/lib/types';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
-interface AuthFormProps {
-  type: 'login' | 'register';
-  onSuccess: () => void;
-}
-
-const AuthForm = ({ type, onSuccess }: AuthFormProps) => {
-  const [formData, setFormData] = useState<AuthFormData>({
+const AuthForm = ({ type, onSuccess }) => {
+  const [formData, setFormData] = useState({
+    name: '',
     email: '',
     password: '',
-    name: '',
+    organization: '',
     role: 'donor',
-    organization: ''
   });
-  
-  const [showPassword, setShowPassword] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      [name]: value,
+    }));
   };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    // Basic validation
-    if (type === 'register' && !formData.name) {
-      toast.error('Please enter your name');
-      return;
-    }
-    
-    if (!formData.email) {
-      toast.error('Please enter your email');
-      return;
-    }
-    
-    if (!formData.password) {
-      toast.error('Please enter your password');
-      return;
-    }
-    
-    if (type === 'register' && formData.role === 'orphanage' && !formData.organization) {
-      toast.error('Please enter your organization name');
-      return;
-    }
-    
-    setIsSubmitting(true);
+  
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setIsLoading(true);
     
     try {
-      const response = type === 'login' 
-        ? await loginUser({ email: formData.email, password: formData.password })
-        : await registerUser(formData);
+      const response = await fetch(`http://localhost:5000/api/auth/${type}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
 
-      // Store token and user data
-      localStorage.setItem('foodShareToken', response.token);
-      localStorage.setItem('foodShareUser', JSON.stringify(response.user));
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Authentication failed');
+      }
+
+      // Store user data and token
+      localStorage.setItem('foodCallUser', JSON.stringify(data.user));
+      localStorage.setItem('foodCallToken', data.token);
       
-      // Call success callback
       onSuccess();
-      
-      // Navigate to dashboard
       navigate('/dashboard');
     } catch (error) {
-      console.error('Auth error:', error);
-      toast.error(
-        type === 'login' 
-          ? 'Failed to sign in. Please check your credentials.' 
-          : 'Failed to create account. Please try again.'
-      );
+      console.error('Authentication error:', error);
+      toast.error(error.message || 'Authentication failed. Please try again.');
     } finally {
-      setIsSubmitting(false);
+      setIsLoading(false);
     }
   };
   
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      {type === 'register' && (
-        <div>
-          <label htmlFor="name" className="block text-sm font-medium text-foreground mb-1">
-            Name
-          </label>
-          <input
-            id="name"
-            name="name"
-            type="text"
-            value={formData.name}
-            onChange={handleChange}
-            className="w-full px-4 py-2 rounded-md border border-input focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all"
-            placeholder="Enter your full name"
-          />
-        </div>
-      )}
-      
-      <div>
-        <label htmlFor="email" className="block text-sm font-medium text-foreground mb-1">
-          Email
-        </label>
-        <input
-          id="email"
-          name="email"
-          type="email"
-          value={formData.email}
-          onChange={handleChange}
-          className="w-full px-4 py-2 rounded-md border border-input focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all"
-          placeholder="Enter your email"
-        />
-      </div>
-      
-      <div>
-        <label htmlFor="password" className="block text-sm font-medium text-foreground mb-1">
-          Password
-        </label>
-        <div className="relative">
-          <input
-            id="password"
-            name="password"
-            type={showPassword ? 'text' : 'password'}
-            value={formData.password}
-            onChange={handleChange}
-            className="w-full px-4 py-2 rounded-md border border-input focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all"
-            placeholder="Enter your password"
-          />
-          <button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"
-          >
-            {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-          </button>
-        </div>
-      </div>
-      
+    <form onSubmit={handleSubmit} className="space-y-6">
       {type === 'register' && (
         <>
           <div>
-            <label htmlFor="role" className="block text-sm font-medium text-foreground mb-1">
-              Role
+            <label htmlFor="name" className="block text-sm font-medium text-foreground">
+              Full Name
             </label>
-            <select
-              id="role"
-              name="role"
-              value={formData.role}
-              onChange={handleChange}
-              className="w-full px-4 py-2 rounded-md border border-input focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all"
-            >
-              <option value="donor">Food Donor</option>
-              <option value="orphanage">Orphanage</option>
-            </select>
-          </div>
-          
-          {formData.role === 'orphanage' && (
-            <div>
-              <label htmlFor="organization" className="block text-sm font-medium text-foreground mb-1">
-                Organization Name
-              </label>
-              <input
-                id="organization"
-                name="organization"
+            <div className="mt-1">
+              <Input
                 type="text"
-                value={formData.organization}
+                id="name"
+                name="name"
+                value={formData.name}
                 onChange={handleChange}
-                className="w-full px-4 py-2 rounded-md border border-input focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all"
-                placeholder="Enter your organization name"
+                required
+                placeholder="Your Full Name"
               />
             </div>
-          )}
+          </div>
+          
+          <div>
+            <label htmlFor="organization" className="block text-sm font-medium text-foreground">
+              Organization Name (Optional)
+            </label>
+            <div className="mt-1">
+              <Input
+                type="text"
+                id="organization"
+                name="organization"
+                value={formData.organization}
+                onChange={handleChange}
+                placeholder="Organization Name"
+              />
+            </div>
+          </div>
+          
+          <div>
+            <label htmlFor="role" className="block text-sm font-medium text-foreground">
+              Role
+            </label>
+            <div className="mt-1">
+              <select
+                id="role"
+                name="role"
+                value={formData.role}
+                onChange={handleChange}
+                className="w-full px-3 py-2 rounded-md border border-input bg-background focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all"
+              >
+                <option value="donor">Donor</option>
+                <option value="orphanage">Orphanage</option>
+              </select>
+            </div>
+          </div>
         </>
       )}
       
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className="w-full bg-sage-500 text-white py-2 rounded-md hover:bg-sage-600 transition-all mt-6 flex items-center justify-center"
-      >
-        {isSubmitting ? (
-          <>
-            <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-            {type === 'login' ? 'Signing in...' : 'Creating account...'}
-          </>
-        ) : (
-          type === 'login' ? 'Sign In' : 'Create Account'
-        )}
-      </button>
+      <div>
+        <label htmlFor="email" className="block text-sm font-medium text-foreground">
+          Email address
+        </label>
+        <div className="mt-1">
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            autoComplete="email"
+            required
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="Email Address"
+          />
+        </div>
+      </div>
+      
+      <div>
+        <label htmlFor="password" className="block text-sm font-medium text-foreground">
+          Password
+        </label>
+        <div className="mt-1">
+          <Input
+            id="password"
+            name="password"
+            type="password"
+            autoComplete="current-password"
+            required
+            value={formData.password}
+            onChange={handleChange}
+            placeholder="Password"
+          />
+        </div>
+      </div>
+      
+      <div>
+        <Button 
+          type="submit" 
+          className="w-full"
+          disabled={isLoading}
+        >
+          {isLoading ? 'Loading...' : (type === 'login' ? 'Sign In' : 'Register')}
+        </Button>
+      </div>
     </form>
   );
 };
