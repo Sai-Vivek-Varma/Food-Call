@@ -1,4 +1,4 @@
-const API_URL = "https://food-call.onrender.com/api";
+const API_URL = "https://food-call.onrender.com";
 
 // Auth API calls
 export const registerUser = async (userData) => {
