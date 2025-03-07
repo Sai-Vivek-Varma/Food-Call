@@ -1,3 +1,4 @@
+
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -17,8 +18,8 @@ interface DonationFormData {
   image?: File;
 }
 
-const DonationForm: React.FC = () => {
-  const [formData, setFormData] = useState<DonationFormData>({
+const DonationForm = () => {
+  const [formData, setFormData] = useState({
     title: "",
     description: "",
     quantity: "",
@@ -27,15 +28,15 @@ const DonationForm: React.FC = () => {
     pickupTimeStart: "",
     pickupTimeEnd: "",
   });
-  const [errors, setErrors] = useState<Partial<DonationFormData>>({});
+  const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const navigate = useNavigate();
 
   // Scroll to top on mount and verify that a user is logged in.
   useEffect(() => {
     window.scrollTo(0, 0);
-    const userJson = localStorage.getItem("foodShareUser");
+    const userJson = localStorage.getItem("foodCallUser");
     if (!userJson) {
       toast.error("You must be logged in to create a donation");
       navigate("/auth");
@@ -43,57 +44,51 @@ const DonationForm: React.FC = () => {
   }, [navigate]);
 
   // Handle input changes for text and textarea fields
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    if (errors[name as keyof DonationFormData]) {
+    if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: undefined }));
     }
   };
 
   // Handle image file selection and create a preview URL
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = (e) => {
     const file = e.target.files?.[0];
     if (file) {
-      setFormData((prev) => ({ ...prev, image: file }));
+      // Create a FileReader to read the image as base64
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImagePreview(reader.result as string);
+        setImagePreview(reader.result);
       };
       reader.readAsDataURL(file);
     }
   };
 
   // Basic client-side validation
-  const validate = (): boolean => {
-    const newErrors: Partial<DonationFormData> = {};
+  const validate = () => {
+    const newErrors = {};
     if (!formData.title) newErrors.title = "Title is required";
-    if (!formData.description)
-      newErrors.description = "Description is required";
+    if (!formData.description) newErrors.description = "Description is required";
     if (!formData.quantity) newErrors.quantity = "Quantity is required";
     if (!formData.expiryDate) newErrors.expiryDate = "Expiry date is required";
-    if (!formData.pickupAddress)
-      newErrors.pickupAddress = "Pickup address is required";
-    if (!formData.pickupTimeStart)
-      newErrors.pickupTimeStart = "Pickup start time is required";
-    if (!formData.pickupTimeEnd)
-      newErrors.pickupTimeEnd = "Pickup end time is required";
+    if (!formData.pickupAddress) newErrors.pickupAddress = "Pickup address is required";
+    if (!formData.pickupTimeStart) newErrors.pickupTimeStart = "Pickup start time is required";
+    if (!formData.pickupTimeEnd) newErrors.pickupTimeEnd = "Pickup end time is required";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   // Combine a time string (HH:MM) with today's date to create a full ISO datetime string.
-  const combineTimeWithToday = (timeString: string): string => {
+  const combineTimeWithToday = (timeString) => {
     // Get today's date in YYYY-MM-DD format
     const today = new Date().toISOString().split("T")[0];
     // Construct full datetime (assumes timeString is in HH:MM format)
-    return new Date(`${today}T${timeString}:00Z`).toISOString();
+    return new Date(`${today}T${timeString}:00`).toISOString();
   };
 
   // Handle form submission
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!validate()) return;
@@ -110,12 +105,12 @@ const DonationForm: React.FC = () => {
         // Convert pickup time strings into full ISO date strings using today's date
         pickupTimeStart: combineTimeWithToday(formData.pickupTimeStart),
         pickupTimeEnd: combineTimeWithToday(formData.pickupTimeEnd),
-        // For now, use the preview URL (or empty string) for imageUrl; later, integrate file uploads
+        // Use the base64 image data
         imageUrl: imagePreview || "",
       };
 
       // Retrieve the token from localStorage
-      const token = localStorage.getItem("foodShareToken");
+      const token = localStorage.getItem("foodCallToken");
       if (!token) {
         toast.error("Authentication token not found. Please log in again.");
         navigate("/auth");
@@ -124,7 +119,7 @@ const DonationForm: React.FC = () => {
 
       // Send POST request to create a new donation
       const response = await axios.post(
-        "https://food-call.onrender.com/api/donations",
+        "http://localhost:5000/api/donations",
         submissionData,
         {
           headers: {
@@ -137,12 +132,12 @@ const DonationForm: React.FC = () => {
       console.log("Donation data submitted:", response.data);
       toast.success("Donation created successfully!");
       navigate("/dashboard");
-    } catch (error: any) {
+    } catch (error) {
       console.error(
         "Failed to create donation:",
         error.response?.data || error.message
       );
-      toast.error("Failed to create donation. Please try again.");
+      toast.error(error.response?.data?.message || "Failed to create donation. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -350,7 +345,6 @@ const DonationForm: React.FC = () => {
                     className='w-5 h-5 mr-2 animate-spin'
                     viewBox='0 0 24 24'
                   >
-                    {/* You can replace this with a loader icon */}
                     <circle
                       className='opacity-25'
                       cx='12'
