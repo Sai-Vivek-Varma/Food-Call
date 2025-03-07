@@ -17,8 +17,8 @@ interface DonationFormData {
   image?: File;
 }
 
-const DonationForm = () => {
-  const [formData, setFormData] = useState({
+const DonationForm: React.FC = () => {
+  const [formData, setFormData] = useState<DonationFormData>({
     title: "",
     description: "",
     quantity: "",
@@ -27,15 +27,15 @@ const DonationForm = () => {
     pickupTimeStart: "",
     pickupTimeEnd: "",
   });
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<Partial<DonationFormData>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [imagePreview, setImagePreview] = useState(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const navigate = useNavigate();
 
   // Scroll to top on mount and verify that a user is logged in.
   useEffect(() => {
     window.scrollTo(0, 0);
-    const userJson = localStorage.getItem("foodCallUser");
+    const userJson = localStorage.getItem("foodShareUser");
     if (!userJson) {
       toast.error("You must be logged in to create a donation");
       navigate("/auth");
@@ -43,30 +43,32 @@ const DonationForm = () => {
   }, [navigate]);
 
   // Handle input changes for text and textarea fields
-  const handleChange = (e) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    if (errors[name]) {
+    if (errors[name as keyof DonationFormData]) {
       setErrors((prev) => ({ ...prev, [name]: undefined }));
     }
   };
 
   // Handle image file selection and create a preview URL
-  const handleImageChange = (e) => {
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Create a FileReader to read the image as base64
+      setFormData((prev) => ({ ...prev, image: file }));
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImagePreview(reader.result);
+        setImagePreview(reader.result as string);
       };
       reader.readAsDataURL(file);
     }
   };
 
   // Basic client-side validation
-  const validate = () => {
-    const newErrors = {};
+  const validate = (): boolean => {
+    const newErrors: Partial<DonationFormData> = {};
     if (!formData.title) newErrors.title = "Title is required";
     if (!formData.description)
       newErrors.description = "Description is required";
@@ -83,15 +85,15 @@ const DonationForm = () => {
   };
 
   // Combine a time string (HH:MM) with today's date to create a full ISO datetime string.
-  const combineTimeWithToday = (timeString) => {
+  const combineTimeWithToday = (timeString: string): string => {
     // Get today's date in YYYY-MM-DD format
     const today = new Date().toISOString().split("T")[0];
     // Construct full datetime (assumes timeString is in HH:MM format)
-    return new Date(`${today}T${timeString}:00`).toISOString();
+    return new Date(`${today}T${timeString}:00Z`).toISOString();
   };
 
   // Handle form submission
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!validate()) return;
@@ -108,12 +110,12 @@ const DonationForm = () => {
         // Convert pickup time strings into full ISO date strings using today's date
         pickupTimeStart: combineTimeWithToday(formData.pickupTimeStart),
         pickupTimeEnd: combineTimeWithToday(formData.pickupTimeEnd),
-        // Use the base64 image data
+        // For now, use the preview URL (or empty string) for imageUrl; later, integrate file uploads
         imageUrl: imagePreview || "",
       };
 
       // Retrieve the token from localStorage
-      const token = localStorage.getItem("foodCallToken");
+      const token = localStorage.getItem("foodShareToken");
       if (!token) {
         toast.error("Authentication token not found. Please log in again.");
         navigate("/auth");
@@ -122,7 +124,7 @@ const DonationForm = () => {
 
       // Send POST request to create a new donation
       const response = await axios.post(
-        "http://localhost:5000/api/donations",
+        "https://food-call.onrender.com/api/donations",
         submissionData,
         {
           headers: {
@@ -135,15 +137,12 @@ const DonationForm = () => {
       console.log("Donation data submitted:", response.data);
       toast.success("Donation created successfully!");
       navigate("/dashboard");
-    } catch (error) {
+    } catch (error: any) {
       console.error(
         "Failed to create donation:",
         error.response?.data || error.message
       );
-      toast.error(
-        error.response?.data?.message ||
-          "Failed to create donation. Please try again."
-      );
+      toast.error("Failed to create donation. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -351,6 +350,7 @@ const DonationForm = () => {
                     className='w-5 h-5 mr-2 animate-spin'
                     viewBox='0 0 24 24'
                   >
+                    {/* You can replace this with a loader icon */}
                     <circle
                       className='opacity-25'
                       cx='12'
