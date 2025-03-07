@@ -1,7 +1,10 @@
+// server.js
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const dotenv = require("dotenv");
+const cloudinary = require("cloudinary").v2; // Import Cloudinary SDK
+const multer = require("multer"); // Import Multer
 const userRoutes = require("./routes/userRoutes");
 const donationRoutes = require("./routes/donationRoutes");
 
@@ -14,12 +17,28 @@ const app = express();
 // Middleware
 app.use(
   cors({
-    origin: ["http://localhost:8081", "http://localhost:8080", "https://food-call.lovable.app"],
+    origin: [
+      "http://localhost:8081",
+      "http://localhost:8080",
+      "https://food-call.lovable.app",
+    ],
     credentials: true,
   })
 );
 
 app.use(express.json());
+
+// Cloudinary Configuration
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+// Multer Setup: Store uploaded files in memory
+const upload = multer({
+  storage: multer.memoryStorage(),
+});
 
 // Connect to MongoDB
 mongoose
