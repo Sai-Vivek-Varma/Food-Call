@@ -33,7 +33,7 @@ const Dashboard: React.FC = () => {
         try {
           const token = localStorage.getItem("foodShareToken");
           const response = await axios.get<Donation[]>(
-            "https://food-call.onrender.com/api/donations/user/donor",
+            "http://localhost:5000/api/donations/user/donor",
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -75,85 +75,83 @@ const Dashboard: React.FC = () => {
   if (!user) return null;
 
   return (
-    <div className='min-h-screen'>
+    <div className="min-h-screen">
       <Navbar />
-      <section className='pt-28 pb-16 px-4'>
-        <div className='container mx-auto max-w-6xl'>
+      <section className="pt-28 pb-16 px-4">
+        <div className="container mx-auto max-w-6xl">
           {/* Dashboard Header */}
-          <div className='flex flex-col md:flex-row md:items-center justify-between mb-10'>
+          <div className="flex flex-col md:flex-row md:items-center justify-between mb-10">
             <div>
-              <span className='inline-block px-4 py-2 rounded-full bg-sage-100 text-sage-700 font-medium text-sm mb-4'>
+              <span className="inline-block px-4 py-2 rounded-full bg-sage-100 text-sage-700 font-medium text-sm mb-4">
                 Dashboard
               </span>
-              <h1 className='text-3xl font-bold mb-2'>Welcome, {user.name}</h1>
-              <p className='text-muted-foreground'>
+              <h1 className="text-3xl font-bold mb-2">Welcome, {user.name}</h1>
+              <p className="text-muted-foreground">
                 {user.role === "donor"
                   ? "Manage your food donations and see their status."
                   : "View your reserved donations and manage pickups."}
               </p>
             </div>
-            <div className='mt-6 md:mt-0 flex space-x-3'>
+            <div className="mt-6 md:mt-0 flex space-x-3">
               {user.role === "donor" && (
                 <Link
-                  to='/donate'
-                  className='btn-primary flex items-center space-x-2'
+                  to="/donate"
+                  className="btn-primary flex items-center space-x-2"
                 >
-                  <Plus className='w-4 h-4' />
+                  <Plus className="w-4 h-4" />
                   <span>New Donation</span>
                 </Link>
               )}
-              <button onClick={handleLogout} className='btn-outline'>
+              <button onClick={handleLogout} className="btn-outline">
                 Sign Out
               </button>
             </div>
           </div>
 
           {/* Summary Cards */}
-          <div className='grid grid-cols-1 md:grid-cols-4 gap-6 mb-10'>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
             {/* Role Card */}
-            <div className='bg-white p-6 rounded-xl border border-border flex items-center space-x-4'>
-              <div className='w-12 h-12 rounded-full bg-sage-100 flex items-center justify-center'>
-                <User className='w-6 h-6 text-sage-500' />
+            <div className="bg-white p-6 rounded-xl border border-border flex items-center space-x-4">
+              <div className="w-12 h-12 rounded-full bg-sage-100 flex items-center justify-center">
+                <User className="w-6 h-6 text-sage-500" />
               </div>
               <div>
-                <p className='text-muted-foreground text-sm'>Role</p>
-                <p className='font-medium capitalize'>{user.role}</p>
+                <p className="text-muted-foreground text-sm">Role</p>
+                <p className="font-medium capitalize">{user.role}</p>
               </div>
             </div>
             {/* Total Donations Card */}
-            <div className='bg-white p-6 rounded-xl border border-border flex items-center space-x-4'>
-              <div className='w-12 h-12 rounded-full bg-sage-100 flex items-center justify-center'>
-                <Package className='w-6 h-6 text-sage-500' />
+            <div className="bg-white p-6 rounded-xl border border-border flex items-center space-x-4">
+              <div className="w-12 h-12 rounded-full bg-sage-100 flex items-center justify-center">
+                <Package className="w-6 h-6 text-sage-500" />
               </div>
               <div>
-                <p className='text-muted-foreground text-sm'>Total Donations</p>
-                <p className='font-medium'>{donations.length}</p>
+                <p className="text-muted-foreground text-sm">Total Donations</p>
+                <p className="font-medium">{donations.length}</p>
               </div>
             </div>
             {/* Completed Donations Card */}
-            <div className='bg-white p-6 rounded-xl border border-border flex items-center space-x-4'>
-              <div className='w-12 h-12 rounded-full bg-green-100 flex items-center justify-center'>
-                <CheckCircle2 className='w-6 h-6 text-green-500' />
+            <div className="bg-white p-6 rounded-xl border border-border flex items-center space-x-4">
+              <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
+                <CheckCircle2 className="w-6 h-6 text-green-500" />
               </div>
               <div>
-                <p className='text-muted-foreground text-sm'>Completed</p>
-                <p className='font-medium'>
+                <p className="text-muted-foreground text-sm">Completed</p>
+                <p className="font-medium">
                   {donations.filter((d) => d.status === "completed").length}
                 </p>
               </div>
             </div>
             {/* Active Listings Card */}
-            <div className='bg-white p-6 rounded-xl border border-border flex items-center space-x-4'>
-              <div className='w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center'>
-                <Clock className='w-6 h-6 text-orange-500' />
+            <div className="bg-white p-6 rounded-xl border border-border flex items-center space-x-4">
+              <div className="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center">
+                <Clock className="w-6 h-6 text-orange-500" />
               </div>
               <div>
-                <p className='text-muted-foreground text-sm'>
-                  {user.role === "donor"
-                    ? "Active Listings"
-                    : "Pending Pickups"}
+                <p className="text-muted-foreground text-sm">
+                  {user.role === "donor" ? "Active Listings" : "Pending Pickups"}
                 </p>
-                <p className='font-medium'>
+                <p className="font-medium">
                   {
                     donations.filter(
                       (d) => d.status === "available" || d.status === "reserved"
@@ -165,8 +163,8 @@ const Dashboard: React.FC = () => {
           </div>
 
           {/* Tabs for Active vs History */}
-          <div className='mb-8'>
-            <div className='flex border-b border-border'>
+          <div className="mb-8">
+            <div className="flex border-b border-border">
               <button
                 className={`px-6 py-3 font-medium ${
                   activeTab === "active"
@@ -192,27 +190,27 @@ const Dashboard: React.FC = () => {
 
           {/* Donations List */}
           {isLoading ? (
-            <div className='flex flex-col items-center justify-center py-16'>
-              <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-sage-500 mb-4'></div>
-              <p className='text-muted-foreground'>Loading donations...</p>
+            <div className="flex flex-col items-center justify-center py-16">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sage-500 mb-4"></div>
+              <p className="text-muted-foreground">Loading donations...</p>
             </div>
           ) : filteredDonations.length === 0 ? (
-            <div className='flex flex-col items-center justify-center bg-white rounded-xl border border-border shadow-sm p-16'>
-              <Package className='w-16 h-16 text-sage-200 mb-4' />
-              <h3 className='text-xl font-medium mb-2'>No Donations Found</h3>
-              <p className='text-muted-foreground text-center max-w-md mb-6'>
+            <div className="flex flex-col items-center justify-center bg-white rounded-xl border border-border shadow-sm p-16">
+              <Package className="w-16 h-16 text-sage-200 mb-4" />
+              <h3 className="text-xl font-medium mb-2">No Donations Found</h3>
+              <p className="text-muted-foreground text-center max-w-md mb-6">
                 {activeTab === "active"
                   ? "You don't have any active donations. Create a new donation to get started!"
                   : "You don't have any completed or expired donations yet."}
               </p>
               {user.role === "donor" && (
-                <Link to='/donate' className='btn-primary'>
+                <Link to="/donate" className="btn-primary">
                   Create a Donation
                 </Link>
               )}
             </div>
           ) : (
-            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredDonations.map((donation) => (
                 <DonationCard
                   key={donation._id || donation.id}
