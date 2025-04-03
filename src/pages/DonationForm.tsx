@@ -1,3 +1,4 @@
+
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -68,16 +69,12 @@ const DonationForm = () => {
   const validate = () => {
     const newErrors = {};
     if (!formData.title) newErrors.title = "Title is required";
-    if (!formData.description)
-      newErrors.description = "Description is required";
+    if (!formData.description) newErrors.description = "Description is required";
     if (!formData.quantity) newErrors.quantity = "Quantity is required";
     if (!formData.expiryDate) newErrors.expiryDate = "Expiry date is required";
-    if (!formData.pickupAddress)
-      newErrors.pickupAddress = "Pickup address is required";
-    if (!formData.pickupTimeStart)
-      newErrors.pickupTimeStart = "Pickup start time is required";
-    if (!formData.pickupTimeEnd)
-      newErrors.pickupTimeEnd = "Pickup end time is required";
+    if (!formData.pickupAddress) newErrors.pickupAddress = "Pickup address is required";
+    if (!formData.pickupTimeStart) newErrors.pickupTimeStart = "Pickup start time is required";
+    if (!formData.pickupTimeEnd) newErrors.pickupTimeEnd = "Pickup end time is required";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -140,10 +137,7 @@ const DonationForm = () => {
         "Failed to create donation:",
         error.response?.data || error.message
       );
-      toast.error(
-        error.response?.data?.message ||
-          "Failed to create donation. Please try again."
-      );
+      toast.error(error.response?.data?.message || "Failed to create donation. Please try again.");
     } finally {
       setIsSubmitting(false);
     }

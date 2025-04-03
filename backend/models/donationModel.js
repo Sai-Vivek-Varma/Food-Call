@@ -1,28 +1,67 @@
-// models/donationModel.js
 const mongoose = require("mongoose");
 
-const donationSchema = mongoose.Schema(
-  {
-    title: { type: String, required: true },
-    description: { type: String, required: true },
-    quantity: { type: Number, required: true },
-    expiryDate: { type: Date, required: true },
-    pickupAddress: { type: String, required: true },
-    pickupTimeStart: { type: String, required: true },
-    pickupTimeEnd: { type: String, required: true },
-    donorId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
-    donorName: { type: String, required: true },
-    imageUrl: { type: String }, // Store the Cloudinary image URL
+const donationSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: true,
+    trim: true,
   },
-  {
-    timestamps: true,
-  }
-);
+  description: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  quantity: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  expiryDate: {
+    type: Date,
+    required: true,
+  },
+  pickupAddress: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  pickupTimeStart: {
+    type: Date,
+    required: true,
+  },
+  pickupTimeEnd: {
+    type: Date,
+    required: true,
+  },
+  donorId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  donorName: {
+    type: String,
+    required: true,
+  },
+  status: {
+    type: String,
+    enum: ["available", "reserved", "completed", "expired"],
+    default: "available",
+  },
+  reservedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
+  reservedByName: {
+    type: String,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  imageUrl: {
+    type: String,
+  },
+});
 
 const Donation = mongoose.model("Donation", donationSchema);
-
 module.exports = Donation;
