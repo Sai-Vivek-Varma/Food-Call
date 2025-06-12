@@ -14,6 +14,7 @@ export interface User {
 
 export interface Donation {
   id: string;
+  _id?: string; // MongoDB ID field
   title: string;
   description: string;
   quantity: string;
