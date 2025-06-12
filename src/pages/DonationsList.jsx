@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -62,6 +61,11 @@ const DonationsList = () => {
       toast.error("Failed to fetch donations");
       setIsLoading(false);
     }
+  };
+
+  const handleReservationSuccess = () => {
+    // Refresh the donations list after successful reservation
+    fetchDonations();
   };
 
   useEffect(() => {
@@ -172,6 +176,7 @@ const DonationsList = () => {
                     key={donation._id || donation.id}
                     donation={donation}
                     isOrphanage={true}
+                    onReservationSuccess={handleReservationSuccess}
                   />
                 ))}
               </div>
