@@ -3,7 +3,7 @@ import { Clock, MapPin, CalendarIcon, Package } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { toast } from "sonner";
-import { reserveDonation } from "@/lib/api";
+import { reserveDonation } from "../lib/api";
 
 const formatDate = (date) => {
   return new Date(date).toLocaleDateString("en-US", {
@@ -23,7 +23,6 @@ const formatTime = (date) => {
 const DonationCard = ({ donation, isOrphanage = false, onReservationSuccess }) => {
   const [isReserving, setIsReserving] = useState(false);
 
-  // Define classes for different statuses
   const statusClasses = {
     available: "bg-green-100 text-green-700",
     reserved: "bg-blue-100 text-blue-700",
@@ -42,16 +41,18 @@ const DonationCard = ({ donation, isOrphanage = false, onReservationSuccess }) =
         return;
       }
 
+      console.log("Attempting to reserve donation:", donation._id || donation.id);
+      console.log("Token:", token ? "Present" : "Missing");
+      
       await reserveDonation(donation._id || donation.id, token);
       toast.success("Donation reserved successfully!");
       
-      // Call the callback to refresh the data
       if (onReservationSuccess) {
         onReservationSuccess();
       }
     } catch (error) {
       console.error("Error reserving donation:", error);
-      toast.error("Failed to reserve donation. Please try again.");
+      toast.error(error.message || "Failed to reserve donation. Please try again.");
     } finally {
       setIsReserving(false);
     }
