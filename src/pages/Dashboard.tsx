@@ -102,9 +102,6 @@ const Dashboard: React.FC = () => {
                   <span>New Donation</span>
                 </Link>
               )}
-              <button onClick={handleLogout} className="btn-outline">
-                Sign Out
-              </button>
             </div>
           </div>
 

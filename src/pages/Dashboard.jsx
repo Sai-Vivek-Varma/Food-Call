@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -40,14 +39,14 @@ const Dashboard = () => {
     try {
       const token = localStorage.getItem("foodShareToken");
       let endpoint = "http://localhost:5000/api/donations";
-      
+
       // Different endpoints for different user types
       if (currentUser.role === "donor") {
         endpoint = "http://localhost:5000/api/donations/user/donor";
       } else if (currentUser.role === "orphanage") {
         endpoint = "http://localhost:5000/api/donations/user/reserved";
       }
-      
+
       const response = await axios.get(endpoint, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -92,7 +91,9 @@ const Dashboard = () => {
           <div className="flex flex-col md:flex-row md:items-center justify-between mb-10">
             <div>
               <span className="inline-block px-4 py-2 rounded-full bg-sage-100 text-sage-700 font-medium text-sm mb-4">
-                {user.role === "donor" ? "Donor Dashboard" : "Orphanage Dashboard"}
+                {user.role === "donor"
+                  ? "Donor Dashboard"
+                  : "Orphanage Dashboard"}
               </span>
               <h1 className="text-3xl font-bold mb-2">Welcome, {user.name}</h1>
               <p className="text-muted-foreground">
@@ -111,9 +112,6 @@ const Dashboard = () => {
                   <span>New Donation</span>
                 </button>
               )}
-              <button onClick={handleLogout} className="btn-outline border border-sage-500 text-sage-500 px-4 py-2 rounded-md hover:bg-sage-50 transition-colors">
-                Sign Out
-              </button>
             </div>
           </div>
 
@@ -135,7 +133,7 @@ const Dashboard = () => {
                 </p>
               </div>
             </div>
-            
+
             {/* Total Donations Card */}
             <div className="bg-white p-6 rounded-xl border border-border flex items-center space-x-4">
               <div className="w-12 h-12 rounded-full bg-sage-100 flex items-center justify-center">
@@ -143,12 +141,14 @@ const Dashboard = () => {
               </div>
               <div>
                 <p className="text-muted-foreground text-sm">
-                  {user.role === "donor" ? "Total Donations" : "Total Reservations"}
+                  {user.role === "donor"
+                    ? "Total Donations"
+                    : "Total Reservations"}
                 </p>
                 <p className="font-medium">{donations.length}</p>
               </div>
             </div>
-            
+
             {/* Completed Donations Card */}
             <div className="bg-white p-6 rounded-xl border border-border flex items-center space-x-4">
               <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
@@ -161,7 +161,7 @@ const Dashboard = () => {
                 </p>
               </div>
             </div>
-            
+
             {/* Active Listings Card */}
             <div className="bg-white p-6 rounded-xl border border-border flex items-center space-x-4">
               <div className="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center">
@@ -169,7 +169,9 @@ const Dashboard = () => {
               </div>
               <div>
                 <p className="text-muted-foreground text-sm">
-                  {user.role === "donor" ? "Active Listings" : "Pending Pickups"}
+                  {user.role === "donor"
+                    ? "Active Listings"
+                    : "Pending Pickups"}
                 </p>
                 <p className="font-medium">
                   {
@@ -193,7 +195,9 @@ const Dashboard = () => {
                 }`}
                 onClick={() => setActiveTab("active")}
               >
-                {user.role === "donor" ? "Active Donations" : "Active Reservations"}
+                {user.role === "donor"
+                  ? "Active Donations"
+                  : "Active Reservations"}
               </button>
               <button
                 className={`px-6 py-3 font-medium ${
@@ -212,29 +216,32 @@ const Dashboard = () => {
           {isLoading ? (
             <div className="flex flex-col items-center justify-center py-16">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sage-500 mb-4"></div>
-              <p className="text-muted-foreground">Loading {user.role === "donor" ? "donations" : "reservations"}...</p>
+              <p className="text-muted-foreground">
+                Loading {user.role === "donor" ? "donations" : "reservations"}
+                ...
+              </p>
             </div>
           ) : filteredDonations.length === 0 ? (
             <div className="flex flex-col items-center justify-center bg-white rounded-xl border border-border shadow-sm p-16">
               <Package className="w-16 h-16 text-sage-200 mb-4" />
               <h3 className="text-xl font-medium mb-2">
-                {activeTab === "active" 
-                  ? (user.role === "donor" ? "No Active Donations" : "No Active Reservations")
-                  : "No History Found"
-                }
+                {activeTab === "active"
+                  ? user.role === "donor"
+                    ? "No Active Donations"
+                    : "No Active Reservations"
+                  : "No History Found"}
               </h3>
               <p className="text-muted-foreground text-center max-w-md mb-6">
                 {activeTab === "active"
-                  ? user.role === "donor" 
+                  ? user.role === "donor"
                     ? "You don't have any active donations. Create a new donation to get started!"
                     : "You don't have any active reservations. Browse available donations to make a reservation."
                   : user.role === "donor"
-                    ? "You don't have any completed or expired donations yet."
-                    : "You don't have any completed reservations yet."
-                }
+                  ? "You don't have any completed or expired donations yet."
+                  : "You don't have any completed reservations yet."}
               </p>
               {user.role === "donor" && activeTab === "active" && (
-                <button 
+                <button
                   onClick={() => setIsDonationModalOpen(true)}
                   className="bg-sage-500 text-white px-6 py-2 rounded-md hover:bg-sage-600 transition-colors"
                 >
@@ -256,7 +263,7 @@ const Dashboard = () => {
         </div>
       </section>
       <Footer />
-      
+
       {/* Donation Form Modal */}
       <DonationFormModal
         isOpen={isDonationModalOpen}
