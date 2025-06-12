@@ -22,3 +22,21 @@ export const isValidUserRole = (role) => {
 export const isValidDonationStatus = (status) => {
   return Object.values(DONATION_STATUS).includes(status);
 };
+
+// Donation type structure for reference
+export const DonationFields = {
+  _id: 'string',
+  title: 'string',
+  description: 'string',
+  foodType: 'string',
+  quantity: 'number',
+  expiryDate: 'Date',
+  pickupLocation: 'string',
+  contactInfo: 'string',
+  imageUrl: 'string',
+  donorId: 'string',
+  donorName: 'string',
+  status: 'string',
+  createdAt: 'Date',
+  updatedAt: 'Date'
+};

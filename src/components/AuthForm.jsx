@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { registerUser, loginUser } from "@/lib/api";
 
-const AuthForm = ({ type, onSuccess, onClose }) => {
+const AuthForm = ({ type, onSuccess }) => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -77,7 +77,6 @@ const AuthForm = ({ type, onSuccess, onClose }) => {
       localStorage.setItem("foodShareToken", userData.token);
 
       onSuccess();
-      onClose();
       navigate("/dashboard");
     } catch (error) {
       console.error("Auth error:", error);
