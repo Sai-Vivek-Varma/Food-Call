@@ -1,29 +1,10 @@
 
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { ArrowRight, Heart, Users, Package, CheckCircle, Clock, MapPin } from "lucide-react";
+import { ArrowRight, Heart, Users, Package } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 const Index = () => {
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    // Check if user is already logged in and redirect to dashboard
-    const userJson = localStorage.getItem("foodShareUser");
-    if (userJson) {
-      try {
-        const parsedUser = JSON.parse(userJson);
-        if (parsedUser && parsedUser.id) {
-          navigate("/dashboard");
-        }
-      } catch (error) {
-        console.error("Error parsing user data:", error);
-      }
-    }
-  }, [navigate]);
-
   return (
     <div className="min-h-screen">
       <Navbar />
