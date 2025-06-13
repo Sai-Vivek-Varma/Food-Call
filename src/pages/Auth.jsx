@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import AuthForm from '@/components/AuthForm';
+import AuthForm from '../components/AuthForm';
 
 const Auth = () => {
   const [authType, setAuthType] = useState('login');
