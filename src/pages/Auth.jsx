@@ -1,8 +1,7 @@
-
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'sonner';
-import AuthForm from '../components/AuthForm';
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import AuthForm from "../components/AuthForm";
 
 const Auth = () => {
   const [authType, setAuthType] = useState("login");
@@ -104,32 +103,25 @@ const Auth = () => {
                     : "Create an account to start sharing surplus food or accessing donations for your orphanage."}
                 </p>
 
-                
                 {/* Auth Type Toggle */}
                 <div className="mb-8">
                   <div className="flex p-1 bg-sage-50 rounded-xl border border-sage-200">
                     <button
                       onClick={() => setAuthType("login")}
-                      className={`flex-1 py-2 text-center rounded-md transition-colors ${
-                        authType === "login" ? "bg-white shadow-sm" : ""
-                      onClick={() => setAuthType('login')}
                       className={`flex-1 py-3 text-center rounded-lg transition-all font-medium ${
-                        authType === 'login' 
-                          ? 'bg-white shadow-md text-sage-700 border border-sage-200' 
-                          : 'text-sage-600 hover:text-sage-700'
+                        authType === "login"
+                          ? "bg-white shadow-md text-sage-700 border border-sage-200"
+                          : "text-sage-600 hover:text-sage-700"
                       }`}
                     >
                       Sign In
                     </button>
                     <button
                       onClick={() => setAuthType("register")}
-                      className={`flex-1 py-2 text-center rounded-md transition-colors ${
-                        authType === "register" ? "bg-white shadow-sm" : ""
-                      onClick={() => setAuthType('register')}
                       className={`flex-1 py-3 text-center rounded-lg transition-all font-medium ${
-                        authType === 'register' 
-                          ? 'bg-white shadow-md text-sage-700 border border-sage-200' 
-                          : 'text-sage-600 hover:text-sage-700'
+                        authType === "register"
+                          ? "bg-white shadow-md text-sage-700 border border-sage-200"
+                          : "text-sage-600 hover:text-sage-700"
                       }`}
                     >
                       Register
@@ -137,41 +129,16 @@ const Auth = () => {
                   </div>
                 </div>
 
-                
                 {/* Auth Form */}
                 <AuthForm type={authType} onSuccess={handleSuccess} />
 
-                <p className="text-center mt-8 text-muted-foreground">
-                  {authType === "login" ? (
-                    <>
-                      Don't have an account yet?{" "}
-                      <button
-                        onClick={toggleAuthType}
-                        className="text-sage-500 hover:text-sage-600 font-medium"
-                      >
-                        Create one now
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      Already have an account?{" "}
-                      <button
-                        onClick={toggleAuthType}
-                        className="text-sage-500 hover:text-sage-600 font-medium"
-                      >
-                        Sign in
-                      </button>
-                    </>
-                  )}
-                </p>
-                
                 {/* Toggle Link */}
                 <div className="text-center mt-8 pt-6 border-t border-sage-100">
                   <p className="text-muted-foreground">
-                    {authType === 'login' ? (
+                    {authType === "login" ? (
                       <>
-                        New to FoodCall?{' '}
-                        <button 
+                        New to FoodCall?{" "}
+                        <button
                           onClick={toggleAuthType}
                           className="text-sage-600 hover:text-sage-700 font-semibold transition-colors"
                         >
@@ -180,8 +147,8 @@ const Auth = () => {
                       </>
                     ) : (
                       <>
-                        Already have an account?{' '}
-                        <button 
+                        Already have an account?{" "}
+                        <button
                           onClick={toggleAuthType}
                           className="text-sage-600 hover:text-sage-700 font-semibold transition-colors"
                         >
