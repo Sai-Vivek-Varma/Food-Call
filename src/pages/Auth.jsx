@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { Heart, Users, Package } from 'lucide-react';
 import AuthForm from '@/components/AuthForm';
 
 const Auth = () => {
@@ -38,6 +37,7 @@ const Auth = () => {
     <div className="min-h-screen bg-gradient-to-br from-sage-50 to-white">
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-6xl mx-auto">
+          {/* Header */}
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-6xl font-bold text-sage-700 mb-4">
               <span className="text-sage-500">Food</span>Call
@@ -47,39 +47,9 @@ const Auth = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 mb-12">
-            <div className="bg-white p-6 rounded-xl border border-border shadow-sm">
-              <div className="w-16 h-16 bg-sage-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Heart className="w-8 h-8 text-sage-500" />
-              </div>
-              <h3 className="text-lg font-semibold mb-2">Share Food</h3>
-              <p className="text-muted-foreground text-sm">
-                Donate surplus food instead of letting it go to waste
-              </p>
-            </div>
-
-            <div className="bg-white p-6 rounded-xl border border-border shadow-sm">
-              <div className="w-16 h-16 bg-sage-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Users className="w-8 h-8 text-sage-500" />
-              </div>
-              <h3 className="text-lg font-semibold mb-2">Help Communities</h3>
-              <p className="text-muted-foreground text-sm">
-                Connect orphanages with nutritious meals for children
-              </p>
-            </div>
-
-            <div className="bg-white p-6 rounded-xl border border-border shadow-sm">
-              <div className="w-16 h-16 bg-sage-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Package className="w-8 h-8 text-sage-500" />
-              </div>
-              <h3 className="text-lg font-semibold mb-2">Reduce Waste</h3>
-              <p className="text-muted-foreground text-sm">
-                Make a positive environmental impact by reducing food waste
-              </p>
-            </div>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-12 items-center">
+          {/* Main Content */}
+          <div className="grid md:grid-cols-2 gap-12 items-center max-w-5xl mx-auto">
+            {/* Left Side - Image */}
             <div className="hidden md:block">
               <div className="relative">
                 <div className="absolute -top-6 -left-6 w-full h-full rounded-xl bg-sage-200/50 -z-10"></div>
@@ -91,6 +61,7 @@ const Auth = () => {
               </div>
             </div>
             
+            {/* Right Side - Auth Form */}
             <div>
               <div className="bg-white p-8 rounded-xl border border-border shadow-sm max-w-md mx-auto md:mx-0">
                 <h2 className="text-3xl font-bold mb-2">
@@ -99,10 +70,11 @@ const Auth = () => {
                 
                 <p className="text-muted-foreground mb-8">
                   {authType === 'login' 
-                    ? 'Sign in to your account to continue your journey in reducing food waste and helping those in need.'
-                    : 'Create an account to start sharing surplus food or accessing donations for your orphanage.'}
+                    ? 'Sign in to your account to continue making a difference.'
+                    : 'Create an account to start sharing food or receiving donations.'}
                 </p>
                 
+                {/* Auth Type Toggle */}
                 <div className="mb-8">
                   <div className="flex p-1 bg-secondary rounded-lg">
                     <button
@@ -124,8 +96,10 @@ const Auth = () => {
                   </div>
                 </div>
                 
+                {/* Auth Form */}
                 <AuthForm type={authType} onSuccess={handleSuccess} />
                 
+                {/* Toggle Link */}
                 <p className="text-center mt-8 text-muted-foreground">
                   {authType === 'login' ? (
                     <>
