@@ -1,12 +1,9 @@
-
 import { Link } from "react-router-dom";
 import { ArrowRight, Heart, Users, Package, Star, Check, Play } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-
 const Index = () => {
-  return (
-    <div className="min-h-screen bg-white">
+  return <div className="min-h-screen bg-white">
       <Navbar />
       
       {/* Hero Section with Unique Design */}
@@ -25,21 +22,18 @@ const Index = () => {
                 Reducing Waste • Fighting Hunger
               </div>
               
-              <h1 className="text-5xl lg:text-6xl font-bold leading-tight">
+              <h1 className="text-5xl lg:text-6xl font-bold leading-tight mx-0 py-[10px] my-[50px]">
                 Turn Surplus Food into
                 <span className="block text-sage-500 mt-2">Hope & Meals</span>
               </h1>
               
-              <p className="text-xl text-gray-600 leading-relaxed max-w-lg">
+              <p className="text-xl text-gray-600 leading-relaxed max-w-lg mx-0 my-[25px]">
                 Connect surplus food with orphanages in need. Our platform makes food donation 
                 simple, efficient, and impactful for everyone involved.
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4">
-                <Link
-                  to="/auth"
-                  className="inline-flex items-center justify-center px-8 py-4 bg-sage-500 text-white rounded-xl font-semibold hover:bg-sage-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
-                >
+                <Link to="/auth" className="inline-flex items-center justify-center px-8 py-4 bg-sage-500 text-white rounded-xl font-semibold hover:bg-sage-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
                   Start Sharing Food
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Link>
@@ -50,7 +44,7 @@ const Index = () => {
               </div>
               
               {/* Stats Row */}
-              <div className="flex items-center gap-8 pt-8">
+              <div className="flex items-center gap-8 pt-8 py-[22px]">
                 <div>
                   <div className="text-2xl font-bold text-sage-600">1000+</div>
                   <div className="text-sm text-gray-500">Meals Shared</div>
@@ -69,11 +63,7 @@ const Index = () => {
             {/* Right Visual */}
             <div className="relative">
               <div className="relative z-10">
-                <img 
-                  src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=2070&auto=format&fit=crop" 
-                  alt="Food donation" 
-                  className="rounded-2xl shadow-2xl w-full h-[500px] object-cover"
-                />
+                <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=2070&auto=format&fit=crop" alt="Food donation" className="rounded-xl shadow-xl w-full h-[500px] " />
                 {/* Floating Card */}
                 <div className="absolute -bottom-6 -left-6 bg-white p-6 rounded-xl shadow-xl border border-gray-100">
                   <div className="flex items-center gap-4">
@@ -192,11 +182,7 @@ const Index = () => {
             </div>
             
             <div className="relative">
-              <img 
-                src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?q=80&w=2070&auto=format&fit=crop" 
-                alt="Community impact" 
-                className="rounded-2xl shadow-xl w-full h-[400px] object-cover"
-              />
+              <img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?q=80&w=2070&auto=format&fit=crop" alt="Community impact" className="rounded-2xl shadow-xl w-full h-[400px] object-cover" />
             </div>
           </div>
         </div>
@@ -215,9 +201,7 @@ const Index = () => {
           <div className="grid md:grid-cols-2 gap-8">
             <div className="bg-white p-8 rounded-2xl shadow-sm">
               <div className="flex items-center gap-1 mb-4">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
-                ))}
+                {[...Array(5)].map((_, i) => <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />)}
               </div>
               <p className="text-gray-600 mb-6">
                 "FoodCall has transformed how we handle surplus food at our restaurant. 
@@ -236,9 +220,7 @@ const Index = () => {
             
             <div className="bg-white p-8 rounded-2xl shadow-sm">
               <div className="flex items-center gap-1 mb-4">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
-                ))}
+                {[...Array(5)].map((_, i) => <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />)}
               </div>
               <p className="text-gray-600 mb-6">
                 "The children at our orphanage now have access to fresh, nutritious meals 
@@ -268,10 +250,7 @@ const Index = () => {
             Join thousands of changemakers who are turning food waste into hope. 
             Start your journey today.
           </p>
-          <Link
-            to="/auth"
-            className="inline-flex items-center px-8 py-4 bg-white text-sage-600 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
-          >
+          <Link to="/auth" className="inline-flex items-center px-8 py-4 bg-white text-sage-600 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
             Get Started Now
             <ArrowRight className="ml-2 w-5 h-5" />
           </Link>
@@ -279,8 +258,6 @@ const Index = () => {
       </section>
 
       <Footer />
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
