@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -35,26 +34,27 @@ const Auth = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-sage-50 via-white to-sage-100">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-10">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <div className="text-center mb-8 lg:mb-12">
+          <div className="text-center mb-8 md:mb-12">
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-sage-700 mb-3">
               <span className="text-sage-500">Food</span>Call
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              Connecting food donors with orphanages to reduce waste and feed those in need
+              Connecting food donors with orphanages to reduce waste and feed
+              those in need
             </p>
           </div>
 
           {/* Main Content Container */}
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-8 md:gap-16 items-center max-w-6xl mx-auto">
             {/* Left Side - Image Section */}
-            <div className="order-2 lg:order-1">
+            <div className="order- md:order-1">
               <div className="relative group">
                 {/* Background decoration */}
                 <div className="absolute -top-4 -left-4 w-full h-full rounded-2xl bg-sage-200/30 -z-10 group-hover:bg-sage-200/40 transition-colors duration-300"></div>
-                
+
                 {/* Main image */}
                 <div className="relative overflow-hidden rounded-2xl shadow-xl">
                   <img
@@ -62,13 +62,15 @@ const Auth = () => {
                     alt="Food donation and community support"
                     className="w-full h-[400px] lg:h-[500px] object-cover transition-transform duration-300 group-hover:scale-105"
                   />
-                  
+
                   {/* Overlay with gradient */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
-                  
+
                   {/* Floating badge */}
                   <div className="absolute bottom-6 left-6 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full">
-                    <p className="text-sm font-medium text-sage-700">Making a difference together</p>
+                    <p className="text-sm font-medium text-sage-700">
+                      Making a difference together
+                    </p>
                   </div>
                 </div>
               </div>
@@ -95,8 +97,8 @@ const Auth = () => {
                     <button
                       onClick={() => setAuthType("login")}
                       className={`flex-1 py-3 px-4 text-center rounded-lg font-medium transition-all duration-200 ${
-                        authType === "login" 
-                          ? "bg-white text-sage-700 shadow-sm border border-sage-200" 
+                        authType === "login"
+                          ? "bg-white text-sage-700 shadow-sm border border-sage-200"
                           : "text-sage-600 hover:text-sage-700"
                       }`}
                     >
@@ -105,8 +107,8 @@ const Auth = () => {
                     <button
                       onClick={() => setAuthType("register")}
                       className={`flex-1 py-3 px-4 text-center rounded-lg font-medium transition-all duration-200 ${
-                        authType === "register" 
-                          ? "bg-white text-sage-700 shadow-sm border border-sage-200" 
+                        authType === "register"
+                          ? "bg-white text-sage-700 shadow-sm border border-sage-200"
                           : "text-sage-600 hover:text-sage-700"
                       }`}
                     >
