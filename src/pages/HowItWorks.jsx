@@ -73,7 +73,7 @@ const HowItWorks = () => {
             <div className="order-1 md:order-2">
               <div className="relative">
                 <img
-                  src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?q=80&w=2070&auto=format&fit=crop"
+                  src="https://images.unsplash.com/photo-1710988006558-3e57da46f7c0?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Y2xpY2tpbmclMjBmb29kJTIwcGljdHVyZXN8ZW58MHwwfDB8fHww"
                   alt="Food preparation"
                   className="rounded-xl shadow-xl w-full h-64 md:h-80 object-cover"
                 />
@@ -86,7 +86,7 @@ const HowItWorks = () => {
             <div>
               <div className="relative">
                 <img
-                  src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?q=80&w=2070&auto=format&fit=crop"
+                  src="https://plus.unsplash.com/premium_photo-1661631378884-29d08edf0ef0?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTIxfHxob2xkaW5nJTIwcGhvbmV8ZW58MHwwfDB8fHww"
                   alt="Children receiving food"
                   className="rounded-xl shadow-xl w-full h-64 md:h-80 object-cover"
                 />
@@ -171,7 +171,7 @@ const HowItWorks = () => {
             <div className="order-1 md:order-2">
               <div className="relative">
                 <img
-                  src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=2070&auto=format&fit=crop"
+                  src="https://images.unsplash.com/photo-1628717341663-0007b0ee2597?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Njd8fGZvb2QlMjBkZWxpdmVyeXxlbnwwfDB8MHx8fDA%3D"
                   alt="Food delivery"
                   className="rounded-xl shadow-xl w-full h-64 md:h-80 object-cover"
                 />

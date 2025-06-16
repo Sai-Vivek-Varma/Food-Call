@@ -110,13 +110,6 @@ const Navbar = () => {
                     <div className="px-4 py-2 text-sm text-muted-foreground border-b">
                       {user.role === "donor" ? "Food Donor" : "Orphanage"}
                     </div>
-                    <Link
-                      to="/dashboard"
-                      className="block px-4 py-2 text-sm text-foreground hover:bg-sage-50"
-                      onClick={() => setIsDropdownOpen(false)}
-                    >
-                      Dashboard
-                    </Link>
                     <button
                       onClick={handleLogout}
                       className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"

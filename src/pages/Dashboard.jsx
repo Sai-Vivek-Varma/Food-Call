@@ -112,12 +112,6 @@ const Dashboard = () => {
                   <span>New Donation</span>
                 </button>
               )}
-              <button
-                onClick={handleLogout}
-                className="btn-outline border border-sage-500 text-sage-500 px-4 py-2 rounded-md hover:bg-sage-50 transition-colors"
-              >
-                Sign Out
-              </button>
             </div>
           </div>
 

@@ -70,8 +70,8 @@ const Index = () => {
             </div>
 
             {/* Right Visual */}
-            <div className="relative order-1">
-              <div className="py-10 z-10">
+            <div className="relative md:order-1">
+              <div className="py-0 z-0">
                 <img
                   src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=2070&auto=format&fit=crop"
                   alt="Food donation"
@@ -292,7 +292,7 @@ const Index = () => {
               </div>
             </div>
 
-            <div className="relative">
+            <div className="relative hidden md:block">
               <img
                 src="https://media.istockphoto.com/id/1498170916/photo/a-couple-is-taking-a-bag-of-food-at-the-food-and-clothes-bank.webp?a=1&b=1&s=612x612&w=0&k=20&c=WIKBpmpSbwZBW5EEk6ZbXPaji47EUrfhmS5uBxBu9jA="
                 alt="Community impact"
