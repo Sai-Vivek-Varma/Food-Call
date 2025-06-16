@@ -245,3 +245,7 @@
 .border-sage-950 {
   border-color: var(--sage-950);
 }
+
+.demo {
+  @apply bg-gradient-to-r from-sage-500 to-sage-700;
+}
