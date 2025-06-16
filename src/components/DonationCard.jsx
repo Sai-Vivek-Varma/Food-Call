@@ -1,5 +1,6 @@
 
 import { Clock, MapPin, CalendarIcon, Package } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useState } from "react";
 import { toast } from "sonner";
 import { reserveDonation } from "../lib/api";
@@ -19,7 +20,7 @@ const formatTime = (date) => {
   });
 };
 
-const DonationCard = ({ donation, isOrphanage = false, onReservationSuccess, onViewDetails }) => {
+const DonationCard = ({ donation, isOrphanage = false, onReservationSuccess }) => {
   const [isReserving, setIsReserving] = useState(false);
 
   const statusClasses = {
@@ -57,14 +58,8 @@ const DonationCard = ({ donation, isOrphanage = false, onReservationSuccess, onV
     }
   };
 
-  const handleViewDetails = () => {
-    if (onViewDetails) {
-      onViewDetails(donation);
-    }
-  };
-
   return (
-    <div className="bg-white rounded-xl border border-sage-200 shadow-sm transition-all hover:shadow-lg hover:border-sage-300">
+    <div className="bg-white rounded-xl border border-border shadow-sm transition-all hover:shadow-md">
       {donation.imageUrl && (
         <div className="relative h-48 rounded-t-xl overflow-hidden">
           <img
@@ -93,7 +88,7 @@ const DonationCard = ({ donation, isOrphanage = false, onReservationSuccess, onV
           </div>
         )}
 
-        <h3 className="text-lg font-semibold mb-2 truncate text-sage-800">{donation.title}</h3>
+        <h3 className="text-lg font-semibold mb-2 truncate">{donation.title}</h3>
 
         <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
           {donation.description}
@@ -121,30 +116,22 @@ const DonationCard = ({ donation, isOrphanage = false, onReservationSuccess, onV
           </div>
         </div>
 
-        <div className="mt-4 pt-4 border-t border-sage-100 space-y-2">
+        <div className="mt-4 pt-4 border-t border-border">
           {isOrphanage && donation.status === "available" ? (
-            <>
-              <button 
-                onClick={handleReserve}
-                disabled={isReserving}
-                className="w-full py-3 px-4 bg-sage-600 text-white rounded-lg hover:bg-sage-700 transition-colors text-center text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isReserving ? "Reserving..." : "Reserve Donation"}
-              </button>
-              <button
-                onClick={handleViewDetails}
-                className="w-full py-2 px-4 bg-sage-50 text-sage-700 rounded-lg hover:bg-sage-100 transition-colors text-center text-sm font-medium"
-              >
-                View Details
-              </button>
-            </>
+            <button 
+              onClick={handleReserve}
+              disabled={isReserving}
+              className="w-full py-2 px-4 bg-sage-500 text-white rounded-md hover:bg-sage-600 transition-colors text-center text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isReserving ? "Reserving..." : "Reserve Donation"}
+            </button>
           ) : (
-            <button
-              onClick={handleViewDetails}
-              className="w-full py-3 px-4 bg-sage-50 text-sage-700 rounded-lg hover:bg-sage-100 transition-colors text-center text-sm font-medium"
+            <Link
+              to={`/donations/${donation._id || donation.id}`}
+              className="block w-full py-2 px-4 bg-secondary text-foreground rounded-md hover:bg-secondary/80 transition-colors text-center text-sm font-medium"
             >
               View Details
-            </button>
+            </Link>
           )}
         </div>
       </div>

@@ -1,57 +1,40 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import {
-  Package,
-  User,
-  CheckCircle2,
-  Clock,
-  Plus,
-  Heart,
-  TrendingUp,
-} from "lucide-react";
+import { Package, User, CheckCircle2, Clock, Plus, Heart } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import DonationCard from "@/components/DonationCard";
 import DonationFormModal from "@/components/DonationFormModal";
-import DonationDetailModal from "@/components/DonationDetailModal";
-import { reserveDonation } from "../lib/api";
 import axios from "axios";
-
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'sonner';
-import { Plus, Package, Clock, CheckCircle, Users, Heart } from 'lucide-react';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
+  const [donations, setDonations] = useState([]);
+  const [activeTab, setActiveTab] = useState("active");
+  const [isLoading, setIsLoading] = useState(true);
+  const [isDonationModalOpen, setIsDonationModalOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     const userJson = localStorage.getItem("foodShareUser");
     if (!userJson) {
-      navigate("/auth");
+      toast.error("You must be logged in to access your dashboard");
+      navigate("/");
       return;
     }
-    
     try {
       const parsedUser = JSON.parse(userJson);
       setUser(parsedUser);
+      fetchDonations(parsedUser);
     } catch (error) {
       console.error("Error parsing user data:", error);
-      navigate("/auth");
+      toast.error("An error occurred. Please try logging in again.");
+      navigate("/");
     }
   }, [navigate]);
 
-  if (!user) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-sage-50 to-white flex items-center justify-center">
-        <div className="animate-pulse">Loading...</div>
-      </div>
-    );
-  }
   const fetchDonations = async (currentUser) => {
     try {
       const token = localStorage.getItem("foodShareToken");
@@ -78,39 +61,11 @@ const Dashboard = () => {
     }
   };
 
-  const handleViewDetails = (donation) => {
-    setSelectedDonation(donation);
-    setIsDetailModalOpen(true);
-  };
-
-  const handleReserveFromModal = async (donationId) => {
-    setIsReserving(true);
-    try {
-      const token = localStorage.getItem("foodShareToken");
-      await reserveDonation(donationId, token);
-      toast.success("Donation reserved successfully!");
-      setIsDetailModalOpen(false);
-      if (user) {
-        fetchDonations(user);
-      }
-    } catch (error) {
-      console.error("Error reserving donation:", error);
-      toast.error(error.message || "Failed to reserve donation");
-    } finally {
-      setIsReserving(false);
-    }
-  };
-
-  const activeDonations = donations.filter((donation) =>
-    ["available", "reserved"].includes(donation.status)
+  const filteredDonations = donations.filter((donation) =>
+    activeTab === "active"
+      ? ["available", "reserved"].includes(donation.status)
+      : ["completed", "expired"].includes(donation.status)
   );
-
-  const completedDonations = donations.filter((donation) =>
-    ["completed", "expired"].includes(donation.status)
-  );
-
-  const filteredDonations =
-    activeTab === "active" ? activeDonations : completedDonations;
 
   const handleLogout = () => {
     localStorage.removeItem("foodShareUser");
@@ -128,48 +83,33 @@ const Dashboard = () => {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-sage-50 to-white">
+    <div className="min-h-screen">
       <Navbar />
-      
-      <main className="pt-32 pb-20 px-6">
+      <section className="pt-28 pb-16 px-4">
         <div className="container mx-auto max-w-6xl">
-          {/* Welcome Section */}
-          <div className="mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold text-sage-800 mb-4">
-              Welcome back, {user.name}!
-            </h1>
-            <p className="text-xl text-gray-600">
-              {user.role === 'donor' 
-                ? 'Ready to share some surplus food and make a difference?'
-                : 'Let\'s find some donations for your community.'
-              }
-            </p>
-          </div>
-
-          {/* Quick Stats */}
-          <div className="grid md:grid-cols-3 gap-6 mb-12">
-            <div className="bg-white p-8 rounded-2xl shadow-lg border border-sage-100">
-              <div className="flex items-center justify-between mb-4">
-                <Package className="w-10 h-10 text-sage-600" />
-                <span className="text-3xl font-bold text-sage-800">12</span>
-              </div>
-              <h1 className="text-4xl font-bold mb-3 text-sage-800">
-                Welcome back, {user.name}
-              </h1>
-              <p className="text-xl text-muted-foreground max-w-2xl">
+          {/* Dashboard Header */}
+          <div className="flex flex-col md:flex-row md:items-center justify-between mb-10">
+            <div>
+              <span className="inline-block px-4 py-2 rounded-full bg-sage-100 text-sage-700 font-medium text-sm mb-4">
                 {user.role === "donor"
-                  ? "Track your food donations and see the positive impact you're making in your community."
-                  : "Manage your reserved donations and coordinate pickups with local food donors."}
+                  ? "Donor Dashboard"
+                  : "Orphanage Dashboard"}
+              </span>
+              <h1 className="text-3xl font-bold mb-2">Welcome, {user.name}</h1>
+              <p className="text-muted-foreground">
+                {user.role === "donor"
+                  ? "Manage your food donations and see their status."
+                  : "View your reserved donations and manage pickups."}
               </p>
             </div>
-            <div className="mt-8 lg:mt-0 flex flex-col sm:flex-row gap-3">
+            <div className="mt-6 md:mt-0 flex space-x-3">
               {user.role === "donor" && (
                 <button
                   onClick={() => setIsDonationModalOpen(true)}
-                  className="inline-flex items-center px-6 py-3 bg-sage-600 text-white rounded-xl hover:bg-sage-700 transition-colors font-semibold shadow-lg hover:shadow-xl"
+                  className="btn-primary flex items-center space-x-2 bg-sage-500 text-white px-4 py-2 rounded-md hover:bg-sage-600 transition-colors"
                 >
-                  <Plus className="w-5 h-5 mr-2" />
-                  New Donation
+                  <Plus className="w-4 h-4" />
+                  <span>New Donation</span>
                 </button>
               )}
               <button
@@ -180,39 +120,24 @@ const Dashboard = () => {
               </button>
             </div>
           </div>
-              <h3 className="font-semibold text-sage-800 mb-2">
-                {user.role === 'donor' ? 'Total Donations' : 'Items Received'}
-              </h3>
-              <p className="text-gray-600 text-sm">This month</p>
-            </div>
 
           {/* Summary Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
             {/* Role Card */}
-            <div className="bg-white p-6 rounded-2xl border-2 border-sage-100 shadow-lg hover:shadow-xl transition-all">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground mb-1">
-                    Your Role
-                  </p>
-                  <p className="text-xl font-bold text-sage-800 capitalize">
-                    {user.role === "donor" ? "Food Donor" : "Orphanage"}
-                  </p>
-                </div>
-                <div className="w-12 h-12 rounded-xl bg-sage-100 flex items-center justify-center">
-                  {user.role === "donor" ? (
-                    <Heart className="w-6 h-6 text-sage-600" />
-                  ) : (
-                    <User className="w-6 h-6 text-sage-600" />
-                  )}
-                </div>
-            <div className="bg-white p-8 rounded-2xl shadow-lg border border-sage-100">
-              <div className="flex items-center justify-between mb-4">
-                <Clock className="w-10 h-10 text-orange-500" />
-                <span className="text-3xl font-bold text-sage-800">3</span>
+            <div className="bg-white p-6 rounded-xl border border-border flex items-center space-x-4">
+              <div className="w-12 h-12 rounded-full bg-sage-100 flex items-center justify-center">
+                {user.role === "donor" ? (
+                  <Heart className="w-6 h-6 text-sage-500" />
+                ) : (
+                  <User className="w-6 h-6 text-sage-500" />
+                )}
               </div>
-              <h3 className="font-semibold text-sage-800 mb-2">Pending</h3>
-              <p className="text-gray-600 text-sm">Awaiting pickup</p>
+              <div>
+                <p className="text-muted-foreground text-sm">Role</p>
+                <p className="font-medium capitalize">
+                  {user.role === "donor" ? "Food Donor" : "Orphanage"}
+                </p>
+              </div>
             </div>
 
             {/* Total Donations Card */}
@@ -265,119 +190,14 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Progress Indicator */}
-          {donations.length > 0 && (
-            <div className="bg-gradient-to-r from-sage-500 to-sage-600 text-white p-6 rounded-2xl mb-12 shadow-lg">
-              <div className="flex items-center justify-between">
-
-            <div className="bg-white p-8 rounded-2xl shadow-lg border border-sage-100">
-              <div className="flex items-center justify-between mb-4">
-                <Heart className="w-10 h-10 text-red-500" />
-                <span className="text-3xl font-bold text-sage-800">450</span>
-              </div>
-              <h3 className="font-semibold text-sage-800 mb-2">People Helped</h3>
-              <p className="text-gray-600 text-sm">Total impact</p>
-            </div>
-          </div>
-
-          {/* Quick Actions */}
-          <div className="bg-white rounded-2xl shadow-lg border border-sage-100 p-8 mb-12">
-            <h2 className="text-2xl font-bold text-sage-800 mb-6">Quick Actions</h2>
-            <div className="grid md:grid-cols-2 gap-6">
-              {user.role === 'donor' ? (
-                <>
-                  <button className="flex items-center p-6 bg-sage-50 rounded-xl hover:bg-sage-100 transition-colors border border-sage-200">
-                    <Plus className="w-8 h-8 text-sage-600 mr-4" />
-                    <div className="text-left">
-                      <h3 className="font-semibold text-sage-800">Create New Donation</h3>
-                      <p className="text-gray-600 text-sm">Share your surplus food</p>
-                    </div>
-                  </button>
-                  <button className="flex items-center p-6 bg-sage-50 rounded-xl hover:bg-sage-100 transition-colors border border-sage-200">
-                    <Package className="w-8 h-8 text-sage-600 mr-4" />
-                    <div className="text-left">
-                      <h3 className="font-semibold text-sage-800">View My Donations</h3>
-                      <p className="text-gray-600 text-sm">Track your contributions</p>
-                    </div>
-                  </button>
-                </>
-              ) : (
-                <>
-                  <button 
-                    onClick={() => navigate('/donations')}
-                    className="flex items-center p-6 bg-sage-50 rounded-xl hover:bg-sage-100 transition-colors border border-sage-200"
-                  >
-                    <Package className="w-8 h-8 text-sage-600 mr-4" />
-                    <div className="text-left">
-                      <h3 className="font-semibold text-sage-800">Browse Donations</h3>
-                      <p className="text-gray-600 text-sm">Find available food</p>
-                    </div>
-                  </button>
-                  <button className="flex items-center p-6 bg-sage-50 rounded-xl hover:bg-sage-100 transition-colors border border-sage-200">
-                    <Users className="w-8 h-8 text-sage-600 mr-4" />
-                    <div className="text-left">
-                      <h3 className="font-semibold text-sage-800">My Reservations</h3>
-                      <p className="text-gray-600 text-sm">Track reserved items</p>
-                    </div>
-                  </button>
-                </>
-              )}
-            </div>
-          </div>
-
-          {/* Recent Activity */}
-          <div className="bg-white rounded-2xl shadow-lg border border-sage-100 p-8">
-            <h2 className="text-2xl font-bold text-sage-800 mb-6">Recent Activity</h2>
-            <div className="space-y-4">
-              <div className="flex items-center p-4 bg-green-50 rounded-lg border border-green-200">
-                <CheckCircle className="w-6 h-6 text-green-600 mr-4" />
-                <div>
-                  <p className="font-medium text-green-800">
-                    {user.role === 'donor' 
-                      ? 'Your donation of fresh vegetables was picked up'
-                      : 'Successfully received donation from Local Restaurant'
-                    }
-                  </p>
-                  <p className="text-green-600 text-sm">2 hours ago</p>
-                </div>
-              </div>
-              
-              <div className="flex items-center p-4 bg-blue-50 rounded-lg border border-blue-200">
-                <Clock className="w-6 h-6 text-blue-600 mr-4" />
-                <div>
-                  <p className="font-medium text-blue-800">
-                    {user.role === 'donor' 
-                      ? 'New reservation on your bread donation'
-                      : 'Your reservation for fruit donation is confirmed'
-                    }
-                  <h3 className="text-lg font-semibold mb-2">
-                    {user.role === "donor"
-                      ? "Your Impact"
-                      : "Community Support"}
-                  </h3>
-                  <p className="opacity-90">
-                    {user.role === "donor"
-                      ? `You've created ${donations.length} donation${
-                          donations.length !== 1 ? "s" : ""
-                        } helping feed communities`
-                      : `You've reserved ${donations.length} donation${
-                          donations.length !== 1 ? "s" : ""
-                        } for your organization`}
-                  </p>
-                  <p className="text-blue-600 text-sm">5 hours ago</p>
-                </div>
-              </div>
-            </div>
-          )}
-
           {/* Tabs for Active vs History */}
           <div className="mb-8">
-            <div className="flex border-b-2 border-sage-200 bg-white rounded-t-xl">
+            <div className="flex border-b border-border">
               <button
-                className={`px-8 py-4 font-semibold text-lg transition-all ${
+                className={`px-6 py-3 font-medium ${
                   activeTab === "active"
-                    ? "text-sage-600 border-b-2 border-sage-600 bg-sage-50"
-                    : "text-muted-foreground hover:text-sage-600 hover:bg-sage-50"
+                    ? "text-sage-500 border-b-2 border-sage-500"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
                 onClick={() => setActiveTab("active")}
               >
@@ -386,17 +206,14 @@ const Dashboard = () => {
                   : "Active Reservations"}
               </button>
               <button
-                className={`px-8 py-4 font-semibold text-lg transition-all ${
+                className={`px-6 py-3 font-medium ${
                   activeTab === "history"
-                    ? "text-sage-600 border-b-2 border-sage-600 bg-sage-50"
-                    : "text-muted-foreground hover:text-sage-600 hover:bg-sage-50"
+                    ? "text-sage-500 border-b-2 border-sage-500"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
                 onClick={() => setActiveTab("history")}
               >
                 History
-                <span className="ml-2 px-2 py-1 text-xs bg-sage-100 text-sage-700 rounded-full">
-                  {completedDonations.length}
-                </span>
               </button>
             </div>
           </div>
@@ -420,7 +237,7 @@ const Dashboard = () => {
                     : "No Active Reservations"
                   : "No History Found"}
               </h3>
-              <p className="text-muted-foreground text-center max-w-md mb-8 text-lg leading-relaxed">
+              <p className="text-muted-foreground text-center max-w-md mb-6">
                 {activeTab === "active"
                   ? user.role === "donor"
                     ? "You don't have any active donations. Create a new donation to get started!"
@@ -432,9 +249,9 @@ const Dashboard = () => {
               {user.role === "donor" && activeTab === "active" && (
                 <button
                   onClick={() => setIsDonationModalOpen(true)}
-                  className="px-8 py-4 bg-sage-600 text-white rounded-xl hover:bg-sage-700 transition-colors font-semibold text-lg shadow-lg hover:shadow-xl"
+                  className="bg-sage-500 text-white px-6 py-2 rounded-md hover:bg-sage-600 transition-colors"
                 >
-                  Create Your First Donation
+                  Create a Donation
                 </button>
               )}
             </div>
@@ -445,14 +262,12 @@ const Dashboard = () => {
                   key={donation._id || donation.id}
                   donation={donation}
                   isOrphanage={user.role === "orphanage"}
-                  onViewDetails={handleViewDetails}
                 />
               ))}
             </div>
           )}
         </div>
-      </main>
-      
+      </section>
       <Footer />
 
       {/* Donation Form Modal */}
@@ -460,15 +275,6 @@ const Dashboard = () => {
         isOpen={isDonationModalOpen}
         onClose={() => setIsDonationModalOpen(false)}
         onSuccess={handleDonationSuccess}
-      />
-
-      <DonationDetailModal
-        isOpen={isDetailModalOpen}
-        onClose={() => setIsDetailModalOpen(false)}
-        donation={selectedDonation}
-        user={user}
-        onReserve={handleReserveFromModal}
-        isReserving={isReserving}
       />
     </div>
   );

@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import AuthForm from "../components/AuthForm";
+import AuthForm from "@/components/AuthForm";
 
 const Auth = () => {
   const [authType, setAuthType] = useState("login");
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Check if user is already logged in
     const userJson = localStorage.getItem("foodShareUser");
     if (userJson) {
       try {
@@ -32,80 +33,98 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-sage-50 via-white to-sage-100 flex items-center justify-center py-12 px-4">
-      <div className="max-w-md w-full space-y-8">
-        {/* Header Section */}
-        <div className="text-center">
-          <h1 className="text-6xl font-bold text-sage-700 mb-4">
-            <span className="text-sage-500">Food</span>Call
-          </h1>
-          <p className="text-lg text-gray-600 leading-relaxed">
-            {authType === "login"
-              ? "Welcome back to our community of changemakers"
-              : "Join our mission to reduce food waste and feed communities"}
-          </p>
-        </div>
-
-        {/* Auth Form Section */}
-        <div className="bg-white p-8 rounded-3xl shadow-xl border border-sage-100">
-          <h2 className="text-3xl font-bold mb-6 text-center text-sage-800">
-            {authType === "login" ? "Sign In" : "Create Account"}
-          </h2>
-
-          {/* Auth Type Toggle */}
-          <div className="mb-8">
-            <div className="flex p-1 bg-sage-50 rounded-xl border border-sage-200">
-              <button
-                onClick={() => setAuthType("login")}
-                className={`flex-1 py-3 text-center rounded-lg transition-all font-medium ${
-                  authType === "login"
-                    ? "bg-white shadow-md text-sage-700 border border-sage-200"
-                    : "text-sage-600 hover:text-sage-700"
-                }`}
-              >
-                Sign In
-              </button>
-              <button
-                onClick={() => setAuthType("register")}
-                className={`flex-1 py-3 text-center rounded-lg transition-all font-medium ${
-                  authType === "register"
-                    ? "bg-white shadow-md text-sage-700 border border-sage-200"
-                    : "text-sage-600 hover:text-sage-700"
-                }`}
-              >
-                Register
-              </button>
-            </div>
+    <div className="min-h-screen bg-gradient-to-br from-sage-50 to-white">
+      <div className="container mx-auto px-4 py-12">
+        <div className="max-w-6xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-12">
+            <h1 className="text-4xl md:text-6xl font-bold text-sage-700 mb-4">
+              <span className="text-sage-500">Food</span>Call
+            </h1>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Connecting food donors with orphanages to reduce waste and feed
+              those in need
+            </p>
           </div>
 
-          {/* Auth Form */}
-          <AuthForm type={authType} onSuccess={handleSuccess} />
+          {/* Main Content */}
+          <div className="grid md:grid-cols-2 gap-12 items-center max-w-5xl mx-auto">
+            {/* Left Side - Image */}
+            <div className="hidden md:block">
+              <div className="relative">
+                <div className="absolute -top-6 -left-6 w-full h-full rounded-xl bg-sage-200/50 -z-10"></div>
+                <img
+                  src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=2070&auto=format&fit=crop"
+                  alt="Food donation"
+                  className="rounded-xl shadow-lg h-full w-full object-cover"
+                />
+              </div>
+            </div>
 
-          {/* Toggle Link */}
-          <div className="text-center mt-8 pt-6 border-t border-sage-100">
-            <p className="text-gray-600">
-              {authType === "login" ? (
-                <>
-                  New to FoodCall?{" "}
-                  <button
-                    onClick={toggleAuthType}
-                    className="text-sage-600 hover:text-sage-700 font-semibold transition-colors"
-                  >
-                    Create your account
-                  </button>
-                </>
-              ) : (
-                <>
-                  Already have an account?{" "}
-                  <button
-                    onClick={toggleAuthType}
-                    className="text-sage-600 hover:text-sage-700 font-semibold transition-colors"
-                  >
-                    Sign in here
-                  </button>
-                </>
-              )}
-            </p>
+            {/* Right Side - Auth Form */}
+            <div>
+              <div className="bg-white p-8 rounded-xl border border-border shadow-sm max-w-md mx-auto md:mx-0">
+                <h2 className="text-3xl font-bold mb-2">
+                  {authType === "login" ? "Welcome Back" : "Join FoodCall"}
+                </h2>
+
+                <p className="text-muted-foreground mb-8">
+                  {authType === "login"
+                    ? "Sign in to your account to continue making a difference."
+                    : "Create an account to start sharing food or receiving donations."}
+                </p>
+
+                {/* Auth Type Toggle */}
+                <div className="mb-8">
+                  <div className="flex p-1 bg-secondary rounded-lg">
+                    <button
+                      onClick={() => setAuthType("login")}
+                      className={`flex-1 py-2 text-center rounded-md transition-colors ${
+                        authType === "login" ? "bg-white shadow-sm" : ""
+                      }`}
+                    >
+                      Sign In
+                    </button>
+                    <button
+                      onClick={() => setAuthType("register")}
+                      className={`flex-1 py-2 text-center rounded-md transition-colors ${
+                        authType === "register" ? "bg-white shadow-sm" : ""
+                      }`}
+                    >
+                      Register
+                    </button>
+                  </div>
+                </div>
+
+                {/* Auth Form */}
+                <AuthForm type={authType} onSuccess={handleSuccess} />
+
+                {/* Toggle Link */}
+                <p className="text-center mt-8 text-muted-foreground">
+                  {authType === "login" ? (
+                    <>
+                      Don't have an account yet?{" "}
+                      <button
+                        onClick={toggleAuthType}
+                        className="text-sage-500 hover:text-sage-600 font-medium"
+                      >
+                        Create one now
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      Already have an account?{" "}
+                      <button
+                        onClick={toggleAuthType}
+                        className="text-sage-500 hover:text-sage-600 font-medium"
+                      >
+                        Sign in
+                      </button>
+                    </>
+                  )}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>

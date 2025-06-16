@@ -1,196 +1,286 @@
 
-import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, MapPin, Clock, Package, User, Calendar } from 'lucide-react';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
+import { useState, useEffect } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { toast } from "sonner";
+import { ArrowLeft, Calendar, Clock, MapPin, Package, User, CheckCircle } from "lucide-react";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const DonationDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [donation, setDonation] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState(null);
-  
-  // Sample donation data - in real app this would come from API
-  const donation = {
-    id: 1,
-    title: "Fresh Vegetables & Fruits",
-    description: "We have a surplus of organic vegetables and fruits from today's delivery. All items are fresh and in excellent condition. Perfect for preparing nutritious meals for communities in need.",
-    quantity: "50 servings",
-    location: "Downtown Restaurant, 123 Main Street",
-    expiryDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toLocaleDateString(),
-    type: "Perishable",
-    donorName: "Green Garden Restaurant",
-    donorContact: "contact@greengardenrestaurant.com",
-    status: "Available",
-    createdAt: new Date().toLocaleDateString(),
-    pickupTime: "Available from 2:00 PM to 8:00 PM",
-    image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800",
-    additionalNotes: "Please bring your own containers for transportation. We can provide basic packaging if needed."
-  };
+  const [isReserving, setIsReserving] = useState(false);
 
   useEffect(() => {
+    // Get user details
     const userJson = localStorage.getItem("foodShareUser");
-    if (!userJson) {
-      navigate("/auth");
+    if (userJson) {
+      try {
+        const parsedUser = JSON.parse(userJson);
+        setUser(parsedUser);
+      } catch (error) {
+        console.error("Error parsing user data:", error);
+      }
+    }
+
+    if (id) {
+      fetchDonation();
+    }
+  }, [id]);
+
+  const fetchDonation = async () => {
+    try {
+      const token = localStorage.getItem("foodShareToken");
+      const response = await axios.get(`http://localhost:5000/api/donations/${id}`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {}
+      });
+      setDonation(response.data);
+    } catch (error) {
+      console.error("Error fetching donation details:", error);
+      toast.error("Failed to fetch donation details");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleReservation = async () => {
+    if (!user) {
+      toast.error("Please log in to reserve donations");
       return;
     }
-    
-    try {
-      const parsedUser = JSON.parse(userJson);
-      setUser(parsedUser);
-    } catch (error) {
-      console.error("Error parsing user data:", error);
-      navigate("/auth");
-    }
-  }, [navigate]);
 
-  if (!user) {
+    if (user.role !== "orphanage") {
+      toast.error("Only orphanages can reserve donations");
+      return;
+    }
+
+    setIsReserving(true);
+    try {
+      const token = localStorage.getItem("foodShareToken");
+      await axios.post(`http://localhost:5000/api/donations/${id}/reserve`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      toast.success("Donation reserved successfully!");
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Error reserving donation:", error);
+      toast.error(error.response?.data?.message || "Failed to reserve donation");
+    } finally {
+      setIsReserving(false);
+    }
+  };
+
+  if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-sage-50 to-white flex items-center justify-center">
-        <div className="animate-pulse text-xl text-sage-700">Loading...</div>
+      <div className="min-h-screen">
+        <Navbar />
+        <div className="pt-28 flex items-center justify-center p-4">
+          <div className="flex flex-col items-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sage-500 mb-4"></div>
+            <p className="text-muted-foreground">Loading donation details...</p>
+          </div>
+        </div>
+        <Footer />
       </div>
     );
   }
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-sage-50 to-white">
-      <Navbar />
-      
-      <main className="pt-32 pb-20 px-6">
-        <div className="container mx-auto max-w-4xl">
-          {/* Back Button */}
-          <button 
-            onClick={() => navigate(-1)}
-            className="flex items-center text-sage-600 hover:text-sage-700 mb-8 transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5 mr-2" />
-            Back to donations
-          </button>
+  if (!donation) {
+    return (
+      <div className="min-h-screen">
+        <Navbar />
+        <div className="pt-28 flex items-center justify-center p-4">
+          <div className="text-center">
+            <Package className="w-16 h-16 text-sage-200 mx-auto mb-4" />
+            <h2 className="text-xl font-medium mb-2">Donation Not Found</h2>
+            <p className="text-muted-foreground mb-6">
+              The donation you're looking for doesn't exist or has been removed.
+            </p>
+            <Link 
+              to={user?.role === "orphanage" ? "/donations" : "/dashboard"}
+              className="bg-sage-500 text-white px-6 py-2 rounded-md hover:bg-sage-600 transition-colors"
+            >
+              Go Back
+            </Link>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
-          <div className="bg-white rounded-3xl shadow-lg border border-sage-100 overflow-hidden">
-            {/* Image */}
-            <img 
-              src={donation.image} 
-              alt={donation.title}
-              className="w-full h-64 md:h-80 object-cover"
-            />
-            
-            {/* Content */}
-            <div className="p-8">
-              {/* Header */}
-              <div className="flex flex-col md:flex-row md:items-center justify-between mb-6">
-                <div className="mb-4 md:mb-0">
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className="px-4 py-2 bg-sage-100 text-sage-700 rounded-full text-sm font-medium">
-                      {donation.type}
-                    </span>
-                    <span className="px-4 py-2 bg-green-100 text-green-700 rounded-full text-sm font-medium">
-                      {donation.status}
-                    </span>
-                  </div>
-                  <h1 className="text-3xl md:text-4xl font-bold text-sage-800 mb-2">
-                    {donation.title}
-                  </h1>
-                  <p className="text-gray-600 flex items-center">
-                    <User className="w-4 h-4 mr-2" />
-                    Donated by {donation.donorName}
-                  </p>
-                </div>
+  const canReserve = user && user.role === "orphanage" && donation.status === "available";
+  const isOwner = user && user.role === "donor" && donation.donorId === user.id;
+
+  return (
+    <div className="min-h-screen">
+      <Navbar />
+      <section className="pt-28 pb-16 px-4">
+        <div className="container mx-auto max-w-4xl">
+          {/* Back navigation */}
+          <Link 
+            to={user?.role === "orphanage" ? "/donations" : "/dashboard"}
+            className="inline-flex items-center text-sage-500 hover:text-sage-600 mb-6 transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to {user?.role === "orphanage" ? "Donations" : "Dashboard"}
+          </Link>
+
+          <div className="bg-white rounded-xl border border-border shadow-sm overflow-hidden">
+            {/* Donation Image */}
+            {donation.imageUrl && (
+              <div className="w-full h-64 md:h-80">
+                <img
+                  src={donation.imageUrl}
+                  alt={donation.title}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            )}
+
+            <div className="p-6 md:p-8">
+              {/* Status Badge */}
+              <div className="flex items-center justify-between mb-4">
+                <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                  donation.status === "available" 
+                    ? "bg-green-100 text-green-800"
+                    : donation.status === "reserved"
+                    ? "bg-orange-100 text-orange-800"
+                    : donation.status === "completed"
+                    ? "bg-blue-100 text-blue-800"
+                    : "bg-gray-100 text-gray-800"
+                }`}>
+                  {donation.status === "available" && <CheckCircle className="w-4 h-4 mr-1" />}
+                  {donation.status.charAt(0).toUpperCase() + donation.status.slice(1)}
+                </span>
                 
-                {user.role === 'orphanage' && (
-                  <button className="bg-sage-600 text-white px-8 py-4 rounded-xl hover:bg-sage-700 transition-colors font-semibold text-lg whitespace-nowrap">
-                    Reserve This Donation
-                  </button>
+                {isOwner && (
+                  <span className="text-sm text-muted-foreground bg-sage-50 px-3 py-1 rounded-full">
+                    Your Donation
+                  </span>
                 )}
               </div>
 
+              {/* Title */}
+              <h1 className="text-3xl font-bold mb-4">{donation.title}</h1>
+
               {/* Description */}
-              <div className="mb-8">
-                <h2 className="text-xl font-bold text-sage-800 mb-3">Description</h2>
-                <p className="text-gray-700 leading-relaxed text-lg">
-                  {donation.description}
-                </p>
+              <div className="mb-6">
+                <h2 className="text-lg font-semibold mb-2">Description</h2>
+                <p className="text-muted-foreground leading-relaxed">{donation.description}</p>
               </div>
 
               {/* Details Grid */}
-              <div className="grid md:grid-cols-2 gap-8 mb-8">
-                <div className="space-y-6">
-                  <h2 className="text-xl font-bold text-sage-800">Donation Details</h2>
-                  
-                  <div className="space-y-4">
-                    <div className="flex items-start">
-                      <Package className="w-5 h-5 text-sage-600 mr-3 mt-1" />
-                      <div>
-                        <p className="font-medium text-sage-800">Quantity</p>
-                        <p className="text-gray-600">{donation.quantity}</p>
-                      </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div className="space-y-4">
+                  <div className="flex items-start space-x-3">
+                    <Package className="w-5 h-5 text-sage-500 mt-0.5" />
+                    <div>
+                      <p className="font-medium">Quantity</p>
+                      <p className="text-muted-foreground">{donation.quantity}</p>
                     </div>
-                    
-                    <div className="flex items-start">
-                      <Clock className="w-5 h-5 text-sage-600 mr-3 mt-1" />
-                      <div>
-                        <p className="font-medium text-sage-800">Best Before</p>
-                        <p className="text-gray-600">{donation.expiryDate}</p>
-                      </div>
+                  </div>
+
+                  <div className="flex items-start space-x-3">
+                    <Calendar className="w-5 h-5 text-sage-500 mt-0.5" />
+                    <div>
+                      <p className="font-medium">Expiry Date</p>
+                      <p className="text-muted-foreground">
+                        {new Date(donation.expiryDate).toLocaleDateString()}
+                      </p>
                     </div>
-                    
-                    <div className="flex items-start">
-                      <Calendar className="w-5 h-5 text-sage-600 mr-3 mt-1" />
-                      <div>
-                        <p className="font-medium text-sage-800">Pickup Time</p>
-                        <p className="text-gray-600">{donation.pickupTime}</p>
-                      </div>
+                  </div>
+
+                  <div className="flex items-start space-x-3">
+                    <User className="w-5 h-5 text-sage-500 mt-0.5" />
+                    <div>
+                      <p className="font-medium">Donor</p>
+                      <p className="text-muted-foreground">{donation.donorName}</p>
                     </div>
                   </div>
                 </div>
 
-                <div className="space-y-6">
-                  <h2 className="text-xl font-bold text-sage-800">Location & Contact</h2>
-                  
-                  <div className="space-y-4">
-                    <div className="flex items-start">
-                      <MapPin className="w-5 h-5 text-sage-600 mr-3 mt-1" />
-                      <div>
-                        <p className="font-medium text-sage-800">Pickup Location</p>
-                        <p className="text-gray-600">{donation.location}</p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-start">
-                      <User className="w-5 h-5 text-sage-600 mr-3 mt-1" />
-                      <div>
-                        <p className="font-medium text-sage-800">Contact</p>
-                        <p className="text-gray-600">{donation.donorContact}</p>
-                      </div>
+                <div className="space-y-4">
+                  <div className="flex items-start space-x-3">
+                    <MapPin className="w-5 h-5 text-sage-500 mt-0.5" />
+                    <div>
+                      <p className="font-medium">Pickup Address</p>
+                      <p className="text-muted-foreground">{donation.pickupAddress}</p>
                     </div>
                   </div>
+
+                  <div className="flex items-start space-x-3">
+                    <Clock className="w-5 h-5 text-sage-500 mt-0.5" />
+                    <div>
+                      <p className="font-medium">Pickup Time</p>
+                      <p className="text-muted-foreground">
+                        {new Date(donation.pickupTimeStart).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}{" "}
+                        -{" "}
+                        {new Date(donation.pickupTimeEnd).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </p>
+                    </div>
+                  </div>
+
+                  {donation.reservedByName && (
+                    <div className="flex items-start space-x-3">
+                      <User className="w-5 h-5 text-orange-500 mt-0.5" />
+                      <div>
+                        <p className="font-medium">Reserved By</p>
+                        <p className="text-muted-foreground">{donation.reservedByName}</p>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 
-              {/* Additional Notes */}
-              {donation.additionalNotes && (
-                <div className="bg-sage-50 p-6 rounded-xl border border-sage-200">
-                  <h3 className="font-bold text-sage-800 mb-2">Additional Notes</h3>
-                  <p className="text-gray-700">{donation.additionalNotes}</p>
+              {/* Action Buttons */}
+              {canReserve && (
+                <div className="border-t border-border pt-6">
+                  <button
+                    onClick={handleReservation}
+                    disabled={isReserving}
+                    className="w-full md:w-auto bg-sage-500 text-white px-8 py-3 rounded-md hover:bg-sage-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                  >
+                    {isReserving ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                        Reserving...
+                      </>
+                    ) : (
+                      "Reserve This Donation"
+                    )}
+                  </button>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    By reserving, you confirm your organization will pick up this donation within the specified time frame.
+                  </p>
                 </div>
               )}
 
-              {/* Action Buttons */}
-              {user.role === 'orphanage' && (
-                <div className="flex flex-col sm:flex-row gap-4 mt-8 pt-6 border-t border-sage-200">
-                  <button className="flex-1 bg-sage-600 text-white py-4 rounded-xl hover:bg-sage-700 transition-colors font-semibold text-lg">
-                    Reserve This Donation
-                  </button>
-                  <button className="flex-1 border-2 border-sage-600 text-sage-700 py-4 rounded-xl hover:bg-sage-50 transition-colors font-semibold text-lg">
-                    Contact Donor
-                  </button>
+              {donation.status === "reserved" && !isOwner && user?.role === "orphanage" && (
+                <div className="border-t border-border pt-6">
+                  <div className="bg-orange-50 border border-orange-200 rounded-md p-4">
+                    <p className="text-orange-800 font-medium">This donation is already reserved</p>
+                    <p className="text-orange-600 text-sm mt-1">
+                      This donation has been reserved by another organization.
+                    </p>
+                  </div>
                 </div>
               )}
             </div>
           </div>
         </div>
-      </main>
-      
+      </section>
       <Footer />
     </div>
   );
