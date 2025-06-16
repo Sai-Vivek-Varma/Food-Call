@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, User, LogOut } from "lucide-react";
@@ -35,7 +36,7 @@ const Navbar = () => {
 
   return (
     <header className="fixed w-full top-0 bg-white/90 backdrop-blur-md z-50 border-b border-border">
-      <div className="container mx-auto max-w-7xl px-4">
+      <div className="container mx-auto max-w-6xl px-4">
         <div className="flex items-center justify-between h-16">
           <Link
             to="/"
@@ -66,7 +67,7 @@ const Navbar = () => {
             >
               How It Works
             </Link>
-
+            
             {/* Show different navigation based on user type */}
             {user && (
               <>
@@ -82,7 +83,7 @@ const Navbar = () => {
                     Browse Donations
                   </Link>
                 )}
-
+                
                 <Link
                   to="/dashboard"
                   className={`px-4 py-2 rounded-md text-sm font-medium ${
@@ -175,7 +176,7 @@ const Navbar = () => {
             >
               How It Works
             </Link>
-
+            
             {user && (
               <>
                 {user.role === "orphanage" && (
@@ -190,7 +191,7 @@ const Navbar = () => {
                     Browse Donations
                   </Link>
                 )}
-
+                
                 <Link
                   to="/dashboard"
                   className="block px-3 py-2 rounded-md text-base font-medium text-foreground hover:text-sage-700 hover:bg-sage-50/80 transition-colors"
@@ -199,7 +200,7 @@ const Navbar = () => {
                 </Link>
               </>
             )}
-
+            
             {user ? (
               <button
                 onClick={handleLogout}
