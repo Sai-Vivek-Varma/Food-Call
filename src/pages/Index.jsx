@@ -1,215 +1,280 @@
 
 import { Link } from "react-router-dom";
-import { ArrowRight, Heart, Users, Package, Sparkles, Target, Globe, CheckCircle } from "lucide-react";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+import { ArrowRight, Heart, Users, Package, Star, Check, Play } from "lucide-react";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-sage-50 via-white to-sage-50">
+    <div className="min-h-screen bg-white">
       <Navbar />
       
-      {/* Hero Section */}
-      <section className="pt-32 pb-20 px-6 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-sage-100/30 to-transparent"></div>
-        <div className="container mx-auto max-w-6xl relative">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center px-6 py-3 rounded-full bg-sage-100 text-sage-700 font-medium text-sm mb-8 border border-sage-200 shadow-sm">
-              <Sparkles className="w-4 h-4 mr-2" />
-              Reducing Food Waste • Feeding Communities
+      {/* Hero Section with Unique Design */}
+      <section className="relative pt-32 pb-20 px-4 overflow-hidden">
+        {/* Background Elements */}
+        <div className="absolute inset-0 bg-gradient-to-br from-sage-50 via-white to-sage-100/30"></div>
+        <div className="absolute top-20 right-10 w-72 h-72 bg-sage-200/20 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-20 left-10 w-96 h-96 bg-sage-300/10 rounded-full blur-3xl"></div>
+        
+        <div className="container mx-auto max-w-7xl relative z-10">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left Content */}
+            <div className="space-y-8">
+              <div className="inline-flex items-center px-4 py-2 bg-sage-100 rounded-full text-sage-700 text-sm font-medium">
+                <Heart className="w-4 h-4 mr-2" />
+                Reducing Waste • Fighting Hunger
+              </div>
+              
+              <h1 className="text-5xl lg:text-6xl font-bold leading-tight">
+                Turn Surplus Food into
+                <span className="block text-sage-500 mt-2">Hope & Meals</span>
+              </h1>
+              
+              <p className="text-xl text-gray-600 leading-relaxed max-w-lg">
+                Connect surplus food with orphanages in need. Our platform makes food donation 
+                simple, efficient, and impactful for everyone involved.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link
+                  to="/auth"
+                  className="inline-flex items-center justify-center px-8 py-4 bg-sage-500 text-white rounded-xl font-semibold hover:bg-sage-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+                >
+                  Start Sharing Food
+                  <ArrowRight className="ml-2 w-5 h-5" />
+                </Link>
+                <button className="inline-flex items-center justify-center px-8 py-4 border-2 border-sage-200 text-sage-700 rounded-xl font-semibold hover:bg-sage-50 transition-all duration-300">
+                  <Play className="mr-2 w-5 h-5" />
+                  Watch Demo
+                </button>
+              </div>
+              
+              {/* Stats Row */}
+              <div className="flex items-center gap-8 pt-8">
+                <div>
+                  <div className="text-2xl font-bold text-sage-600">1000+</div>
+                  <div className="text-sm text-gray-500">Meals Shared</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-sage-600">50+</div>
+                  <div className="text-sm text-gray-500">Organizations</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-sage-600">95%</div>
+                  <div className="text-sm text-gray-500">Waste Reduced</div>
+                </div>
+              </div>
             </div>
             
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-sage-800 mb-8 leading-tight">
-              <span className="text-sage-600">Food</span>Call
-            </h1>
-            
-            <p className="text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto mb-12 leading-relaxed px-4">
-              Bridge the gap between surplus food and hungry communities. Connect donors with orphanages 
-              to create a sustainable ecosystem of care and compassion.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-              <Link
-                to="/auth"
-                className="group inline-flex items-center px-10 py-5 bg-sage-600 text-white rounded-2xl hover:bg-sage-700 transition-all duration-300 font-semibold text-xl shadow-lg hover:shadow-xl transform hover:scale-105 min-w-[240px] justify-center"
-              >
-                Start Your Journey 
-                <ArrowRight className="ml-3 w-6 h-6 group-hover:translate-x-1 transition-transform" />
-              </Link>
-              <Link
-                to="/how-it-works"
-                className="group inline-flex items-center px-10 py-5 border-2 border-sage-600 text-sage-700 rounded-2xl hover:bg-sage-50 transition-all duration-300 font-semibold text-xl min-w-[240px] justify-center"
-              >
-                Learn How It Works
-                <Target className="ml-3 w-6 h-6 group-hover:scale-110 transition-transform" />
-              </Link>
-            </div>
-          </div>
-
-          {/* Hero Image */}
-          <div className="max-w-5xl mx-auto mt-16">
+            {/* Right Visual */}
             <div className="relative">
-              <div className="absolute -inset-6 bg-gradient-to-r from-sage-200 to-sage-300 rounded-3xl opacity-30 blur-2xl"></div>
-              <img 
-                src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=2070&auto=format&fit=crop" 
-                alt="Food donation making a difference" 
-                className="relative rounded-3xl shadow-2xl w-full h-[400px] md:h-[500px] object-cover border-4 border-white"
-              />
+              <div className="relative z-10">
+                <img 
+                  src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=2070&auto=format&fit=crop" 
+                  alt="Food donation" 
+                  className="rounded-2xl shadow-2xl w-full h-[500px] object-cover"
+                />
+                {/* Floating Card */}
+                <div className="absolute -bottom-6 -left-6 bg-white p-6 rounded-xl shadow-xl border border-gray-100">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-sage-100 rounded-full flex items-center justify-center">
+                      <Heart className="w-6 h-6 text-sage-500" />
+                    </div>
+                    <div>
+                      <div className="font-semibold text-gray-900">Daily Impact</div>
+                      <div className="text-sm text-gray-500">23 meals shared today</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {/* Background decoration */}
+              <div className="absolute -top-6 -right-6 w-full h-full border-2 border-sage-200 rounded-2xl -z-10"></div>
             </div>
           </div>
         </div>
       </section>
 
       {/* How It Works Section */}
-      <section className="py-20 px-6 bg-white">
+      <section className="py-20 px-4 bg-gray-50">
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-sage-800">How FoodCall Works</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Three simple steps to transform surplus food into community support
+            <h2 className="text-4xl font-bold mb-4">Simple. Fast. Impactful.</h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Three easy steps to turn food waste into community support
             </p>
           </div>
-
-          <div className="grid md:grid-cols-3 gap-10">
-            <div className="group text-center">
-              <div className="bg-gradient-to-br from-sage-50 to-white p-10 rounded-3xl border-2 border-sage-100 shadow-lg hover:shadow-2xl transition-all duration-500 group-hover:border-sage-300 h-full group-hover:scale-105">
-                <div className="w-20 h-20 bg-gradient-to-br from-sage-500 to-sage-600 rounded-3xl flex items-center justify-center mx-auto mb-8 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                  <Heart className="w-10 h-10 text-white" />
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="text-center group">
+              <div className="relative mb-6">
+                <div className="w-20 h-20 bg-sage-100 rounded-2xl flex items-center justify-center mx-auto group-hover:bg-sage-200 transition-colors duration-300">
+                  <Package className="w-10 h-10 text-sage-500" />
                 </div>
-                <h3 className="text-2xl font-bold mb-6 text-sage-800">Share Surplus Food</h3>
-                <p className="text-gray-600 leading-relaxed text-lg">
-                  Restaurants, events, and individuals list their excess food with detailed information, 
-                  ensuring nothing goes to waste.
-                </p>
+                <div className="absolute -top-2 -right-2 w-8 h-8 bg-sage-500 text-white rounded-full flex items-center justify-center text-sm font-bold">1</div>
+              </div>
+              <h3 className="text-xl font-semibold mb-3">List Your Donation</h3>
+              <p className="text-gray-600">
+                Upload details about your surplus food including quantity, pickup time, and location.
+              </p>
+            </div>
+            
+            <div className="text-center group">
+              <div className="relative mb-6">
+                <div className="w-20 h-20 bg-sage-100 rounded-2xl flex items-center justify-center mx-auto group-hover:bg-sage-200 transition-colors duration-300">
+                  <Users className="w-10 h-10 text-sage-500" />
+                </div>
+                <div className="absolute -top-2 -right-2 w-8 h-8 bg-sage-500 text-white rounded-full flex items-center justify-center text-sm font-bold">2</div>
+              </div>
+              <h3 className="text-xl font-semibold mb-3">Get Matched</h3>
+              <p className="text-gray-600">
+                Orphanages in need can browse and reserve donations that match their requirements.
+              </p>
+            </div>
+            
+            <div className="text-center group">
+              <div className="relative mb-6">
+                <div className="w-20 h-20 bg-sage-100 rounded-2xl flex items-center justify-center mx-auto group-hover:bg-sage-200 transition-colors duration-300">
+                  <Heart className="w-10 h-10 text-sage-500" />
+                </div>
+                <div className="absolute -top-2 -right-2 w-8 h-8 bg-sage-500 text-white rounded-full flex items-center justify-center text-sm font-bold">3</div>
+              </div>
+              <h3 className="text-xl font-semibold mb-3">Make Impact</h3>
+              <p className="text-gray-600">
+                Coordinate pickup and delivery to ensure fresh food reaches those who need it most.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Showcase */}
+      <section className="py-20 px-4">
+        <div className="container mx-auto max-w-6xl">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="text-4xl font-bold mb-6">Built for Real Impact</h2>
+              <p className="text-xl text-gray-600 mb-8">
+                Our platform connects the dots between food waste and hunger, 
+                creating meaningful change in communities.
+              </p>
+              
+              <div className="space-y-4">
+                <div className="flex items-start gap-4">
+                  <div className="w-6 h-6 bg-sage-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                    <Check className="w-4 h-4 text-sage-500" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold mb-1">Real-time Matching</h4>
+                    <p className="text-gray-600">Instant notifications when donations match orphanage needs</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-4">
+                  <div className="w-6 h-6 bg-sage-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                    <Check className="w-4 h-4 text-sage-500" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold mb-1">Quality Assured</h4>
+                    <p className="text-gray-600">Verification system ensures food safety and quality standards</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-4">
+                  <div className="w-6 h-6 bg-sage-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                    <Check className="w-4 h-4 text-sage-500" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold mb-1">Impact Tracking</h4>
+                    <p className="text-gray-600">See the real difference you're making with detailed analytics</p>
+                  </div>
+                </div>
               </div>
             </div>
+            
+            <div className="relative">
+              <img 
+                src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?q=80&w=2070&auto=format&fit=crop" 
+                alt="Community impact" 
+                className="rounded-2xl shadow-xl w-full h-[400px] object-cover"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
 
-            <div className="group text-center">
-              <div className="bg-gradient-to-br from-sage-50 to-white p-10 rounded-3xl border-2 border-sage-100 shadow-lg hover:shadow-2xl transition-all duration-500 group-hover:border-sage-300 h-full group-hover:scale-105">
-                <div className="w-20 h-20 bg-gradient-to-br from-sage-500 to-sage-600 rounded-3xl flex items-center justify-center mx-auto mb-8 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                  <Users className="w-10 h-10 text-white" />
+      {/* Testimonials */}
+      <section className="py-20 px-4 bg-sage-50">
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold mb-4">Stories of Impact</h2>
+            <p className="text-xl text-gray-600">
+              Real stories from our community members
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="bg-white p-8 rounded-2xl shadow-sm">
+              <div className="flex items-center gap-1 mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                ))}
+              </div>
+              <p className="text-gray-600 mb-6">
+                "FoodCall has transformed how we handle surplus food at our restaurant. 
+                Instead of waste, we now create hope and meals for children in need."
+              </p>
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-sage-100 rounded-full flex items-center justify-center">
+                  <span className="font-semibold text-sage-600">MS</span>
                 </div>
-                <h3 className="text-2xl font-bold mb-6 text-sage-800">Connect Communities</h3>
-                <p className="text-gray-600 leading-relaxed text-lg">
-                  Orphanages and care facilities browse available donations and reserve 
-                  items that perfectly match their needs.
-                </p>
+                <div>
+                  <div className="font-semibold">Maria Santos</div>
+                  <div className="text-sm text-gray-500">Restaurant Owner</div>
+                </div>
               </div>
             </div>
-
-            <div className="group text-center">
-              <div className="bg-gradient-to-br from-sage-50 to-white p-10 rounded-3xl border-2 border-sage-100 shadow-lg hover:shadow-2xl transition-all duration-500 group-hover:border-sage-300 h-full group-hover:scale-105">
-                <div className="w-20 h-20 bg-gradient-to-br from-sage-500 to-sage-600 rounded-3xl flex items-center justify-center mx-auto mb-8 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                  <Package className="w-10 h-10 text-white" />
+            
+            <div className="bg-white p-8 rounded-2xl shadow-sm">
+              <div className="flex items-center gap-1 mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                ))}
+              </div>
+              <p className="text-gray-600 mb-6">
+                "The children at our orphanage now have access to fresh, nutritious meals 
+                thanks to the generous donors on this platform. It's truly life-changing."
+              </p>
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-sage-100 rounded-full flex items-center justify-center">
+                  <span className="font-semibold text-sage-600">JD</span>
                 </div>
-                <h3 className="text-2xl font-bold mb-6 text-sage-800">Create Impact</h3>
-                <p className="text-gray-600 leading-relaxed text-lg">
-                  Every donation creates a ripple effect of positive change, 
-                  reducing waste while nourishing communities.
-                </p>
+                <div>
+                  <div className="font-semibold">John Davis</div>
+                  <div className="text-sm text-gray-500">Orphanage Director</div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-20 px-6 bg-gradient-to-br from-sage-50 to-white">
-        <div className="container mx-auto max-w-6xl">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-sage-800">Why Choose FoodCall?</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Built with care to make food sharing simple, safe, and impactful
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="text-center p-8 bg-white rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300">
-              <div className="w-16 h-16 bg-sage-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <CheckCircle className="w-8 h-8 text-sage-600" />
-              </div>
-              <h3 className="font-bold mb-4 text-sage-800 text-lg">Verified Partners</h3>
-              <p className="text-gray-600 leading-relaxed">All organizations are verified for safety and reliability</p>
-            </div>
-
-            <div className="text-center p-8 bg-white rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300">
-              <div className="w-16 h-16 bg-sage-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <Globe className="w-8 h-8 text-sage-600" />
-              </div>
-              <h3 className="font-bold mb-4 text-sage-800 text-lg">Real-time Updates</h3>
-              <p className="text-gray-600 leading-relaxed">Live notifications for donations and reservations</p>
-            </div>
-
-            <div className="text-center p-8 bg-white rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300">
-              <div className="w-16 h-16 bg-sage-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <Target className="w-8 h-8 text-sage-600" />
-              </div>
-              <h3 className="font-bold mb-4 text-sage-800 text-lg">Easy Tracking</h3>
-              <p className="text-gray-600 leading-relaxed">Monitor your donations and their impact effortlessly</p>
-            </div>
-
-            <div className="text-center p-8 bg-white rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300">
-              <div className="w-16 h-16 bg-sage-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <Heart className="w-8 h-8 text-sage-600" />
-              </div>
-              <h3 className="font-bold mb-4 text-sage-800 text-lg">Community Driven</h3>
-              <p className="text-gray-600 leading-relaxed">Built by the community, for the community</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Impact Stats Section */}
-      <section className="py-20 px-6 bg-gradient-to-r from-sage-600 to-sage-700 text-white">
-        <div className="container mx-auto max-w-6xl">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">Creating Real Impact</h2>
-            <p className="text-xl opacity-90 max-w-3xl mx-auto">
-              Together, we're building a movement that transforms communities one meal at a time
-            </p>
-          </div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
-            <div className="text-center group">
-              <div className="text-5xl md:text-6xl font-bold mb-4 group-hover:scale-110 transition-transform duration-300">5,000+</div>
-              <div className="text-xl opacity-90">Meals Shared</div>
-            </div>
-            <div className="text-center group">
-              <div className="text-5xl md:text-6xl font-bold mb-4 group-hover:scale-110 transition-transform duration-300">150+</div>
-              <div className="text-xl opacity-90">Partner Organizations</div>
-            </div>
-            <div className="text-center group">
-              <div className="text-5xl md:text-6xl font-bold mb-4 group-hover:scale-110 transition-transform duration-300">500+</div>
-              <div className="text-xl opacity-90">Active Donors</div>
-            </div>
-            <div className="text-center group">
-              <div className="text-5xl md:text-6xl font-bold mb-4 group-hover:scale-110 transition-transform duration-300">98%</div>
-              <div className="text-xl opacity-90">Waste Reduction</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Call to Action Section */}
-      <section className="py-20 px-6 bg-gradient-to-br from-sage-50 to-white">
-        <div className="container mx-auto max-w-5xl text-center">
-          <div className="bg-white rounded-3xl shadow-2xl p-12 md:p-16 border border-sage-200">
-            <div className="w-20 h-20 bg-sage-100 rounded-3xl flex items-center justify-center mx-auto mb-8">
-              <Target className="w-10 h-10 text-sage-600" />
-            </div>
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-sage-800">Ready to Make a Difference?</h2>
-            <p className="text-xl text-gray-600 mb-10 max-w-3xl mx-auto leading-relaxed">
-              Join thousands of changemakers who are already using FoodCall to create positive impact. 
-              Whether you're sharing surplus food or helping feed communities, every action matters.
-            </p>
-            <Link
-              to="/auth"
-              className="group inline-flex items-center px-12 py-6 bg-gradient-to-r from-sage-600 to-sage-700 text-white text-xl font-semibold rounded-2xl hover:from-sage-700 hover:to-sage-800 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
-            >
-              Join FoodCall Today 
-              <ArrowRight className="ml-3 w-6 h-6 group-hover:translate-x-1 transition-transform" />
-            </Link>
-          </div>
+      {/* CTA Section */}
+      <section className="py-20 px-4 bg-gradient-to-r from-sage-500 to-sage-600">
+        <div className="container mx-auto max-w-4xl text-center">
+          <h2 className="text-4xl font-bold text-white mb-6">
+            Ready to Make a Difference?
+          </h2>
+          <p className="text-xl text-sage-100 mb-8 max-w-2xl mx-auto">
+            Join thousands of changemakers who are turning food waste into hope. 
+            Start your journey today.
+          </p>
+          <Link
+            to="/auth"
+            className="inline-flex items-center px-8 py-4 bg-white text-sage-600 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+          >
+            Get Started Now
+            <ArrowRight className="ml-2 w-5 h-5" />
+          </Link>
         </div>
       </section>
 
