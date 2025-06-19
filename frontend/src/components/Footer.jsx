@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom";
 import { Facebook, Twitter, Instagram, Mail } from "lucide-react";
 import { useEffect, useState } from "react";
+import React from "react";
 
-const Footer = () => {
+const Footer = React.memo(() => {
   const [user, setUser] = useState(null);
   useEffect(() => {
     const userJson = localStorage.getItem("foodShareUser");
@@ -193,6 +194,6 @@ const Footer = () => {
       </div>
     </footer>
   );
-};
+});
 
 export default Footer;

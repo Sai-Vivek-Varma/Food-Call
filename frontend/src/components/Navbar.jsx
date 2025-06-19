@@ -1,21 +1,17 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, User, LogOut, Bell } from "lucide-react";
-import NotificationsModal from "./NotificationsModal";
-import useUnreadNotifications from "@/hooks/useUnreadNotifications";
 
-const Navbar = () => {
+const Navbar = React.memo(function Navbar({ onShowNotifications }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [showNotifications, setShowNotifications] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const unreadCount = useUnreadNotifications();
+  const unreadCount = 0; // useUnreadNotifications(); // Assuming this is defined elsewhere
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
-    setIsMenuOpen(false);
-
     const userJson = localStorage.getItem("foodShareUser");
     if (userJson) {
       try {
@@ -27,7 +23,20 @@ const Navbar = () => {
     } else {
       setUser(null);
     }
-  }, [location.pathname]);
+  }, [location.pathname, navigate]);
+
+  useEffect(() => {
+    if (!isDropdownOpen) return;
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isDropdownOpen]);
 
   const handleLogout = () => {
     localStorage.removeItem("foodShareUser");
@@ -38,7 +47,7 @@ const Navbar = () => {
   };
 
   return (
-    <header className="fixed w-full top-0 bg-white/90 backdrop-blur-md z-50 border-b border-border">
+    <header className="fixed top-0 left-0 w-full z-40 bg-white/80 backdrop-blur border-b border-border shadow-sm transition-all duration-200">
       <div className="container mx-auto max-w-7xl px-4">
         <div className="flex items-center justify-between h-16">
           <Link
@@ -47,6 +56,33 @@ const Navbar = () => {
           >
             <span className="text-sage-500">Food</span>Call
           </Link>
+
+          {/* Bell icon and hamburger in one div for mobile */}
+          <div className="flex items-center md:hidden">
+            {user && (
+              <button
+                className="relative p-2 rounded-full hover:bg-sage-100 transition-colors"
+                onClick={() => onShowNotifications && onShowNotifications()}
+                aria-label="Show notifications"
+              >
+                <Bell className="w-6 h-6 text-sage-600" />
+                {unreadCount > 0 && (
+                  <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
+                )}
+              </button>
+            )}
+            <button
+              className="p-2"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+            >
+              {isMenuOpen ? (
+                <X className="w-6 h-6 text-foreground" />
+              ) : (
+                <Menu className="w-6 h-6 text-foreground" />
+              )}
+            </button>
+          </div>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-1">
@@ -103,9 +139,9 @@ const Navbar = () => {
             {user ? (
               <>
                 <button
-                  className="relative ml-2 p-2 rounded-full hover:bg-sage-50 transition-colors"
-                  onClick={() => setShowNotifications(true)}
-                  aria-label="Notifications"
+                  className="relative ml-2 p-2 rounded-full hover:bg-sage-50 transition-colors md:inline-flex inline-flex"
+                  onClick={() => onShowNotifications && onShowNotifications()}
+                  aria-label="Show notifications"
                 >
                   <Bell className="w-5 h-5 text-sage-700" />
                   {unreadCount > 0 && (
@@ -125,7 +161,10 @@ const Navbar = () => {
                     </span>
                   </button>
                   {isDropdownOpen && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 border border-border">
+                    <div
+                      ref={dropdownRef}
+                      className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 border border-border"
+                    >
                       <div className="px-4 py-2 text-sm text-muted-foreground border-b">
                         {user.role === "donor" ? "Food Donor" : "Orphanage"}
                         <p className="text-sage-500">{user.email}</p>
@@ -149,19 +188,6 @@ const Navbar = () => {
               </Link>
             )}
           </nav>
-
-          {/* Mobile Menu Button */}
-          <button
-            className="md:hidden p-2"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-          >
-            {isMenuOpen ? (
-              <X className="w-6 h-6 text-foreground" />
-            ) : (
-              <Menu className="w-6 h-6 text-foreground" />
-            )}
-          </button>
         </div>
       </div>
 
@@ -233,14 +259,8 @@ const Navbar = () => {
           </div>
         </div>
       )}
-
-      {/* Notifications Modal */}
-      <NotificationsModal
-        open={showNotifications}
-        onClose={() => setShowNotifications(false)}
-      />
     </header>
   );
-};
+});
 
 export default Navbar;

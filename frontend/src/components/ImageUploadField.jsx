@@ -1,12 +1,7 @@
 import React from "react";
 import { Upload, X } from "lucide-react";
 
-const ImageUploadField = ({
-  imageFile,
-  imagePreview,
-  onImageChange,
-  onRemoveImage,
-}) => (
+const ImageUploadField = ({ imagePreview, handleImageChange, removeImage }) => (
   <div className="lg:col-span-2">
     <label
       htmlFor="image"
@@ -25,7 +20,7 @@ const ImageUploadField = ({
             />
             <button
               type="button"
-              onClick={onRemoveImage}
+              onClick={removeImage}
               className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-2 hover:bg-red-600 transition-colors shadow-lg"
             >
               <X className="w-4 h-4" />
@@ -34,7 +29,7 @@ const ImageUploadField = ({
         ) : (
           <>
             <Upload className="mx-auto h-12 w-12 text-gray-400" />
-            <div className="flex text-sm text-gray-600 justify-center">
+            <div className="flex text-sm text-gray-600">
               <label
                 htmlFor="image"
                 className="relative cursor-pointer bg-white rounded-md font-medium text-green-600 hover:text-green-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-green-500"
@@ -45,7 +40,7 @@ const ImageUploadField = ({
                   name="image"
                   type="file"
                   accept="image/*"
-                  onChange={onImageChange}
+                  onChange={handleImageChange}
                   className="sr-only"
                 />
               </label>

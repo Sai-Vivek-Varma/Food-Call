@@ -1,31 +1,33 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import AuthForm from "@/components/AuthForm";
+import { useSelector } from "react-redux";
 
 const Auth = () => {
   const [authType, setAuthType] = useState("login");
+  const [justLoggedIn, setJustLoggedIn] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const { user, token } = useSelector((state) => state.user);
 
   useEffect(() => {
-    // Check if user is already logged in
-    const userJson = localStorage.getItem("foodShareUser");
-    if (userJson) {
-      try {
-        const parsedUser = JSON.parse(userJson);
-        navigate("/dashboard");
-      } catch (error) {
-        console.error("Error parsing user data:", error);
+    // Only redirect to dashboard if on /auth and already logged in
+    if (user && token && location.pathname === "/auth") {
+      if (justLoggedIn) {
+        toast.success(
+          authType === "login"
+            ? "Successfully logged in!"
+            : "Account created successfully!"
+        );
+        setJustLoggedIn(false);
       }
+      navigate("/dashboard");
     }
-  }, [navigate]);
+  }, [user, token, navigate, location.pathname, justLoggedIn, authType]);
 
   const handleSuccess = () => {
-    toast.success(
-      authType === "login"
-        ? "Successfully logged in!"
-        : "Account created successfully!"
-    );
+    setJustLoggedIn(true);
   };
 
   const toggleAuthType = () => {

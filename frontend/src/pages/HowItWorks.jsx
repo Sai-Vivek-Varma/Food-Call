@@ -8,14 +8,10 @@ import {
   Shield,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 
 const HowItWorks = () => {
   return (
     <div className="min-h-screen bg-white">
-      <Navbar />
-
       {/* Hero Section */}
       <section className="pt-24 pb-16 px-6 bg-gradient-to-br from-sage-50 to-white">
         <div className="container mx-auto max-w-4xl text-center">
@@ -255,8 +251,6 @@ const HowItWorks = () => {
           </Link>
         </div>
       </section>
-
-      <Footer />
     </div>
   );
 };

@@ -1,7 +1,11 @@
 import { X, Clock, MapPin, CalendarIcon, Package, User } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { reserveDonation, completeDonation } from "../lib/api";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  reserveDonationThunk,
+  completeDonationThunk,
+} from "@/slices/donationsSlice";
 import DeliveryOptionsModal from "./DeliveryOptionsModal";
 
 const formatDate = (date) => {
@@ -28,6 +32,8 @@ const DonationDetailModal = ({
 }) => {
   const [isDeliveryModalOpen, setIsDeliveryModalOpen] = useState(false);
   const [isCompleting, setIsCompleting] = useState(false);
+  const dispatch = useDispatch();
+  const { loading } = useSelector((state) => state.donations);
 
   if (!isOpen || !donation) return null;
 
@@ -40,34 +46,25 @@ const DonationDetailModal = ({
 
   const handleReserve = async (deliveryOption) => {
     try {
-      const token = localStorage.getItem("foodShareToken");
-      if (!token) {
-        toast.error("Please log in to reserve donations");
-        return;
-      }
-
-      console.log("Reserving donation with delivery option:", deliveryOption);
-
-      await reserveDonation(donation._id || donation.id, token);
+      await dispatch(reserveDonationThunk({ id: donation._id || donation.id }));
       toast.success("Donation reserved successfully! Donor has been notified.");
       onClose();
     } catch (error) {
-      console.error("Error reserving donation:", error);
       toast.error(
         error.message || "Failed to reserve donation. Please try again."
       );
-      throw error;
     }
   };
 
   const handleCompleteDonation = async () => {
     setIsCompleting(true);
     try {
-      await completeDonation(donation._id || donation.id);
+      await dispatch(
+        completeDonationThunk({ id: donation._id || donation.id })
+      );
       toast.success("Donation marked as completed!");
       onClose();
     } catch (error) {
-      console.error("Error completing donation:", error);
       toast.error("Failed to complete donation");
     } finally {
       setIsCompleting(false);

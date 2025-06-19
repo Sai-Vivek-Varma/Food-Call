@@ -1,5 +1,6 @@
 import axios from "axios";
 import { toast } from "sonner";
+import { navigateTo } from "@/lib/navigation";
 
 // Use localhost if available, else fallback to Render
 const API_BASE_URL =
@@ -36,10 +37,19 @@ apiClient.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       // Token expired or invalid
+      const token = localStorage.getItem("foodShareToken");
       localStorage.removeItem("foodShareToken");
       localStorage.removeItem("foodShareUser");
-      toast.error("Session expired. Please log in again.");
-      window.location.href = "/auth";
+      // Only show toast if user was logged in (token existed)
+      if (token) {
+        toast.error("Session expired. Please log in again.");
+      }
+      if (
+        window.location.pathname !== "/" &&
+        window.location.pathname !== "/auth"
+      ) {
+        navigateTo("/auth");
+      }
     } else if (error.response?.status >= 500) {
       toast.error("Server error. Please try again later.");
     } else if (!error.response) {

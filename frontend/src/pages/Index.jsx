@@ -1,3 +1,4 @@
+import React from "react";
 import { Link } from "react-router-dom";
 import {
   ArrowRight,
@@ -8,15 +9,11 @@ import {
   Check,
   Play,
 } from "lucide-react";
-import Navbar from "@/components/Navbar";
-import Footer from "../components/Footer";
 import AnimatedNumber from "@/components/AnimatedNumber";
 
-const Index = () => {
+const Index = React.memo(function Index() {
   return (
     <div className="min-h-screen bg-white">
-      <Navbar />
-
       {/* Hero Section */}
       <section className="relative pt-20 pb-10 sm:pt-24 sm:pb-16">
         <div className="container mx-auto max-w-7xl relative z-10 px-4 sm:px-6">
@@ -370,10 +367,8 @@ const Index = () => {
           </div>
         </div>
       </section>
-
-      <Footer />
     </div>
   );
-};
+});
 
 export default Index;

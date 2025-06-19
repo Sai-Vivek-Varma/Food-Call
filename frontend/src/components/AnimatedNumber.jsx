@@ -7,7 +7,12 @@ import { useEffect, useRef, useState } from "react";
  * @param {number} [start=0] - Start value (default 0)
  * @param {string} [className] - Optional className for styling
  */
-export default function AnimatedNumber({ value, duration = 1200, start = 0, className = "" }) {
+export default function AnimatedNumber({
+  value,
+  duration = 1200,
+  start = 0,
+  className = "",
+}) {
   const [display, setDisplay] = useState(start);
   const raf = useRef();
   const startTimestamp = useRef();
@@ -18,7 +23,9 @@ export default function AnimatedNumber({ value, duration = 1200, start = 0, clas
     function animate(ts) {
       if (!startTimestamp.current) startTimestamp.current = ts;
       const progress = Math.min((ts - startTimestamp.current) / duration, 1);
-      const next = Math.round(prevValue.current + (value - prevValue.current) * progress);
+      const next = Math.round(
+        prevValue.current + (value - prevValue.current) * progress
+      );
       setDisplay(next);
       if (progress < 1 && !cancelled) {
         raf.current = requestAnimationFrame(animate);

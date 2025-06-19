@@ -1,24 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { AuthFormData } from "@/lib/types";
-import { registerUser, loginUser } from "@/lib/api";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUserThunk, registerUserThunk } from "@/slices/userSlice";
 
 interface AuthFormProps {
   type: "login" | "register";
   onSuccess: () => void;
-}
-
-interface LoginCredentials {
-  email: string;
-  password: string;
-}
-
-interface RegisterData extends LoginCredentials {
-  name: string;
-  role: string;
-  organization?: string;
 }
 
 const AuthForm = ({ type, onSuccess }: AuthFormProps) => {
@@ -29,10 +19,25 @@ const AuthForm = ({ type, onSuccess }: AuthFormProps) => {
     role: "donor",
     organization: "",
   });
-
   const [showPassword, setShowPassword] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { loading, error, user, token } = useSelector(
+    (state: any) => state.user
+  );
+
+  useEffect(() => {
+    if (user && token) {
+      onSuccess();
+      navigate("/dashboard");
+    }
+  }, [user, token, onSuccess, navigate]);
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+  }, [error]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -43,8 +48,6 @@ const AuthForm = ({ type, onSuccess }: AuthFormProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Basic validation
     if (type === "register" && !formData.name) {
       toast.error("Please enter your name");
       return;
@@ -65,49 +68,15 @@ const AuthForm = ({ type, onSuccess }: AuthFormProps) => {
       toast.error("Please enter your organization name");
       return;
     }
-
-    setIsSubmitting(true);
-
-    try {
-      let userData;
-
-      if (type === "login") {
-        const loginCredentials: LoginCredentials = {
+    if (type === "login") {
+      dispatch(
+        loginUserThunk({
           email: formData.email,
           password: formData.password,
-        };
-        userData = await loginUser(loginCredentials);
-      } else {
-        const registerData: RegisterData = {
-          name: formData.name,
-          email: formData.email,
-          password: formData.password,
-          role: formData.role,
-        };
-
-        if (formData.organization) {
-          registerData.organization = formData.organization;
-        }
-
-        userData = await registerUser(registerData);
-      }
-
-      // Store full user data
-      localStorage.setItem("foodShareUser", JSON.stringify(userData));
-      // Also store the token separately so that other parts of the app can retrieve it.
-      localStorage.setItem("foodShareToken", userData.token);
-
-      onSuccess();
-      navigate("/dashboard");
-    } catch (error) {
-      console.error("Auth error:", error);
-      toast.error(
-        type === "login"
-          ? "Failed to sign in. Please check your credentials."
-          : "Failed to create account. Please try again."
+        }) as any
       );
-    } finally {
-      setIsSubmitting(false);
+    } else {
+      dispatch(registerUserThunk(formData) as any);
     }
   };
 
@@ -227,10 +196,10 @@ const AuthForm = ({ type, onSuccess }: AuthFormProps) => {
 
       <button
         type="submit"
-        disabled={isSubmitting}
+        disabled={loading}
         className="w-full bg-sage-500 text-white py-2 rounded-md hover:bg-sage-600 transition-all mt-6 flex items-center justify-center"
       >
-        {isSubmitting ? (
+        {loading ? (
           <>
             <Loader2 className="w-5 h-5 mr-2 animate-spin" />
             {type === "login" ? "Signing in..." : "Creating account..."}

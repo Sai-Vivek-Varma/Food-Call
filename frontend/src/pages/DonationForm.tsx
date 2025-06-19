@@ -1,10 +1,10 @@
-import axios from "axios";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { API_BASE_URL } from "../lib/apiClient";
+import { useDispatch, useSelector } from "react-redux";
+import { createDonationThunk } from "@/slices/donationsSlice";
 
 // Define the shape of your donation form data
 interface DonationFormData {
@@ -29,9 +29,10 @@ const DonationForm: React.FC = () => {
     pickupTimeEnd: "",
   });
   const [errors, setErrors] = useState<Partial<DonationFormData>>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { loading } = useSelector((state: any) => state.donations);
 
   // Scroll to top on mount and verify that a user is logged in.
   useEffect(() => {
@@ -96,49 +97,23 @@ const DonationForm: React.FC = () => {
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!validate()) return;
-    setIsSubmitting(true);
-
     try {
       const submissionData = {
         title: formData.title,
         description: formData.description,
         quantity: formData.quantity,
-        // Convert expiry date string into ISO string
         expiryDate: new Date(formData.expiryDate).toISOString(),
         pickupAddress: formData.pickupAddress,
-        // Convert pickup time strings into full ISO date strings using today's date
         pickupTimeStart: combineTimeWithToday(formData.pickupTimeStart),
         pickupTimeEnd: combineTimeWithToday(formData.pickupTimeEnd),
-        // For now, use the preview URL (or empty string) for imageUrl; later, integrate file uploads
         imageUrl: imagePreview || "",
       };
-
-      // Retrieve the token from localStorage
-      const token = localStorage.getItem("foodShareToken");
-      if (!token) {
-        toast.error("Authentication token not found. Please log in again.");
-        navigate("/auth");
-        return;
-      }
-
-      // Send POST request to create a new donation
-      const response = await axios.post(`${API_BASE_URL}/donations`, submissionData, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      console.log("Donation data submitted:", response.data);
+      await dispatch(createDonationThunk(submissionData) as any);
       toast.success("Donation created successfully!");
       navigate("/dashboard");
     } catch (error: any) {
-      console.error("Failed to create donation:", error.response?.data || error.message);
       toast.error("Failed to create donation. Please try again.");
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -289,13 +264,12 @@ const DonationForm: React.FC = () => {
             </div>
             <button
               type="submit"
-              disabled={isSubmitting}
+              disabled={loading}
               className="w-full bg-sage-500 text-white py-2 rounded-md hover:bg-sage-600 transition-all mt-6 flex items-center justify-center"
             >
-              {isSubmitting ? (
+              {loading ? (
                 <>
                   <svg className="w-5 h-5 mr-2 animate-spin" viewBox="0 0 24 24">
-                    {/* You can replace this with a loader icon */}
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
                   </svg>

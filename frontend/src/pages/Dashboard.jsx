@@ -2,65 +2,35 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Package, User, CheckCircle2, Clock, Plus, Heart } from "lucide-react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import { useSelector, useDispatch } from "react-redux";
 import DonationCard from "@/components/DonationCard";
 import DonationFormModal from "@/components/DonationFormModal";
-import axios from "axios";
-import { API_BASE_URL } from "../lib/apiClient";
+import { fetchDonations } from "../slices/donationsSlice";
+import { setUser } from "../slices/userSlice";
 
 const Dashboard = () => {
-  const [user, setUser] = useState(null);
-  const [donations, setDonations] = useState([]);
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.user);
+  const donations = useSelector((state) => state.donations.items);
+  const isLoading = useSelector((state) => state.donations.loading);
+
   const [activeTab, setActiveTab] = useState("active");
-  const [isLoading, setIsLoading] = useState(true);
   const [isDonationModalOpen, setIsDonationModalOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    const userJson = localStorage.getItem("foodShareUser");
-    if (!userJson) {
+    if (!user) return; // Don't fetch or redirect if user is not loaded yet
+    dispatch(fetchDonations(user.role));
+    // eslint-disable-next-line
+  }, [dispatch, user]);
+
+  useEffect(() => {
+    if (user === null) {
       toast.error("You must be logged in to access your dashboard");
-      navigate("/");
-      return;
+      navigate("/auth");
     }
-    try {
-      const parsedUser = JSON.parse(userJson);
-      setUser(parsedUser);
-      fetchDonations(parsedUser);
-    } catch (error) {
-      console.error("Error parsing user data:", error);
-      toast.error("An error occurred. Please try logging in again.");
-      navigate("/");
-    }
-  }, [navigate]);
-
-  const fetchDonations = async (currentUser) => {
-    try {
-      const token = localStorage.getItem("foodShareToken");
-      let endpoint = `${API_BASE_URL}/donations`;
-
-      // Different endpoints for different user types
-      if (currentUser.role === "donor") {
-        endpoint = `${API_BASE_URL}/donations/user/donor`;
-      } else if (currentUser.role === "orphanage") {
-        endpoint = `${API_BASE_URL}/donations/user/reserved`;
-      }
-
-      const response = await axios.get(endpoint, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setDonations(response.data);
-      setIsLoading(false);
-    } catch (error) {
-      console.error("Error fetching donations:", error);
-      toast.error("Failed to fetch donations");
-      setIsLoading(false);
-    }
-  };
+  }, [user, navigate]);
 
   const filteredDonations = donations.filter((donation) =>
     activeTab === "active"
@@ -78,7 +48,7 @@ const Dashboard = () => {
   const handleDonationSuccess = () => {
     setIsDonationModalOpen(false);
     if (user) {
-      fetchDonations(user);
+      dispatch(fetchDonations(user.role));
     }
   };
 
@@ -86,7 +56,6 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen">
-      <Navbar />
       <section className="pt-28 pb-16 px-4">
         <div className="container mx-auto max-w-6xl">
           {/* Dashboard Header */}
@@ -158,7 +127,9 @@ const Dashboard = () => {
               </div>
               <div>
                 <p className="text-muted-foreground text-sm">Completed</p>
-                <span className="font-medium text-lg">{donations.filter((d) => d.status === "completed").length}</span>
+                <span className="font-medium text-lg">
+                  {donations.filter((d) => d.status === "completed").length}
+                </span>
               </div>
             </div>
 
@@ -173,7 +144,13 @@ const Dashboard = () => {
                     ? "Active Listings"
                     : "Pending Pickups"}
                 </p>
-                <span className="font-medium text-lg">{donations.filter((d) => d.status === "available" || d.status === "reserved").length}</span>
+                <span className="font-medium text-lg">
+                  {
+                    donations.filter(
+                      (d) => d.status === "available" || d.status === "reserved"
+                    ).length
+                  }
+                </span>
               </div>
             </div>
           </div>
@@ -226,13 +203,29 @@ const Dashboard = () => {
                   : "No History Found"}
               </h3>
               <p className="text-muted-foreground text-center max-w-md mb-6">
-                {activeTab === "active"
-                  ? user.role === "donor"
-                    ? "You don't have any active donations. Create a new donation to get started!"
-                    : "You don't have any active reservations. Browse available donations to make a reservation."
-                  : user.role === "donor"
-                  ? "You don't have any completed or expired donations yet."
-                  : "You don't have any completed reservations yet."}
+                {activeTab === "active" ? (
+                  user.role === "donor" ? (
+                    "You don't have any active donations. Create a new donation to get started!"
+                  ) : (
+                    <>
+                      You don't have any active reservations.
+                      <br />
+                      <span className="block mt-2">
+                        Browse available donations to make a reservation.
+                      </span>
+                      <button
+                        onClick={() => navigate("/donations")}
+                        className="mt-4 btn-primary bg-sage-600 hover:bg-sage-700"
+                      >
+                        Browse Donations
+                      </button>
+                    </>
+                  )
+                ) : user.role === "donor" ? (
+                  "You don't have any completed or expired donations yet."
+                ) : (
+                  "You don't have any completed reservations yet."
+                )}
               </p>
               {user.role === "donor" && activeTab === "active" && (
                 <button
@@ -256,7 +249,6 @@ const Dashboard = () => {
           )}
         </div>
       </section>
-      <Footer />
 
       {/* Donation Form Modal */}
       {user.role === "donor" && (
