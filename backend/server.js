@@ -12,12 +12,7 @@ dotenv.config();
 const app = express();
 
 // Middleware
-app.use(
-  cors({
-    origin: ["http://localhost:8081", "http://localhost:8080", "https://food-call.lovable.app"],
-    credentials: true,
-  })
-);
+app.use(cors());
 
 app.use(express.json());
 
