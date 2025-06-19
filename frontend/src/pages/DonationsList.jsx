@@ -1,17 +1,17 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { Search, Filter, Package, Heart, Building } from "lucide-react";
+import { Search, Package, Heart, Building, MapPin } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import DonationCard from "@/components/DonationCard";
-import axios from "axios";
+import { getAllDonations } from "@/lib/api";
 
 const DonationsList = () => {
   const [donations, setDonations] = useState([]);
   const [filteredDonations, setFilteredDonations] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState("available");
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
@@ -46,24 +46,27 @@ const DonationsList = () => {
 
   const fetchDonations = async () => {
     try {
-      const token = localStorage.getItem("foodShareToken");
-      const response = await axios.get("http://localhost:5000/api/donations", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      console.log("Fetching donations...");
+      
+      const response = await getAllDonations();
+      console.log("Received donations:", response);
       
       // Filter out expired donations and only show available ones for orphanages
       const now = new Date();
-      const availableDonations = response.data.filter(donation => {
+      const availableDonations = response.filter(donation => {
         const isExpired = new Date(donation.expiryDate) < now;
+        console.log(`Donation ${donation.title}: expired=${isExpired}, status=${donation.status}`);
         return donation.status === "available" && !isExpired;
       });
+      
+      console.log("Available donations after filtering:", availableDonations);
       
       setDonations(availableDonations);
       setFilteredDonations(availableDonations);
       setIsLoading(false);
     } catch (error) {
       console.error("Error fetching donations:", error);
-      toast.error("Failed to fetch donations");
+      toast.error("Failed to fetch donations: " + error.message);
       setIsLoading(false);
     }
   };
@@ -82,7 +85,8 @@ const DonationsList = () => {
         (donation) =>
           donation.title.toLowerCase().includes(lowercaseSearchTerm) ||
           donation.description.toLowerCase().includes(lowercaseSearchTerm) ||
-          donation.donorName.toLowerCase().includes(lowercaseSearchTerm)
+          donation.donorName.toLowerCase().includes(lowercaseSearchTerm) ||
+          donation.pickupAddress.toLowerCase().includes(lowercaseSearchTerm)
       );
     }
     setFilteredDonations(filtered);
@@ -97,85 +101,101 @@ const DonationsList = () => {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-gray-50">
       <Navbar />
-      <section className="pt-28 pb-16 px-4">
-        <div className="container mx-auto max-w-6xl">
-          <div className="text-center mb-10">
-            <span className="inline-block px-4 py-2 rounded-full bg-sage-100 text-sage-700 font-medium text-sm mb-4 flex items-center justify-center w-fit mx-auto">
+      <section className="pt-32 pb-16 px-4">
+        <div className="container mx-auto max-w-7xl">
+          <div className="text-center mb-12">
+            <span className="inline-block px-4 py-2 rounded-full bg-green-100 text-green-700 font-medium text-sm mb-4 flex items-center justify-center w-fit mx-auto">
               <Building className="w-4 h-4 mr-2" />
               Available for {user.organization || "Your Organization"}
             </span>
-            <h1 className="text-3xl font-bold mb-2">Browse Food Donations</h1>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Find and reserve available food donations for your organization. All listings show real-time availability and detailed information.
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">Browse Food Donations</h1>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+              Find and reserve available food donations for your organization. All listings show real-time availability with detailed pickup information and delivery options.
             </p>
           </div>
           
           <div className="flex flex-col md:flex-row gap-4 mb-8">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
                 type="text"
-                placeholder="Search donations by title, description, or donor..."
+                placeholder="Search by food name, description, donor, or location..."
                 value={searchTerm}
                 onChange={handleSearch}
-                className="w-full pl-10 pr-4 py-2 rounded-md border border-input focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all"
+                className="w-full pl-12 pr-4 py-3 rounded-xl border-2 border-gray-300 focus:outline-none focus:ring-4 focus:ring-green-200 focus:border-green-500 transition-all text-gray-700"
               />
             </div>
             
-            <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-              <Package className="w-4 h-4" />
-              <span>Showing {filteredDonations.length} available donations</span>
+            <div className="flex items-center space-x-3 text-sm text-gray-600 bg-white px-4 py-3 rounded-xl border border-gray-200">
+              <Package className="w-5 h-5 text-green-600" />
+              <span className="font-medium">
+                {filteredDonations.length} donation{filteredDonations.length !== 1 ? 's' : ''} available
+              </span>
             </div>
           </div>
           
           {isLoading ? (
-            <div className="flex flex-col items-center justify-center py-16">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sage-500 mb-4"></div>
-              <p className="text-muted-foreground">Loading available donations...</p>
+            <div className="flex flex-col items-center justify-center py-20">
+              <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-green-500 mb-6"></div>
+              <p className="text-lg text-gray-600">Loading available donations...</p>
             </div>
           ) : filteredDonations.length === 0 ? (
-            <div className="flex flex-col items-center justify-center bg-white rounded-xl border border-border shadow-sm p-16">
+            <div className="flex flex-col items-center justify-center bg-white rounded-2xl border border-gray-200 shadow-sm p-20">
               {searchTerm ? (
                 <>
-                  <Search className="w-16 h-16 text-sage-200 mb-4" />
-                  <h3 className="text-xl font-medium mb-2">No Matching Donations Found</h3>
-                  <p className="text-muted-foreground text-center max-w-md mb-6">
-                    No donations matching "{searchTerm}" were found. Try adjusting your search terms.
+                  <Search className="w-20 h-20 text-gray-300 mb-6" />
+                  <h3 className="text-2xl font-semibold text-gray-900 mb-3">No Matching Donations Found</h3>
+                  <p className="text-gray-600 text-center max-w-md mb-8">
+                    No donations matching "{searchTerm}" were found. Try adjusting your search terms or clear the search to see all available donations.
                   </p>
                   <button
                     onClick={() => setSearchTerm("")}
-                    className="px-6 py-2 bg-sage-500 text-white rounded-md hover:bg-sage-600 transition-colors"
+                    className="btn-primary"
                   >
                     Clear Search
                   </button>
                 </>
               ) : (
                 <>
-                  <Heart className="w-16 h-16 text-sage-200 mb-4" />
-                  <h3 className="text-xl font-medium mb-2">No Donations Available</h3>
-                  <p className="text-muted-foreground text-center max-w-md mb-6">
-                    There are currently no food donations available. Check back later or encourage local food donors to share their surplus.
+                  <Heart className="w-20 h-20 text-gray-300 mb-6" />
+                  <h3 className="text-2xl font-semibold text-gray-900 mb-3">No Donations Available</h3>
+                  <p className="text-gray-600 text-center max-w-md mb-8">
+                    There are currently no food donations available in your area. Check back later or encourage local food donors to share their surplus through our platform.
                   </p>
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <button
+                      onClick={fetchDonations}
+                      className="btn-primary"
+                    >
+                      Refresh List
+                    </button>
+                    <button
+                      onClick={() => navigate("/")}
+                      className="btn-outline"
+                    >
+                      Learn More
+                    </button>
+                  </div>
                 </>
               )}
             </div>
           ) : (
             <>
-              <div className="mb-6 p-4 bg-sage-50 rounded-lg border border-sage-200">
-                <div className="flex items-center text-sage-700">
-                  <Heart className="w-5 h-5 mr-2" />
-                  <span className="font-medium">
-                    {filteredDonations.length} donation{filteredDonations.length !== 1 ? 's' : ''} available for reservation
+              <div className="mb-8 p-6 bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl border border-green-200">
+                <div className="flex items-center text-green-700 mb-2">
+                  <Heart className="w-6 h-6 mr-3" />
+                  <span className="font-semibold text-lg">
+                    {filteredDonations.length} donation{filteredDonations.length !== 1 ? 's' : ''} ready for reservation
                   </span>
                 </div>
-                <p className="text-sage-600 text-sm mt-1">
-                  Click on any donation to view details and make a reservation for your organization.
+                <p className="text-green-600 text-sm">
+                  Click on any donation to view full details and make a reservation. Our integrated delivery system supports self-pickup, Swiggy, Dunzo, and Porter delivery options.
                 </p>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {filteredDonations.map((donation) => (
                   <DonationCard
                     key={donation._id || donation.id}

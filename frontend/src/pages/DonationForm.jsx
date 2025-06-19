@@ -2,9 +2,10 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { Upload, X } from "lucide-react";
+import { Upload, X, Clock, Calendar } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import LocationPicker from "@/components/LocationPicker";
 import { createDonation } from "@/lib/api";
 
 const DonationForm = () => {
@@ -42,6 +43,13 @@ const DonationForm = () => {
       console.error("Error parsing user data:", error);
       navigate("/auth");
     }
+
+    // Set minimum date to today
+    const today = new Date().toISOString().split('T')[0];
+    const expiryInput = document.getElementById("expiryDate");
+    if (expiryInput) {
+      expiryInput.min = today;
+    }
   }, [navigate]);
 
   const handleChange = (e) => {
@@ -49,6 +57,13 @@ const DonationForm = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: undefined }));
+    }
+  };
+
+  const handleLocationSelect = (address) => {
+    setFormData(prev => ({ ...prev, pickupAddress: address }));
+    if (errors.pickupAddress) {
+      setErrors(prev => ({ ...prev, pickupAddress: undefined }));
     }
   };
 
@@ -105,9 +120,8 @@ const DonationForm = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const combineTimeWithToday = (timeString) => {
-    const today = new Date().toISOString().split("T")[0];
-    return new Date(`${today}T${timeString}:00Z`).toISOString();
+  const combineDateTime = (dateString, timeString) => {
+    return new Date(`${dateString}T${timeString}:00Z`).toISOString();
   };
 
   const handleSubmit = async (e) => {
@@ -121,25 +135,23 @@ const DonationForm = () => {
     setIsSubmitting(true);
 
     try {
+      // Use today's date for pickup times, expiry date for expiry
+      const today = new Date().toISOString().split('T')[0];
+      
       const submissionData = {
         title: formData.title.trim(),
         description: formData.description.trim(),
         quantity: formData.quantity.trim(),
-        expiryDate: new Date(formData.expiryDate).toISOString(),
+        expiryDate: new Date(formData.expiryDate + 'T23:59:59Z').toISOString(),
         pickupAddress: formData.pickupAddress.trim(),
-        pickupTimeStart: combineTimeWithToday(formData.pickupTimeStart),
-        pickupTimeEnd: combineTimeWithToday(formData.pickupTimeEnd),
+        pickupTimeStart: combineDateTime(today, formData.pickupTimeStart),
+        pickupTimeEnd: combineDateTime(today, formData.pickupTimeEnd),
         imageUrl: imagePreview || "",
       };
 
-      const token = localStorage.getItem("foodShareToken");
-      if (!token) {
-        toast.error("Authentication token not found. Please log in again.");
-        navigate("/auth");
-        return;
-      }
+      console.log("Submitting donation data:", submissionData);
 
-      await createDonation(submissionData, token);
+      await createDonation(submissionData);
       toast.success("Donation created successfully!");
       navigate("/dashboard");
     } catch (error) {
@@ -150,21 +162,38 @@ const DonationForm = () => {
     }
   };
 
+  // Get current time + 1 hour as default start time
+  const getDefaultStartTime = () => {
+    const now = new Date();
+    now.setHours(now.getHours() + 1);
+    return now.toTimeString().slice(0, 5);
+  };
+
+  // Get current time + 4 hours as default end time
+  const getDefaultEndTime = () => {
+    const now = new Date();
+    now.setHours(now.getHours() + 4);
+    return now.toTimeString().slice(0, 5);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
-      <section className="pt-28 pb-16 px-4">
-        <div className="container mx-auto max-w-3xl">
-          <div className="bg-white rounded-xl border border-border shadow-sm p-8">
-            <h1 className="text-3xl font-bold mb-2 text-sage-800">Share Your Surplus Food</h1>
-            <p className="text-gray-600 mb-8">
-              Provide details about the food you'd like to donate to help those in need.
-            </p>
+      <section className="pt-32 pb-16 px-4">
+        <div className="container mx-auto max-w-4xl">
+          <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-8">
+            <div className="text-center mb-8">
+              <h1 className="text-4xl font-bold text-gray-900 mb-4">Share Your Surplus Food</h1>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                Help reduce food waste by donating your surplus food to orphanages and those in need. 
+                Every donation makes a difference in fighting hunger.
+              </p>
+            </div>
             
             <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="md:col-span-2">
-                  <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="lg:col-span-2">
+                  <label htmlFor="title" className="block text-sm font-semibold text-gray-700 mb-2">
                     Donation Title *
                   </label>
                   <input
@@ -173,14 +202,14 @@ const DonationForm = () => {
                     type="text"
                     value={formData.title}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all"
-                    placeholder="e.g., Fresh Bread from Local Bakery"
+                    className="input-field"
+                    placeholder="e.g., Fresh Bread from Local Bakery, Cooked Rice for 50 people"
                   />
                   {errors.title && <p className="mt-1 text-sm text-red-600">{errors.title}</p>}
                 </div>
 
-                <div className="md:col-span-2">
-                  <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
+                <div className="lg:col-span-2">
+                  <label htmlFor="description" className="block text-sm font-semibold text-gray-700 mb-2">
                     Description *
                   </label>
                   <textarea
@@ -189,14 +218,14 @@ const DonationForm = () => {
                     rows={4}
                     value={formData.description}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all resize-none"
-                    placeholder="Describe the food in detail, including ingredients and preparation method"
+                    className="input-field resize-none"
+                    placeholder="Describe the food in detail, including ingredients, preparation method, and any special notes"
                   />
                   {errors.description && <p className="mt-1 text-sm text-red-600">{errors.description}</p>}
                 </div>
 
                 <div>
-                  <label htmlFor="quantity" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="quantity" className="block text-sm font-semibold text-gray-700 mb-2">
                     Quantity *
                   </label>
                   <input
@@ -205,14 +234,15 @@ const DonationForm = () => {
                     type="text"
                     value={formData.quantity}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all"
-                    placeholder="e.g., 20 loaves, 5kg rice"
+                    className="input-field"
+                    placeholder="e.g., 20 loaves, 5kg rice, serves 30 people"
                   />
                   {errors.quantity && <p className="mt-1 text-sm text-red-600">{errors.quantity}</p>}
                 </div>
 
                 <div>
-                  <label htmlFor="expiryDate" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="expiryDate" className="block text-sm font-semibold text-gray-700 mb-2">
+                    <Calendar className="w-4 h-4 inline mr-1" />
                     Expiry Date *
                   </label>
                   <input
@@ -222,70 +252,68 @@ const DonationForm = () => {
                     value={formData.expiryDate}
                     onChange={handleChange}
                     min={new Date().toISOString().split('T')[0]}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all"
+                    className="input-field"
                   />
                   {errors.expiryDate && <p className="mt-1 text-sm text-red-600">{errors.expiryDate}</p>}
                 </div>
 
-                <div className="md:col-span-2">
-                  <label htmlFor="pickupAddress" className="block text-sm font-medium text-gray-700 mb-2">
+                <div className="lg:col-span-2">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
                     Pickup Address *
                   </label>
-                  <input
-                    id="pickupAddress"
-                    name="pickupAddress"
-                    type="text"
-                    value={formData.pickupAddress}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all"
-                    placeholder="Enter the complete pickup address"
+                  <LocationPicker
+                    onLocationSelect={handleLocationSelect}
+                    currentAddress={formData.pickupAddress}
+                    setCurrentAddress={(address) => setFormData(prev => ({ ...prev, pickupAddress: address }))}
                   />
                   {errors.pickupAddress && <p className="mt-1 text-sm text-red-600">{errors.pickupAddress}</p>}
                 </div>
 
                 <div>
-                  <label htmlFor="pickupTimeStart" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="pickupTimeStart" className="block text-sm font-semibold text-gray-700 mb-2">
+                    <Clock className="w-4 h-4 inline mr-1" />
                     Pickup Start Time *
                   </label>
                   <input
                     id="pickupTimeStart"
                     name="pickupTimeStart"
                     type="time"
-                    value={formData.pickupTimeStart}
+                    value={formData.pickupTimeStart || getDefaultStartTime()}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all"
+                    className="input-field"
                   />
                   {errors.pickupTimeStart && <p className="mt-1 text-sm text-red-600">{errors.pickupTimeStart}</p>}
                 </div>
 
                 <div>
-                  <label htmlFor="pickupTimeEnd" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="pickupTimeEnd" className="block text-sm font-semibold text-gray-700 mb-2">
+                    <Clock className="w-4 h-4 inline mr-1" />
                     Pickup End Time *
                   </label>
                   <input
                     id="pickupTimeEnd"
                     name="pickupTimeEnd"
                     type="time"
-                    value={formData.pickupTimeEnd}
+                    value={formData.pickupTimeEnd || getDefaultEndTime()}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all"
+                    className="input-field"
                   />
                   {errors.pickupTimeEnd && <p className="mt-1 text-sm text-red-600">{errors.pickupTimeEnd}</p>}
                 </div>
 
-                <div className="md:col-span-2">
-                  <label htmlFor="image" className="block text-sm font-medium text-gray-700 mb-2">
+                <div className="lg:col-span-2">
+                  <label htmlFor="image" className="block text-sm font-semibold text-gray-700 mb-2">
                     Food Image (Optional)
                   </label>
-                  <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-sage-400 transition-colors">
+                  <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-xl hover:border-green-400 transition-colors">
                     <div className="space-y-1 text-center">
                       {imagePreview ? (
                         <div className="relative">
-                          <img src={imagePreview} alt="Preview" className="mx-auto h-32 w-auto rounded-lg" />
+                          <img src={imagePreview} alt="Preview" className="mx-auto h-40 w-auto rounded-lg shadow-md" />
                           <button
                             type="button"
                             onClick={removeImage}
-                            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors"
+                            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-2 hover:bg-red-600 transition-colors shadow-lg"
                           >
                             <X className="w-4 h-4" />
                           </button>
@@ -294,8 +322,8 @@ const DonationForm = () => {
                         <>
                           <Upload className="mx-auto h-12 w-12 text-gray-400" />
                           <div className="flex text-sm text-gray-600">
-                            <label htmlFor="image" className="relative cursor-pointer bg-white rounded-md font-medium text-sage-600 hover:text-sage-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-sage-500">
-                              <span>Upload a file</span>
+                            <label htmlFor="image" className="relative cursor-pointer bg-white rounded-md font-medium text-green-600 hover:text-green-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-green-500">
+                              <span>Upload a photo</span>
                               <input
                                 id="image"
                                 name="image"
@@ -319,15 +347,15 @@ const DonationForm = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-sage-500 text-white py-3 px-6 rounded-lg hover:bg-sage-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center text-lg font-medium"
+                  className="w-full btn-primary py-4 text-lg font-semibold"
                 >
                   {isSubmitting ? (
                     <>
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white mr-3"></div>
                       Creating Donation...
                     </>
                   ) : (
-                    "Create Donation"
+                    "Create Donation & Help Feed The Hungry"
                   )}
                 </button>
               </div>
