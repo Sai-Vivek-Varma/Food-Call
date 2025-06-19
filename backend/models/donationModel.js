@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const donationSchema = new mongoose.Schema({
   title: {
@@ -64,4 +64,4 @@ const donationSchema = new mongoose.Schema({
 });
 
 const Donation = mongoose.model("Donation", donationSchema);
-module.exports = Donation;
+export default Donation;

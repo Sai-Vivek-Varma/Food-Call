@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -7,7 +6,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
-import DonationForm from "./pages/DonationForm";
 import DonationsList from "./pages/DonationsList";
 import DonationDetail from "./pages/DonationDetail";
 import NotFound from "./pages/NotFound";
@@ -29,14 +27,13 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path='/' element={<Index />} />
-          <Route path='/auth' element={<Auth />} />
-          <Route path='/dashboard' element={<Dashboard />} />
-          <Route path='/donate' element={<DonationForm />} />
-          <Route path='/donations' element={<DonationsList />} />
-          <Route path='/donations/:id' element={<DonationDetail />} />
-          <Route path='/how-it-works' element={<HowItWorks />} />
-          <Route path='*' element={<NotFound />} />
+          <Route path="/" element={<Index />} />
+          <Route path="/auth" element={<Auth />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/donations" element={<DonationsList />} />
+          <Route path="/donations/:id" element={<DonationDetail />} />
+          <Route path="/how-it-works" element={<HowItWorks />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>

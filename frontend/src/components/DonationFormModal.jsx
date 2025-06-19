@@ -1,8 +1,12 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
-import axios from "axios";
+import { X } from "lucide-react";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import { createDonation, uploadDonationImage } from "@/lib/api";
+import DonationFormFields from "./DonationFormFields";
+import ImageUploadField from "./ImageUploadField";
+import LocationPicker from "./LocationPicker";
 
 const DonationFormModal = ({ isOpen, onClose, onSuccess }) => {
   const [formData, setFormData] = useState({
@@ -16,7 +20,31 @@ const DonationFormModal = ({ isOpen, onClose, onSuccess }) => {
   });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    const userJson = localStorage.getItem("foodShareUser");
+    if (!userJson) {
+      toast.error("You must be logged in to create a donation");
+      return;
+    }
+    try {
+      const user = JSON.parse(userJson);
+      if (user.role !== "donor") {
+        toast.error("Only donors can create donations");
+      }
+    } catch (error) {
+      toast.error("Error with user data");
+    }
+    // Set minimum date to today
+    const today = new Date().toISOString().split("T")[0];
+    const expiryInput = document.getElementById("expiryDate");
+    if (expiryInput) {
+      expiryInput.min = today;
+    }
+  }, []);
 
   if (!isOpen) return null;
 
@@ -28,10 +56,21 @@ const DonationFormModal = ({ isOpen, onClose, onSuccess }) => {
     }
   };
 
+  const handleLocationSelect = (address) => {
+    setFormData((prev) => ({ ...prev, pickupAddress: address }));
+    if (errors.pickupAddress) {
+      setErrors((prev) => ({ ...prev, pickupAddress: undefined }));
+    }
+  };
+
   const handleImageChange = (e) => {
     const file = e.target.files?.[0];
     if (file) {
-      setFormData((prev) => ({ ...prev, image: file }));
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error("Image size must be less than 5MB");
+        return;
+      }
+      setImageFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result);
@@ -40,251 +79,146 @@ const DonationFormModal = ({ isOpen, onClose, onSuccess }) => {
     }
   };
 
+  const removeImage = () => {
+    setImageFile(null);
+    setImagePreview(null);
+    const imageInput = document.getElementById("image");
+    if (imageInput) imageInput.value = "";
+  };
+
   const validate = () => {
     const newErrors = {};
-    if (!formData.title) newErrors.title = "Title is required";
-    if (!formData.description) newErrors.description = "Description is required";
-    if (!formData.quantity) newErrors.quantity = "Quantity is required";
+    if (!formData.title.trim()) newErrors.title = "Title is required";
+    if (!formData.description.trim())
+      newErrors.description = "Description is required";
+    if (!formData.quantity.trim()) newErrors.quantity = "Quantity is required";
     if (!formData.expiryDate) newErrors.expiryDate = "Expiry date is required";
-    if (!formData.pickupAddress) newErrors.pickupAddress = "Pickup address is required";
-    if (!formData.pickupTimeStart) newErrors.pickupTimeStart = "Pickup start time is required";
-    if (!formData.pickupTimeEnd) newErrors.pickupTimeEnd = "Pickup end time is required";
+    if (!formData.pickupAddress.trim())
+      newErrors.pickupAddress = "Pickup address is required";
+    if (!formData.pickupTimeStart)
+      newErrors.pickupTimeStart = "Pickup start time is required";
+    if (!formData.pickupTimeEnd)
+      newErrors.pickupTimeEnd = "Pickup end time is required";
+    if (formData.pickupTimeStart && formData.pickupTimeEnd) {
+      if (formData.pickupTimeStart >= formData.pickupTimeEnd) {
+        newErrors.pickupTimeEnd = "End time must be after start time";
+      }
+    }
+    if (formData.expiryDate) {
+      const today = new Date().toISOString().split("T")[0];
+      if (formData.expiryDate < today) {
+        newErrors.expiryDate = "Expiry date cannot be in the past";
+      }
+    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const combineTimeWithToday = (timeString) => {
-    const today = new Date().toISOString().split("T")[0];
-    return new Date(`${today}T${timeString}:00Z`).toISOString();
+  const istToUtcIso = (dateString, timeString) => {
+    const [year, month, day] = dateString.split("-").map(Number);
+    const [hour, minute] = timeString.split(":").map(Number);
+    const utcDate = new Date(
+      Date.UTC(year, month - 1, day, hour - 5, minute - 30)
+    );
+    return utcDate.toISOString();
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!validate()) return;
+    if (!validate()) {
+      toast.error("Please fix the errors in the form");
+      return;
+    }
     setIsSubmitting(true);
-
     try {
-      const submissionData = {
-        title: formData.title,
-        description: formData.description,
-        quantity: formData.quantity,
-        expiryDate: new Date(formData.expiryDate).toISOString(),
-        pickupAddress: formData.pickupAddress,
-        pickupTimeStart: combineTimeWithToday(formData.pickupTimeStart),
-        pickupTimeEnd: combineTimeWithToday(formData.pickupTimeEnd),
-        imageUrl: imagePreview || "",
-      };
-
-      const token = localStorage.getItem("foodShareToken");
-      if (!token) {
-        toast.error("Authentication token not found. Please log in again.");
-        return;
+      let imageUrl = "";
+      if (imageFile) {
+        imageUrl = await uploadDonationImage(imageFile);
       }
-
-      await axios.post("http://localhost:5000/api/donations", submissionData, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
+      const submissionData = {
+        title: formData.title.trim(),
+        description: formData.description.trim(),
+        quantity: formData.quantity.trim(),
+        expiryDate: istToUtcIso(formData.expiryDate, "23:59"),
+        pickupAddress: formData.pickupAddress.trim(),
+        pickupTimeStart: istToUtcIso(
+          formData.expiryDate,
+          formData.pickupTimeStart
+        ),
+        pickupTimeEnd: istToUtcIso(formData.expiryDate, formData.pickupTimeEnd),
+        imageUrl,
+      };
+      await createDonation(submissionData);
       toast.success("Donation created successfully!");
-      onSuccess();
-      onClose();
-      
-      // Reset form
-      setFormData({
-        title: "",
-        description: "",
-        quantity: "",
-        expiryDate: "",
-        pickupAddress: "",
-        pickupTimeStart: "",
-        pickupTimeEnd: "",
-      });
-      setImagePreview(null);
+      if (onSuccess) onSuccess();
     } catch (error) {
-      console.error("Failed to create donation:", error.response?.data || error.message);
-      toast.error("Failed to create donation. Please try again.");
+      toast.error(
+        error.message || "Failed to create donation. Please try again."
+      );
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between p-6 border-b border-border">
-          <h2 className="text-xl font-semibold">Share Your Surplus Food</h2>
-          <button
-            onClick={onClose}
-            className="text-muted-foreground hover:text-foreground"
-          >
-            ×
-          </button>
-        </div>
-        <div className="p-6">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label htmlFor="title" className="block text-sm font-medium mb-1">
-                Donation Title
-              </label>
-              <input
-                id="title"
-                name="title"
-                type="text"
-                value={formData.title}
-                onChange={handleChange}
-                className="w-full px-4 py-2 rounded-md border border-input focus:outline-none focus:ring-2 focus:ring-sage-500 transition-all"
-                placeholder="e.g., Fresh Bread from Local Bakery"
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      <div
+        className="fixed inset-0 bg-black bg-opacity-50"
+        onClick={onClose}
+      ></div>
+      <div className="relative bg-white rounded-2xl border border-gray-200 shadow-lg p-4 max-w-2xl w-full mx-auto overflow-y-auto max-h-[90vh]">
+        <button
+          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+          onClick={onClose}
+          aria-label="Close"
+        >
+          <X className="w-6 h-6" />
+        </button>
+        <section className="pt-8 pb-4 px-0">
+          <div className="container mx-auto">
+            <div className="text-center mb-8">
+              <h1 className="text-4xl font-bold text-gray-900 mb-4">
+                Share Your Surplus Food
+              </h1>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                Help reduce food waste by donating your surplus food to
+                orphanages and those in need. Every donation makes a difference
+                in fighting hunger.
+              </p>
+            </div>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <DonationFormFields
+                formData={formData}
+                errors={errors}
+                handleChange={handleChange}
+                handleLocationSelect={handleLocationSelect}
+                LocationPicker={LocationPicker}
               />
-              {errors.title && <p className="mt-1 text-sm text-red-600">{errors.title}</p>}
-            </div>
-            
-            <div>
-              <label htmlFor="description" className="block text-sm font-medium mb-1">
-                Description
-              </label>
-              <textarea
-                id="description"
-                name="description"
-                rows={3}
-                value={formData.description}
-                onChange={handleChange}
-                className="w-full px-4 py-2 rounded-md border border-input focus:outline-none focus:ring-2 focus:ring-sage-500 transition-all"
-                placeholder="Describe the food in detail"
+              <ImageUploadField
+                imageFile={imageFile}
+                imagePreview={imagePreview}
+                onImageChange={handleImageChange}
+                onRemoveImage={removeImage}
               />
-              {errors.description && <p className="mt-1 text-sm text-red-600">{errors.description}</p>}
-            </div>
-
-            <div>
-              <label htmlFor="quantity" className="block text-sm font-medium mb-1">
-                Quantity
-              </label>
-              <input
-                id="quantity"
-                name="quantity"
-                type="text"
-                value={formData.quantity}
-                onChange={handleChange}
-                className="w-full px-4 py-2 rounded-md border border-input focus:outline-none focus:ring-2 focus:ring-sage-500 transition-all"
-                placeholder="e.g., 20 loaves, 5kg of rice"
-              />
-              {errors.quantity && <p className="mt-1 text-sm text-red-600">{errors.quantity}</p>}
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="expiryDate" className="block text-sm font-medium mb-1">
-                  Expiry Date
-                </label>
-                <input
-                  id="expiryDate"
-                  name="expiryDate"
-                  type="date"
-                  value={formData.expiryDate}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 rounded-md border border-input focus:outline-none focus:ring-2 focus:ring-sage-500 transition-all"
-                />
-                {errors.expiryDate && <p className="mt-1 text-sm text-red-600">{errors.expiryDate}</p>}
+              <div className="pt-6 border-t border-gray-200">
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full btn-primary py-4 text-lg font-semibold"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white mr-3"></div>
+                      Creating Donation...
+                    </>
+                  ) : (
+                    "Create Donation & Help Feed The Hungry"
+                  )}
+                </button>
               </div>
-              
-              <div>
-                <label htmlFor="pickupAddress" className="block text-sm font-medium mb-1">
-                  Pickup Address
-                </label>
-                <input
-                  id="pickupAddress"
-                  name="pickupAddress"
-                  type="text"
-                  value={formData.pickupAddress}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 rounded-md border border-input focus:outline-none focus:ring-2 focus:ring-sage-500 transition-all"
-                  placeholder="Enter the address for pickup"
-                />
-                {errors.pickupAddress && <p className="mt-1 text-sm text-red-600">{errors.pickupAddress}</p>}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="pickupTimeStart" className="block text-sm font-medium mb-1">
-                  Pickup Time - Start
-                </label>
-                <input
-                  id="pickupTimeStart"
-                  name="pickupTimeStart"
-                  type="time"
-                  value={formData.pickupTimeStart}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 rounded-md border border-input focus:outline-none focus:ring-2 focus:ring-sage-500 transition-all"
-                />
-                {errors.pickupTimeStart && <p className="mt-1 text-sm text-red-600">{errors.pickupTimeStart}</p>}
-              </div>
-              
-              <div>
-                <label htmlFor="pickupTimeEnd" className="block text-sm font-medium mb-1">
-                  Pickup Time - End
-                </label>
-                <input
-                  id="pickupTimeEnd"
-                  name="pickupTimeEnd"
-                  type="time"
-                  value={formData.pickupTimeEnd}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 rounded-md border border-input focus:outline-none focus:ring-2 focus:ring-sage-500 transition-all"
-                />
-                {errors.pickupTimeEnd && <p className="mt-1 text-sm text-red-600">{errors.pickupTimeEnd}</p>}
-              </div>
-            </div>
-
-            <div>
-              <label htmlFor="image" className="block text-sm font-medium mb-1">
-                Image (Optional)
-              </label>
-              <input
-                id="image"
-                name="image"
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                className="block w-full"
-              />
-              {imagePreview && (
-                <div className="mt-2 relative w-full h-32 rounded-md overflow-hidden border border-input">
-                  <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setImagePreview(null);
-                      setFormData((prev) => ({ ...prev, image: undefined }));
-                    }}
-                    className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors"
-                    aria-label="Remove image"
-                  >
-                    ×
-                  </button>
-                </div>
-              )}
-            </div>
-
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full bg-sage-500 text-white py-2 rounded-md hover:bg-sage-600 transition-all mt-6 flex items-center justify-center"
-            >
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                  Creating Donation...
-                </>
-              ) : (
-                "Create Donation"
-              )}
-            </button>
-          </form>
-        </div>
+            </form>
+          </div>
+        </section>
       </div>
     </div>
   );

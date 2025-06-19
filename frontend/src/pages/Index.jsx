@@ -9,7 +9,7 @@ import {
   Play,
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import Footer from "../components/Footer";
 
 const Index = () => {
   return (
@@ -321,7 +321,7 @@ const Index = () => {
                 <div className="w-16 h-16 bg-sage-100 rounded-xl flex items-center justify-center mx-auto group-hover:bg-sage-200 transition-colors duration-300">
                   <Package className="w-8 h-8 text-sage-500" />
                 </div>
-                <div className="absolute top-2 -right-2 w-6 h-6 bg-sage-500 text-white rounded-full flex items-center justify-center text-xs font-bold">
+                <div className="absolute top-2 -left-2 w-6 h-6 bg-sage-500 text-white rounded-full flex items-center justify-center text-xs font-bold">
                   1
                 </div>
               </div>
@@ -339,7 +339,7 @@ const Index = () => {
                 <div className="w-16 h-16 bg-sage-100 rounded-xl flex items-center justify-center mx-auto group-hover:bg-sage-200 transition-colors duration-300">
                   <Users className="w-8 h-8 text-sage-500" />
                 </div>
-                <div className="absolute top-2 -right-2 w-6 h-6 bg-sage-500 text-white rounded-full flex items-center justify-center text-xs font-bold">
+                <div className="absolute top-2 -left-2 w-6 h-6 bg-sage-500 text-white rounded-full flex items-center justify-center text-xs font-bold">
                   2
                 </div>
               </div>
@@ -357,7 +357,7 @@ const Index = () => {
                 <div className="w-16 h-16 bg-sage-100 rounded-xl flex items-center justify-center mx-auto group-hover:bg-sage-200 transition-colors duration-300">
                   <Heart className="w-8 h-8 text-sage-500" />
                 </div>
-                <div className="absolute top-2 -right-2 w-6 h-6 bg-sage-500 text-white rounded-full flex items-center justify-center text-xs font-bold">
+                <div className="absolute top-2 -left-2 w-6 h-6 bg-sage-500 text-white rounded-full flex items-center justify-center text-xs font-bold">
                   3
                 </div>
               </div>

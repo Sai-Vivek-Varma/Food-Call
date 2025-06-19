@@ -1,37 +1,29 @@
-// This is a placeholder for image upload functionality using Cloudinary
-// To implement this fully, you would need to install cloudinary and multer packages
+import dotenv from "dotenv";
+dotenv.config();
+import cloudinaryModule from "cloudinary";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
+import multer from "multer";
 
-/*
-const cloudinary = require('cloudinary').v2;
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
-const multer = require('multer');
+const cloudinary = cloudinaryModule.v2;
 
-// Configure Cloudinary
+const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+const apiKey = process.env.CLOUDINARY_API_KEY;
+const apiSecret = process.env.CLOUDINARY_API_SECRET;
+
 cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET
+  cloud_name: cloudName,
+  api_key: apiKey,
+  api_secret: apiSecret,
 });
 
-// Configure storage
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: 'food-call',
-    allowed_formats: ['jpg', 'jpeg', 'png']
-  }
+    folder: "food-call",
+    allowed_formats: ["jpg", "jpeg", "png"],
+  },
 });
 
-// Create upload middleware
 const upload = multer({ storage: storage });
 
-module.exports = upload;
-*/
-
-// For now, we'll use this placeholder function for handling image URLs
-const handleImageUrl = (url) => {
-  // In a real implementation, you might validate the URL or perform other checks
-  return url || null;
-};
-
-module.exports = { handleImageUrl };
+export default upload;

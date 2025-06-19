@@ -1,4 +1,3 @@
-
 import { X, Clock, MapPin, CalendarIcon, Package, User } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -26,7 +25,7 @@ const DonationDetailModal = ({ isOpen, onClose, donation, userRole }) => {
   if (!isOpen || !donation) return null;
 
   const statusClasses = {
-    available: "bg-emerald-100 text-emerald-700",
+    available: "bg-sage-100 text-sage-700",
     reserved: "bg-amber-100 text-amber-700",
     completed: "bg-blue-100 text-blue-700",
     expired: "bg-red-100 text-red-700",
@@ -41,13 +40,15 @@ const DonationDetailModal = ({ isOpen, onClose, donation, userRole }) => {
       }
 
       console.log("Reserving donation with delivery option:", deliveryOption);
-      
+
       await reserveDonation(donation._id || donation.id, token);
       toast.success("Donation reserved successfully! Donor has been notified.");
       onClose();
     } catch (error) {
       console.error("Error reserving donation:", error);
-      toast.error(error.message || "Failed to reserve donation. Please try again.");
+      toast.error(
+        error.message || "Failed to reserve donation. Please try again."
+      );
       throw error;
     }
   };
@@ -58,7 +59,9 @@ const DonationDetailModal = ({ isOpen, onClose, donation, userRole }) => {
         <div className="bg-white rounded-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-slate-200">
-            <h2 className="text-xl font-semibold text-slate-900">Donation Details</h2>
+            <h2 className="text-xl font-semibold text-slate-900">
+              Donation Details
+            </h2>
             <button
               onClick={onClose}
               className="text-slate-400 hover:text-slate-600 p-1 rounded-full hover:bg-slate-100 transition-colors"
@@ -83,41 +86,53 @@ const DonationDetailModal = ({ isOpen, onClose, donation, userRole }) => {
             {/* Status Badge */}
             <div className="mb-4">
               <span
-                className={`px-3 py-1 rounded-full text-sm font-medium ${statusClasses[donation.status]}`}
+                className={`px-3 py-1 rounded-full text-sm font-medium ${
+                  statusClasses[donation.status]
+                }`}
               >
-                {donation.status.charAt(0).toUpperCase() + donation.status.slice(1)}
+                {donation.status.charAt(0).toUpperCase() +
+                  donation.status.slice(1)}
               </span>
             </div>
 
             {/* Title and Description */}
-            <h3 className="text-2xl font-bold mb-4 text-slate-900">{donation.title}</h3>
-            <p className="text-slate-600 mb-6 leading-relaxed">{donation.description}</p>
+            <h3 className="text-2xl font-bold mb-4 text-slate-900">
+              {donation.title}
+            </h3>
+            <p className="text-slate-600 mb-6 leading-relaxed">
+              {donation.description}
+            </p>
 
             {/* Details Grid */}
             <div className="grid md:grid-cols-2 gap-6 mb-6">
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
-                  <Package className="w-5 h-5 text-emerald-500" />
+                  <Package className="w-5 h-5 text-sage-500" />
                   <div>
                     <div className="text-sm text-slate-500">Quantity</div>
-                    <div className="font-medium text-slate-900">{donation.quantity}</div>
+                    <div className="font-medium text-slate-900">
+                      {donation.quantity}
+                    </div>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <CalendarIcon className="w-5 h-5 text-emerald-500" />
+                  <CalendarIcon className="w-5 h-5 text-sage-500" />
                   <div>
                     <div className="text-sm text-slate-500">Expiry Date</div>
-                    <div className="font-medium text-slate-900">{formatDate(donation.expiryDate)}</div>
+                    <div className="font-medium text-slate-900">
+                      {formatDate(donation.expiryDate)}
+                    </div>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <Clock className="w-5 h-5 text-emerald-500" />
+                  <Clock className="w-5 h-5 text-sage-500" />
                   <div>
                     <div className="text-sm text-slate-500">Pickup Time</div>
                     <div className="font-medium text-slate-900">
-                      {formatTime(donation.pickupTimeStart)} - {formatTime(donation.pickupTimeEnd)}
+                      {formatTime(donation.pickupTimeStart)} -{" "}
+                      {formatTime(donation.pickupTimeEnd)}
                     </div>
                   </div>
                 </div>
@@ -125,24 +140,25 @@ const DonationDetailModal = ({ isOpen, onClose, donation, userRole }) => {
 
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
-                  <MapPin className="w-5 h-5 text-emerald-500 mt-0.5" />
+                  <MapPin className="w-5 h-5 text-sage-500 mt-0.5" />
                   <div>
                     <div className="text-sm text-slate-500">Pickup Address</div>
-                    <div className="font-medium text-slate-900">{donation.pickupAddress}</div>
+                    <div className="font-medium text-slate-900">
+                      {donation.pickupAddress}
+                    </div>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <User className="w-5 h-5 text-emerald-500" />
+                  <User className="w-5 h-5 text-sage-500" />
                   <div>
                     <div className="text-sm text-slate-500">
-                      {userRole === 'donor' ? 'Reserved By' : 'Donor'}
+                      {userRole === "donor" ? "Reserved By" : "Donor"}
                     </div>
                     <div className="font-medium text-slate-900">
-                      {userRole === 'donor' 
-                        ? (donation.reservedByName || 'Not reserved yet')
-                        : donation.donorName
-                      }
+                      {userRole === "donor"
+                        ? donation.reservedByName || "Not reserved yet"
+                        : donation.donorName}
                     </div>
                   </div>
                 </div>
@@ -151,19 +167,21 @@ const DonationDetailModal = ({ isOpen, onClose, donation, userRole }) => {
 
             {/* Action Button */}
             <div className="pt-4 border-t border-slate-200">
-              {userRole === 'orphanage' && donation.status === 'available' ? (
-                <button 
+              {userRole === "orphanage" && donation.status === "available" ? (
+                <button
                   onClick={() => setIsDeliveryModalOpen(true)}
-                  className="w-full py-3 px-4 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-medium"
+                  className="w-full py-3 px-4 bg-sage-600 text-white rounded-lg hover:bg-sage-700 transition-colors font-medium"
                 >
                   Reserve This Donation
                 </button>
               ) : (
                 <div className="text-center text-slate-500 py-3">
-                  {donation.status === 'reserved' && 'This donation has been reserved'}
-                  {donation.status === 'completed' && 'This donation has been completed'}
-                  {donation.status === 'expired' && 'This donation has expired'}
-                  {userRole === 'donor' && 'You are the donor of this item'}
+                  {donation.status === "reserved" &&
+                    "This donation has been reserved. "}
+                  {donation.status === "completed" &&
+                    "This donation has been completed. "}
+                  {donation.status === "expired" && "This donation has expired"}
+                  {userRole === "donor" && "You are the donor of this item"}
                 </div>
               )}
             </div>

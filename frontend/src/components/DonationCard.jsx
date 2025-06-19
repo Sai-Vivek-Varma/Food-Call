@@ -1,4 +1,3 @@
-
 import { Clock, MapPin, CalendarIcon, Package } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -14,27 +13,34 @@ const formatDate = (date) => {
   });
 };
 
-const formatTime = (date) => {
+const formatTimeIST = (date) => {
+  // Always format as IST (Asia/Kolkata)
   return new Date(date).toLocaleTimeString("en-US", {
     hour: "2-digit",
     minute: "2-digit",
+    hour12: true,
+    timeZone: "Asia/Kolkata",
   });
 };
 
-const DonationCard = ({ donation, isOrphanage = false, onReservationSuccess }) => {
+const DonationCard = ({
+  donation,
+  isOrphanage = false,
+  onReservationSuccess,
+}) => {
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isDeliveryModalOpen, setIsDeliveryModalOpen] = useState(false);
 
   // Check if donation is expired
   const isExpired = new Date(donation.expiryDate) < new Date();
-  
+
   // Don't render expired donations for orphanages
   if (isExpired && isOrphanage) {
     return null;
   }
 
   const statusClasses = {
-    available: "bg-emerald-100 text-emerald-700",
+    available: "bg-sage-100 text-sage-700",
     reserved: "bg-amber-100 text-amber-700",
     completed: "bg-blue-100 text-blue-700",
     expired: "bg-red-100 text-red-700",
@@ -49,16 +55,18 @@ const DonationCard = ({ donation, isOrphanage = false, onReservationSuccess }) =
       }
 
       console.log("Reserving donation with delivery option:", deliveryOption);
-      
+
       await reserveDonation(donation._id || donation.id, token);
       toast.success("Donation reserved successfully! Donor has been notified.");
-      
+
       if (onReservationSuccess) {
         onReservationSuccess();
       }
     } catch (error) {
       console.error("Error reserving donation:", error);
-      toast.error(error.message || "Failed to reserve donation. Please try again.");
+      toast.error(
+        error.message || "Failed to reserve donation. Please try again."
+      );
       throw error;
     }
   };
@@ -74,7 +82,7 @@ const DonationCard = ({ donation, isOrphanage = false, onReservationSuccess }) =
 
   return (
     <>
-      <div 
+      <div
         className="bg-white rounded-xl border border-slate-200 shadow-sm transition-all hover:shadow-md cursor-pointer card-hover"
         onClick={handleCardClick}
       >
@@ -87,9 +95,12 @@ const DonationCard = ({ donation, isOrphanage = false, onReservationSuccess }) =
             />
             <div className="absolute top-3 right-3">
               <span
-                className={`px-3 py-1 rounded-full text-xs font-medium ${statusClasses[donation.status]}`}
+                className={`px-3 py-1 rounded-full text-xs font-medium ${
+                  statusClasses[donation.status]
+                }`}
               >
-                {donation.status.charAt(0).toUpperCase() + donation.status.slice(1)}
+                {donation.status.charAt(0).toUpperCase() +
+                  donation.status.slice(1)}
               </span>
             </div>
           </div>
@@ -99,14 +110,19 @@ const DonationCard = ({ donation, isOrphanage = false, onReservationSuccess }) =
           {!donation.imageUrl && (
             <div className="mb-4 flex justify-between items-center">
               <span
-                className={`px-3 py-1 rounded-full text-xs font-medium ${statusClasses[donation.status]}`}
+                className={`px-3 py-1 rounded-full text-xs font-medium ${
+                  statusClasses[donation.status]
+                }`}
               >
-                {donation.status.charAt(0).toUpperCase() + donation.status.slice(1)}
+                {donation.status.charAt(0).toUpperCase() +
+                  donation.status.slice(1)}
               </span>
             </div>
           )}
 
-          <h3 className="text-lg font-semibold mb-2 truncate text-slate-900">{donation.title}</h3>
+          <h3 className="text-lg font-semibold mb-2 truncate text-slate-900">
+            {donation.title}
+          </h3>
 
           <p className="text-slate-600 text-sm mb-4 line-clamp-2">
             {donation.description}
@@ -114,31 +130,31 @@ const DonationCard = ({ donation, isOrphanage = false, onReservationSuccess }) =
 
           <div className="space-y-2">
             <div className="flex items-center text-sm text-slate-600">
-              <Package className="w-4 h-4 mr-2 text-emerald-500" />
+              <Package className="w-4 h-4 mr-2 text-sage-500" />
               <span>{donation.quantity}</span>
             </div>
             <div className="flex items-center text-sm text-slate-600">
-              <CalendarIcon className="w-4 h-4 mr-2 text-emerald-500" />
+              <CalendarIcon className="w-4 h-4 mr-2 text-sage-500" />
               <span>Expires: {formatDate(donation.expiryDate)}</span>
             </div>
             <div className="flex items-center text-sm text-slate-600">
-              <MapPin className="w-4 h-4 mr-2 text-emerald-500" />
+              <MapPin className="w-4 h-4 mr-2 text-sage-500" />
               <span className="truncate">{donation.pickupAddress}</span>
             </div>
             <div className="flex items-center text-sm text-slate-600">
-              <Clock className="w-4 h-4 mr-2 text-emerald-500" />
+              <Clock className="w-4 h-4 mr-2 text-sage-500" />
               <span>
-                Pickup: {formatTime(donation.pickupTimeStart)} -{" "}
-                {formatTime(donation.pickupTimeEnd)}
+                Pickup: {formatTimeIST(donation.pickupTimeStart)} -{" "}
+                {formatTimeIST(donation.pickupTimeEnd)}
               </span>
             </div>
           </div>
 
           <div className="mt-4 pt-4 border-t border-slate-200">
             {isOrphanage && donation.status === "available" ? (
-              <button 
+              <button
                 onClick={handleReserveClick}
-                className="w-full py-2 px-4 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 transition-colors text-center text-sm font-medium"
+                className="w-full py-2 px-4 bg-sage-600 text-white rounded-md hover:bg-sage-700 transition-colors text-center text-sm font-medium"
               >
                 Reserve Donation
               </button>
@@ -158,7 +174,7 @@ const DonationCard = ({ donation, isOrphanage = false, onReservationSuccess }) =
         isOpen={isDetailModalOpen}
         onClose={() => setIsDetailModalOpen(false)}
         donation={donation}
-        userRole={isOrphanage ? 'orphanage' : 'donor'}
+        userRole={isOrphanage ? "orphanage" : "donor"}
       />
 
       <DeliveryOptionsModal

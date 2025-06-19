@@ -1,9 +1,12 @@
-
 import { useState } from "react";
 import { MapPin, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
-const LocationPicker = ({ onLocationSelect, currentAddress, setCurrentAddress }) => {
+const LocationPicker = ({
+  onLocationSelect,
+  currentAddress,
+  setCurrentAddress,
+}) => {
   const [isGettingLocation, setIsGettingLocation] = useState(false);
 
   const getCurrentLocation = () => {
@@ -13,17 +16,17 @@ const LocationPicker = ({ onLocationSelect, currentAddress, setCurrentAddress })
     }
 
     setIsGettingLocation(true);
-    
+
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         try {
           const { latitude, longitude } = position.coords;
-          
+
           // Use reverse geocoding to get address
           const response = await fetch(
-            `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=demo&limit=1`
+            `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=2e37c9a003db449abd9a765f7bcba694&limit=1`
           );
-          
+
           if (response.ok) {
             const data = await response.json();
             if (data.results && data.results.length > 0) {
@@ -40,7 +43,9 @@ const LocationPicker = ({ onLocationSelect, currentAddress, setCurrentAddress })
         } catch (error) {
           console.error("Geocoding error:", error);
           // Fallback: just use coordinates
-          const fallbackAddress = `Lat: ${position.coords.latitude.toFixed(4)}, Lng: ${position.coords.longitude.toFixed(4)}`;
+          const fallbackAddress = `Lat: ${position.coords.latitude.toFixed(
+            4
+          )}, Lng: ${position.coords.longitude.toFixed(4)}`;
           setCurrentAddress(fallbackAddress);
           onLocationSelect(fallbackAddress);
           toast.success("Location coordinates captured");
@@ -50,10 +55,11 @@ const LocationPicker = ({ onLocationSelect, currentAddress, setCurrentAddress })
       (error) => {
         console.error("Geolocation error:", error);
         let errorMessage = "Failed to get your location";
-        
+
         switch (error.code) {
           case error.PERMISSION_DENIED:
-            errorMessage = "Location access denied. Please allow location access and try again.";
+            errorMessage =
+              "Location access denied. Please allow location access and try again.";
             break;
           case error.POSITION_UNAVAILABLE:
             errorMessage = "Location information is unavailable.";
@@ -62,14 +68,14 @@ const LocationPicker = ({ onLocationSelect, currentAddress, setCurrentAddress })
             errorMessage = "Location request timed out.";
             break;
         }
-        
+
         toast.error(errorMessage);
         setIsGettingLocation(false);
       },
       {
         enableHighAccuracy: true,
         timeout: 10000,
-        maximumAge: 300000 // 5 minutes
+        maximumAge: 300000, // 5 minutes
       }
     );
   };
@@ -99,7 +105,8 @@ const LocationPicker = ({ onLocationSelect, currentAddress, setCurrentAddress })
         </button>
       </div>
       <p className="text-sm text-gray-600">
-        Click "Current" to automatically detect your location, or type the address manually.
+        Click "Current" to automatically detect your location, or type the
+        address manually.
       </p>
     </div>
   );

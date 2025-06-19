@@ -75,6 +75,7 @@ const Dashboard = () => {
   };
 
   const handleDonationSuccess = () => {
+    setIsDonationModalOpen(false);
     if (user) {
       fetchDonations(user);
     }
@@ -265,11 +266,13 @@ const Dashboard = () => {
       <Footer />
 
       {/* Donation Form Modal */}
-      <DonationFormModal
-        isOpen={isDonationModalOpen}
-        onClose={() => setIsDonationModalOpen(false)}
-        onSuccess={handleDonationSuccess}
-      />
+      {user.role === "donor" && (
+        <DonationFormModal
+          isOpen={isDonationModalOpen}
+          onClose={() => setIsDonationModalOpen(false)}
+          onSuccess={handleDonationSuccess}
+        />
+      )}
     </div>
   );
 };

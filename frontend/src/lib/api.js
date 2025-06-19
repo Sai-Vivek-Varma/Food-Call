@@ -1,60 +1,65 @@
-
-import apiClient from './apiClient';
+import apiClient from "./apiClient";
 
 // Auth API calls
 export const registerUser = async (userData) => {
   try {
-    const response = await apiClient.post('/users/register', userData);
+    const response = await apiClient.post("/users/register", userData);
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to register');
+    throw new Error(error.response?.data?.message || "Failed to register");
   }
 };
 
 export const loginUser = async (credentials) => {
   try {
-    const response = await apiClient.post('/users/login', credentials);
+    const response = await apiClient.post("/users/login", credentials);
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to login');
+    throw new Error(error.response?.data?.message || "Failed to login");
   }
 };
 
 export const getUserProfile = async () => {
   try {
-    const response = await apiClient.get('/users/profile');
+    const response = await apiClient.get("/users/profile");
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to fetch profile');
+    throw new Error(error.response?.data?.message || "Failed to fetch profile");
   }
 };
 
 export const updateUserProfile = async (userData) => {
   try {
-    const response = await apiClient.put('/users/profile', userData);
+    const response = await apiClient.put("/users/profile", userData);
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to update profile');
+    throw new Error(
+      error.response?.data?.message || "Failed to update profile"
+    );
   }
 };
 
 // Donations API calls
 export const createDonation = async (donationData) => {
   try {
-    const response = await apiClient.post('/donations', donationData);
+    const response = await apiClient.post("/donations", donationData);
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to create donation');
+    throw new Error(
+      error.response?.data?.message || "Failed to create donation"
+    );
   }
 };
 
 export const getAllDonations = async (status = null) => {
   try {
     const params = status ? { status } : {};
-    const response = await apiClient.get('/donations', { params });
+    const response = await apiClient.get("/donations", { params });
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to fetch donations');
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch donations"
+    );
   }
 };
 
@@ -63,25 +68,31 @@ export const getDonationById = async (donationId) => {
     const response = await apiClient.get(`/donations/${donationId}`);
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to fetch donation');
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch donation"
+    );
   }
 };
 
 export const getDonationsByDonor = async () => {
   try {
-    const response = await apiClient.get('/donations/user/donor');
+    const response = await apiClient.get("/donations/user/donor");
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to fetch donations by donor');
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch donations by donor"
+    );
   }
 };
 
 export const getReservedDonations = async () => {
   try {
-    const response = await apiClient.get('/donations/user/reserved');
+    const response = await apiClient.get("/donations/user/reserved");
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to fetch reserved donations');
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch reserved donations"
+    );
   }
 };
 
@@ -90,7 +101,9 @@ export const reserveDonation = async (donationId) => {
     const response = await apiClient.put(`/donations/${donationId}/reserve`);
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to reserve donation');
+    throw new Error(
+      error.response?.data?.message || "Failed to reserve donation"
+    );
   }
 };
 
@@ -99,16 +112,23 @@ export const completeDonation = async (donationId) => {
     const response = await apiClient.put(`/donations/${donationId}/complete`);
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to complete donation');
+    throw new Error(
+      error.response?.data?.message || "Failed to complete donation"
+    );
   }
 };
 
 export const updateDonation = async (donationId, updateData) => {
   try {
-    const response = await apiClient.put(`/donations/${donationId}`, updateData);
+    const response = await apiClient.put(
+      `/donations/${donationId}`,
+      updateData
+    );
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to update donation');
+    throw new Error(
+      error.response?.data?.message || "Failed to update donation"
+    );
   }
 };
 
@@ -117,6 +137,21 @@ export const deleteDonation = async (donationId) => {
     const response = await apiClient.delete(`/donations/${donationId}`);
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to delete donation');
+    throw new Error(
+      error.response?.data?.message || "Failed to delete donation"
+    );
+  }
+};
+
+export const uploadDonationImage = async (file) => {
+  const formData = new FormData();
+  formData.append("image", file);
+  try {
+    const response = await apiClient.post("/donations/upload-image", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return response.data.imageUrl;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "Image upload failed");
   }
 };

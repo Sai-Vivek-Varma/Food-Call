@@ -1,8 +1,9 @@
-const express = require("express");
+import express from "express";
+import User from "../models/userModel.js";
+import jwt from "jsonwebtoken";
+import { protect, isAdmin } from "../middleware/authMiddleware.js";
+
 const router = express.Router();
-const User = require("../models/userModel");
-const jwt = require("jsonwebtoken");
-const { protect, isAdmin } = require("../middleware/authMiddleware");
 
 /**
  * Generate a JWT for a given user id.
@@ -155,4 +156,35 @@ router.get("/", protect, isAdmin, async (req, res) => {
   }
 });
 
-module.exports = router;
+/**
+ * @route   GET /api/users/notifications
+ * @desc    Get notifications for the current user
+ * @access  Private
+ */
+router.get("/notifications", protect, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.json(user.notifications.sort((a, b) => b.createdAt - a.createdAt));
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+/**
+ * @route   POST /api/users/notifications/read
+ * @desc    Mark all notifications as read for the current user
+ * @access  Private
+ */
+router.post("/notifications/read", protect, async (req, res) => {
+  try {
+    await User.findByIdAndUpdate(req.user._id, {
+      $set: { "notifications.$[].read": true },
+    });
+    res.json({ message: "All notifications marked as read" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+export default router;
