@@ -187,4 +187,39 @@ router.post("/notifications/read", protect, async (req, res) => {
   }
 });
 
+/**
+ * @route   DELETE /api/users/notifications/:index
+ * @desc    Delete a single notification by index for the current user
+ * @access  Private
+ */
+router.delete("/notifications/:index", protect, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+    const idx = parseInt(req.params.index, 10);
+    if (isNaN(idx) || idx < 0 || idx >= user.notifications.length) {
+      return res.status(400).json({ message: "Invalid notification index" });
+    }
+    user.notifications.splice(idx, 1);
+    await user.save();
+    res.json({ message: "Notification deleted" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+/**
+ * @route   DELETE /api/users/notifications
+ * @desc    Delete all notifications for the current user
+ * @access  Private
+ */
+router.delete("/notifications", protect, async (req, res) => {
+  try {
+    await User.findByIdAndUpdate(req.user._id, { notifications: [] });
+    res.json({ message: "All notifications deleted" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 export default router;

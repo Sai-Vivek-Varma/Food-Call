@@ -292,4 +292,47 @@ router.post("/upload-image", protect, upload.single("image"), (req, res) => {
   res.status(200).json({ imageUrl: req.file.path });
 });
 
+/**
+ * @route   PUT /api/donations/:id/unreserve
+ * @desc    Unreserve a donation (only the orphanage who reserved it)
+ * @access  Private
+ */
+router.put("/:id/unreserve", protect, async (req, res) => {
+  try {
+    // Only orphanages can unreserve
+    if (req.user.role !== "orphanage") {
+      return res
+        .status(403)
+        .json({ message: "Only orphanages can unreserve donations" });
+    }
+    const donation = await Donation.findById(req.params.id);
+    if (!donation) {
+      return res.status(404).json({ message: "Donation not found" });
+    }
+    // Only the orphanage who reserved can unreserve
+    if (
+      !donation.reservedBy ||
+      donation.reservedBy.toString() !== req.user._id.toString()
+    ) {
+      return res
+        .status(403)
+        .json({ message: "Not authorized to unreserve this donation" });
+    }
+    if (donation.status !== "reserved") {
+      return res.status(400).json({ message: "Donation is not reserved" });
+    }
+    donation.status = "available";
+    donation.reservedBy = undefined;
+    donation.reservedByName = undefined;
+    donation.reservedAt = undefined;
+    const updatedDonation = await donation.save();
+    res.json({
+      ...updatedDonation.toObject(),
+      message: "Donation unreserved and available to others.",
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 export default router;

@@ -246,7 +246,9 @@ const DonationCard = React.memo(
                       e.stopPropagation();
                       try {
                         await dispatch(
-                          completeDonationThunk({ id: donation._id || donation.id })
+                          completeDonationThunk({
+                            id: donation._id || donation.id,
+                          })
                         ).unwrap();
                         toast.success("Donation marked as completed!");
                         if (onReservationSuccess) {

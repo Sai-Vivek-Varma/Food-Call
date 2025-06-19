@@ -1,5 +1,0 @@
-frontend/src/pages/Auth.tsx
-frontend/src/pages/HowItWorks.tsx
-frontend/src/components/AuthForm.jsx
-frontend/src/lib/types.js
-backend/utils/dateUtils.js
