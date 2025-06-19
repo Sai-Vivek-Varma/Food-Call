@@ -1,133 +1,122 @@
-const API_URL = "http://localhost:5000";
 
-// --------------------
+import apiClient from './apiClient';
+
 // Auth API calls
-// --------------------
-
-// Registers a new user. Expects a userData object containing email, password, name, role, and optionally organization.
 export const registerUser = async (userData) => {
-  const response = await fetch(`${API_URL}/api/users/register`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(userData),
-  });
-  const data = await response.json();
-  if (!response.ok) {
-    // If the response is not OK, throw an error with the message provided by the server (or a default message).
-    throw new Error(data.message || "Failed to register");
+  try {
+    const response = await apiClient.post('/users/register', userData);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Failed to register');
   }
-  return data;
 };
 
-// Logs in a user with provided credentials (email and password).
 export const loginUser = async (credentials) => {
-  const response = await fetch(`${API_URL}/api/users/login`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(credentials),
-  });
-  const data = await response.json();
-  if (!response.ok) {
-    throw new Error(data.message || "Failed to login");
+  try {
+    const response = await apiClient.post('/users/login', credentials);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Failed to login');
   }
-  return data;
 };
 
-// --------------------
+export const getUserProfile = async () => {
+  try {
+    const response = await apiClient.get('/users/profile');
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Failed to fetch profile');
+  }
+};
+
+export const updateUserProfile = async (userData) => {
+  try {
+    const response = await apiClient.put('/users/profile', userData);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Failed to update profile');
+  }
+};
+
 // Donations API calls
-// --------------------
-
-// Creates a new donation using donationData. Requires a valid JWT token.
-export const createDonation = async (donationData, token) => {
-  const response = await fetch(`${API_URL}/api/donations`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(donationData),
-  });
-  const data = await response.json();
-  if (!response.ok) {
-    throw new Error(data.message || "Failed to create donation");
+export const createDonation = async (donationData) => {
+  try {
+    const response = await apiClient.post('/donations', donationData);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Failed to create donation');
   }
-  return data;
 };
 
-// Retrieves all donations (public endpoint).
-export const getAllDonations = async () => {
-  const response = await fetch(`${API_URL}/api/donations`);
-  const data = await response.json();
-  if (!response.ok) {
-    throw new Error(data.message || "Failed to fetch donations");
+export const getAllDonations = async (status = null) => {
+  try {
+    const params = status ? { status } : {};
+    const response = await apiClient.get('/donations', { params });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Failed to fetch donations');
   }
-  return data;
 };
 
-// Retrieves donations created by the current donor. Requires a valid JWT token.
-export const getDonationsByDonor = async (token) => {
-  const response = await fetch(`${API_URL}/api/donations/user/donor`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  const data = await response.json();
-  if (!response.ok) {
-    throw new Error(data.message || "Failed to fetch donations by donor");
+export const getDonationById = async (donationId) => {
+  try {
+    const response = await apiClient.get(`/donations/${donationId}`);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Failed to fetch donation');
   }
-  return data;
 };
 
-// Retrieves donations reserved by the current orphanage. Requires a valid JWT token.
-export const getReservedDonations = async (token) => {
-  const response = await fetch(`${API_URL}/api/donations/user/reserved`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  const data = await response.json();
-  if (!response.ok) {
-    throw new Error(data.message || "Failed to fetch reserved donations");
+export const getDonationsByDonor = async () => {
+  try {
+    const response = await apiClient.get('/donations/user/donor');
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Failed to fetch donations by donor');
   }
-  return data;
 };
 
-// Reserves a donation by donationId. Requires a valid JWT token.
-export const reserveDonation = async (donationId, token) => {
-  const response = await fetch(
-    `${API_URL}/api/donations/${donationId}/reserve`,
-    {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-  const data = await response.json();
-  if (!response.ok) {
-    throw new Error(data.message || "Failed to reserve donation");
+export const getReservedDonations = async () => {
+  try {
+    const response = await apiClient.get('/donations/user/reserved');
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Failed to fetch reserved donations');
   }
-  return data;
 };
 
-// Marks a donation as completed. Requires a valid JWT token.
-export const completeDonation = async (donationId, token) => {
-  const response = await fetch(
-    `${API_URL}/api/donations/${donationId}/complete`,
-    {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-  const data = await response.json();
-  if (!response.ok) {
-    throw new Error(data.message || "Failed to complete donation");
+export const reserveDonation = async (donationId) => {
+  try {
+    const response = await apiClient.put(`/donations/${donationId}/reserve`);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Failed to reserve donation');
   }
-  return data;
+};
+
+export const completeDonation = async (donationId) => {
+  try {
+    const response = await apiClient.put(`/donations/${donationId}/complete`);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Failed to complete donation');
+  }
+};
+
+export const updateDonation = async (donationId, updateData) => {
+  try {
+    const response = await apiClient.put(`/donations/${donationId}`, updateData);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Failed to update donation');
+  }
+};
+
+export const deleteDonation = async (donationId) => {
+  try {
+    const response = await apiClient.delete(`/donations/${donationId}`);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Failed to delete donation');
+  }
 };
