@@ -147,7 +147,7 @@ const Dashboard = () => {
                     ? "Total Donations"
                     : "Total Reservations"}
                 </p>
-                <p className="font-medium">{donations.length}</p>
+                <span className="font-medium text-lg">{donations.length}</span>
               </div>
             </div>
 
@@ -158,9 +158,7 @@ const Dashboard = () => {
               </div>
               <div>
                 <p className="text-muted-foreground text-sm">Completed</p>
-                <p className="font-medium">
-                  {donations.filter((d) => d.status === "completed").length}
-                </p>
+                <span className="font-medium text-lg">{donations.filter((d) => d.status === "completed").length}</span>
               </div>
             </div>
 
@@ -175,13 +173,7 @@ const Dashboard = () => {
                     ? "Active Listings"
                     : "Pending Pickups"}
                 </p>
-                <p className="font-medium">
-                  {
-                    donations.filter(
-                      (d) => d.status === "available" || d.status === "reserved"
-                    ).length
-                  }
-                </p>
+                <span className="font-medium text-lg">{donations.filter((d) => d.status === "available" || d.status === "reserved").length}</span>
               </div>
             </div>
           </div>

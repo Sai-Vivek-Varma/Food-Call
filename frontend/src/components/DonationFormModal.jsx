@@ -3,12 +3,18 @@ import { toast } from "sonner";
 import { X } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { createDonation, uploadDonationImage } from "@/lib/api";
+import {
+  createDonation,
+  updateDonation,
+  uploadDonationImage,
+  deleteDonation,
+} from "@/lib/api";
 import DonationFormFields from "./DonationFormFields";
 import ImageUploadField from "./ImageUploadField";
 import LocationPicker from "./LocationPicker";
 
-const DonationFormModal = ({ isOpen, onClose, onSuccess }) => {
+const DonationFormModal = ({ isOpen, onClose, onSuccess, donation }) => {
+  const isEdit = !!donation;
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -17,13 +23,46 @@ const DonationFormModal = ({ isOpen, onClose, onSuccess }) => {
     pickupAddress: "",
     pickupTimeStart: "",
     pickupTimeEnd: "",
+    ...donation,
   });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
+    if (donation) {
+      setFormData({
+        title: donation.title || "",
+        description: donation.description || "",
+        quantity: donation.quantity || "",
+        expiryDate: donation.expiryDate
+          ? donation.expiryDate.split("T")[0]
+          : "",
+        pickupAddress: donation.pickupAddress || "",
+        pickupTimeStart: donation.pickupTimeStart
+          ? donation.pickupTimeStart.slice(11, 16)
+          : "",
+        pickupTimeEnd: donation.pickupTimeEnd
+          ? donation.pickupTimeEnd.slice(11, 16)
+          : "",
+        imageUrl: donation.imageUrl || "",
+      });
+      setImagePreview(donation.imageUrl || null);
+    } else {
+      setFormData({
+        title: "",
+        description: "",
+        quantity: "",
+        expiryDate: "",
+        pickupAddress: "",
+        pickupTimeStart: "",
+        pickupTimeEnd: "",
+        imageUrl: "",
+      });
+      setImagePreview(null);
+    }
     window.scrollTo(0, 0);
     const userJson = localStorage.getItem("foodShareUser");
     if (!userJson) {
@@ -44,7 +83,7 @@ const DonationFormModal = ({ isOpen, onClose, onSuccess }) => {
     if (expiryInput) {
       expiryInput.min = today;
     }
-  }, []);
+  }, [donation]);
 
   if (!isOpen) return null;
 
@@ -131,7 +170,7 @@ const DonationFormModal = ({ isOpen, onClose, onSuccess }) => {
     }
     setIsSubmitting(true);
     try {
-      let imageUrl = "";
+      let imageUrl = formData.imageUrl;
       if (imageFile) {
         imageUrl = await uploadDonationImage(imageFile);
       }
@@ -148,15 +187,40 @@ const DonationFormModal = ({ isOpen, onClose, onSuccess }) => {
         pickupTimeEnd: istToUtcIso(formData.expiryDate, formData.pickupTimeEnd),
         imageUrl,
       };
-      await createDonation(submissionData);
-      toast.success("Donation created successfully!");
+      if (isEdit) {
+        await updateDonation(donation._id || donation.id, submissionData);
+        toast.success("Donation updated successfully!");
+      } else {
+        await createDonation(submissionData);
+        toast.success("Donation created successfully!");
+      }
       if (onSuccess) onSuccess();
+      onClose();
     } catch (error) {
       toast.error(
-        error.message || "Failed to create donation. Please try again."
+        error.message ||
+          (isEdit
+            ? "Failed to update donation."
+            : "Failed to create donation. Please try again.")
       );
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!donation) return;
+    setIsSubmitting(true);
+    try {
+      await deleteDonation(donation._id || donation.id);
+      toast.success("Donation deleted successfully!");
+      if (onSuccess) onSuccess();
+      onClose();
+    } catch (error) {
+      toast.error(error.message || "Failed to delete donation.");
+    } finally {
+      setIsSubmitting(false);
+      setShowDeleteConfirm(false);
     }
   };
 
@@ -200,21 +264,66 @@ const DonationFormModal = ({ isOpen, onClose, onSuccess }) => {
                 onImageChange={handleImageChange}
                 onRemoveImage={removeImage}
               />
-              <div className="pt-6 border-t border-gray-200">
+              <div className="pt-6 border-t  border-gray-200">
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full btn-primary py-4 text-lg font-semibold"
+                  className="w-full btn-primary bg-sage-600 hover:bg-sage-700 py-4 text-lg font-semibold"
                 >
                   {isSubmitting ? (
                     <>
                       <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white mr-3"></div>
-                      Creating Donation...
+                      {isEdit ? "Saving..." : "Creating Donation..."}
                     </>
+                  ) : isEdit ? (
+                    "Save Changes"
                   ) : (
                     "Create Donation & Help Feed The Hungry"
                   )}
                 </button>
+                {isEdit && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => setShowDeleteConfirm(true)}
+                      disabled={isSubmitting}
+                      className="w-full mt-3 py-4 text-lg font-semibold border border-red-600 text-red-600 rounded-lg hover:bg-red-50 transition-colors"
+                    >
+                      {isSubmitting ? "Deleting..." : "Delete Donation"}
+                    </button>
+                    {showDeleteConfirm && (
+                      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+                        <div className="bg-white rounded-lg shadow-xl p-6 max-w-xs w-full border border-red-200">
+                          <div className="text-lg font-semibold mb-4 text-red-700">
+                            Delete Donation?
+                          </div>
+                          <div className="mb-6 text-gray-700 text-sm">
+                            Are you sure you want to delete this donation? This
+                            action cannot be undone.
+                          </div>
+                          <div className="flex gap-2 justify-end">
+                            <button
+                              type="button"
+                              className="px-4 py-2 rounded border border-gray-300 text-gray-700 hover:bg-gray-100"
+                              onClick={() => setShowDeleteConfirm(false)}
+                              disabled={isSubmitting}
+                            >
+                              Cancel
+                            </button>
+                            <button
+                              type="button"
+                              className="px-4 py-2 rounded border border-red-600 text-white bg-red-600 hover:bg-red-700"
+                              onClick={handleDelete}
+                              disabled={isSubmitting}
+                            >
+                              {isSubmitting ? "Deleting..." : "Delete"}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
               </div>
             </form>
           </div>

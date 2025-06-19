@@ -1,0 +1,2 @@
+- Update all imports of '@/components/AuthForm' to use the .tsx version in all frontend files.
+- Ensure no code references the soon-to-be-removed files.

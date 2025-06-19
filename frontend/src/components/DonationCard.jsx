@@ -1,9 +1,10 @@
-import { Clock, MapPin, CalendarIcon, Package } from "lucide-react";
+import { Clock, MapPin, CalendarIcon, Package, Pencil } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { reserveDonation } from "../lib/api";
 import DonationDetailModal from "./DonationDetailModal";
 import DeliveryOptionsModal from "./DeliveryOptionsModal";
+import DonationFormModal from "./DonationFormModal";
 
 const formatDate = (date) => {
   return new Date(date).toLocaleDateString("en-US", {
@@ -30,6 +31,7 @@ const DonationCard = ({
 }) => {
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isDeliveryModalOpen, setIsDeliveryModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   // Check if donation is expired
   const isExpired = new Date(donation.expiryDate) < new Date();
@@ -150,7 +152,7 @@ const DonationCard = ({
             </div>
           </div>
 
-          <div className="mt-4 pt-4 border-t border-slate-200">
+          <div className="mt-4 pt-4 border-t border-slate-200 flex gap-2">
             {isOrphanage && donation.status === "available" ? (
               <button
                 onClick={handleReserveClick}
@@ -159,12 +161,55 @@ const DonationCard = ({
                 Reserve Donation
               </button>
             ) : (
-              <button
-                onClick={handleCardClick}
-                className="w-full py-2 px-4 bg-slate-100 text-slate-700 rounded-md hover:bg-slate-200 transition-colors text-center text-sm font-medium"
-              >
-                View Details
-              </button>
+              <>
+                {/* Edit button for donor's own donations, not completed */}
+                {!isOrphanage &&
+                  donation.donorId ===
+                    (localStorage.getItem("foodShareUser")
+                      ? JSON.parse(localStorage.getItem("foodShareUser"))._id
+                      : undefined) &&
+                  donation.status !== "completed" && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsEditModalOpen(true);
+                      }}
+                      className="w-full py-2 px-4 border border-black text-black rounded-md hover:bg-gray-100 transition-colors text-center text-sm font-medium flex items-center justify-center gap-2"
+                    >
+                      <Pencil className="w-4 h-4 mr-1" /> Edit
+                    </button>
+                  )}
+                {/* Show Finish Donation button for donor if reserved and owner */}
+                {!isOrphanage &&
+                  donation.status === "reserved" &&
+                  donation.donorId ===
+                    (localStorage.getItem("foodShareUser")
+                      ? JSON.parse(localStorage.getItem("foodShareUser"))._id
+                      : undefined) && (
+                    <button
+                      onClick={async (e) => {
+                        e.stopPropagation();
+                        try {
+                          await import("../lib/api").then(
+                            ({ completeDonation }) =>
+                              completeDonation(donation._id || donation.id)
+                          );
+                          toast.success("Donation marked as completed!");
+                          if (onReservationSuccess) {
+                            onReservationSuccess();
+                          } else {
+                            window.location.reload();
+                          }
+                        } catch (error) {
+                          toast.error("Failed to complete donation");
+                        }
+                      }}
+                      className="w-full py-2 px-4 bg-sage-600 text-white rounded-md hover:bg-sage-700 transition-colors text-center text-sm font-medium"
+                    >
+                      Finish Donation
+                    </button>
+                  )}
+              </>
             )}
           </div>
         </div>
@@ -175,6 +220,11 @@ const DonationCard = ({
         onClose={() => setIsDetailModalOpen(false)}
         donation={donation}
         userRole={isOrphanage ? "orphanage" : "donor"}
+        userId={
+          localStorage.getItem("foodShareUser")
+            ? JSON.parse(localStorage.getItem("foodShareUser"))._id
+            : undefined
+        }
       />
 
       <DeliveryOptionsModal
@@ -182,6 +232,20 @@ const DonationCard = ({
         onClose={() => setIsDeliveryModalOpen(false)}
         donation={donation}
         onReserve={handleReserve}
+      />
+
+      <DonationFormModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        donation={donation}
+        onSuccess={() => {
+          setIsEditModalOpen(false);
+          if (onReservationSuccess) {
+            onReservationSuccess();
+          } else {
+            window.location.reload();
+          }
+        }}
       />
     </>
   );

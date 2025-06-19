@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "../components/Footer";
+import AnimatedNumber from "@/components/AnimatedNumber";
 
 const Index = () => {
   return (
@@ -54,15 +55,21 @@ const Index = () => {
               {/* Stats Row */}
               <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-8 pt-6 justify-center md:justify-start">
                 <div>
-                  <div className="text-2xl font-bold text-sage-600">1000+</div>
+                  <div className="text-2xl font-bold text-sage-600">
+                    <AnimatedNumber value={1000} start={0} duration={1200} />+
+                  </div>
                   <div className="text-sm text-gray-500">Meals Shared</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-sage-600">50+</div>
+                  <div className="text-2xl font-bold text-sage-600">
+                    <AnimatedNumber value={50} start={0} duration={1200} />+
+                  </div>
                   <div className="text-sm text-gray-500">Organizations</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-sage-600">95%</div>
+                  <div className="text-2xl font-bold text-sage-600">
+                    <AnimatedNumber value={95} start={0} duration={1200} />%
+                  </div>
                   <div className="text-sm text-gray-500">Waste Reduced</div>
                 </div>
               </div>

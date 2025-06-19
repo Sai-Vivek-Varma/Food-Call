@@ -1,7 +1,7 @@
 import { X, Clock, MapPin, CalendarIcon, Package, User } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { reserveDonation } from "../lib/api";
+import { reserveDonation, completeDonation } from "../lib/api";
 import DeliveryOptionsModal from "./DeliveryOptionsModal";
 
 const formatDate = (date) => {
@@ -19,8 +19,15 @@ const formatTime = (date) => {
   });
 };
 
-const DonationDetailModal = ({ isOpen, onClose, donation, userRole }) => {
+const DonationDetailModal = ({
+  isOpen,
+  onClose,
+  donation,
+  userRole,
+  userId,
+}) => {
   const [isDeliveryModalOpen, setIsDeliveryModalOpen] = useState(false);
+  const [isCompleting, setIsCompleting] = useState(false);
 
   if (!isOpen || !donation) return null;
 
@@ -50,6 +57,20 @@ const DonationDetailModal = ({ isOpen, onClose, donation, userRole }) => {
         error.message || "Failed to reserve donation. Please try again."
       );
       throw error;
+    }
+  };
+
+  const handleCompleteDonation = async () => {
+    setIsCompleting(true);
+    try {
+      await completeDonation(donation._id || donation.id);
+      toast.success("Donation marked as completed!");
+      onClose();
+    } catch (error) {
+      console.error("Error completing donation:", error);
+      toast.error("Failed to complete donation");
+    } finally {
+      setIsCompleting(false);
     }
   };
 
@@ -173,6 +194,16 @@ const DonationDetailModal = ({ isOpen, onClose, donation, userRole }) => {
                   className="w-full py-3 px-4 bg-sage-600 text-white rounded-lg hover:bg-sage-700 transition-colors font-medium"
                 >
                   Reserve This Donation
+                </button>
+              ) : userRole === "donor" &&
+                donation.status === "reserved" &&
+                donation.donorId === userId ? (
+                <button
+                  onClick={handleCompleteDonation}
+                  disabled={isCompleting}
+                  className="w-full py-3 px-4 bg-sage-600 text-white rounded-lg hover:bg-sage-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isCompleting ? "Finishing..." : "Finish Donation"}
                 </button>
               ) : (
                 <div className="text-center text-slate-500 py-3">

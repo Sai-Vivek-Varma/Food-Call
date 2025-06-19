@@ -7,7 +7,7 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import DonationsList from "./pages/DonationsList";
-import DonationDetail from "./pages/DonationDetail";
+
 import NotFound from "./pages/NotFound";
 import HowItWorks from "./pages/HowItWorks";
 
@@ -31,7 +31,7 @@ const App = () => (
           <Route path="/auth" element={<Auth />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/donations" element={<DonationsList />} />
-          <Route path="/donations/:id" element={<DonationDetail />} />
+
           <Route path="/how-it-works" element={<HowItWorks />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

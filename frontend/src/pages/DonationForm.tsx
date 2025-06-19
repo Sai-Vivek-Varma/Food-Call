@@ -58,6 +58,10 @@ const DonationForm: React.FC = () => {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error("Image size must be less than 5MB");
+        return;
+      }
       setFormData((prev) => ({ ...prev, image: file }));
       const reader = new FileReader();
       reader.onloadend = () => {

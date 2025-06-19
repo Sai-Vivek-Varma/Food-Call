@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import apiClient from "@/lib/apiClient";
 
 const NotificationsModal = ({ open, onClose }) => {
   const [notifications, setNotifications] = useState([]);
@@ -13,17 +13,10 @@ const NotificationsModal = ({ open, onClose }) => {
   const fetchNotifications = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem("foodShareToken");
-      const res = await axios.get("/api/users/notifications", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await apiClient.get("/users/notifications");
       setNotifications(res.data);
       // Mark as read
-      await axios.post(
-        "/api/users/notifications/read",
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await apiClient.post("/users/notifications/read", {});
     } catch (err) {
       setNotifications([]);
     }
