@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import DonationCard from "@/components/DonationCard";
 import DonationFormModal from "@/components/DonationFormModal";
 import axios from "axios";
+import { API_BASE_URL } from "../lib/apiClient";
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
@@ -38,13 +39,13 @@ const Dashboard = () => {
   const fetchDonations = async (currentUser) => {
     try {
       const token = localStorage.getItem("foodShareToken");
-      let endpoint = "http://localhost:5000/api/donations";
+      let endpoint = `${API_BASE_URL}/donations`;
 
       // Different endpoints for different user types
       if (currentUser.role === "donor") {
-        endpoint = "http://localhost:5000/api/donations/user/donor";
+        endpoint = `${API_BASE_URL}/donations/user/donor`;
       } else if (currentUser.role === "orphanage") {
-        endpoint = "http://localhost:5000/api/donations/user/reserved";
+        endpoint = `${API_BASE_URL}/donations/user/reserved`;
       }
 
       const response = await axios.get(endpoint, {

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { API_BASE_URL } from "../lib/apiClient";
 
 // Define the shape of your donation form data
 interface DonationFormData {
@@ -119,7 +120,7 @@ const DonationForm: React.FC = () => {
       }
 
       // Send POST request to create a new donation
-      const response = await axios.post("http://localhost:5000/api/donations", submissionData, {
+      const response = await axios.post(`${API_BASE_URL}/donations`, submissionData, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,

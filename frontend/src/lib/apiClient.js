@@ -1,8 +1,11 @@
-
 import axios from 'axios';
 import { toast } from 'sonner';
 
-const API_BASE_URL = "http://localhost:5000/api";
+// Use localhost if available, else fallback to Render
+const API_BASE_URL =
+  window.location.hostname === "localhost"
+    ? "http://localhost:5000/api"
+    : "https://food-call.onrender.com/api";
 
 // Create axios instance with default config
 const apiClient = axios.create({

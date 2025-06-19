@@ -140,7 +140,7 @@ const DonationDetailModal = ({ isOpen, onClose, donation, userRole }) => {
 
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
-                  <MapPin className="w-5 h-5 text-sage-500 mt-0.5" />
+                  <MapPin className="w-5 h-5 flex-shrink-0 text-sage-500" />
                   <div>
                     <div className="text-sm text-slate-500">Pickup Address</div>
                     <div className="font-medium text-slate-900">

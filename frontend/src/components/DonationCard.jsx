@@ -138,7 +138,7 @@ const DonationCard = ({
               <span>Expires: {formatDate(donation.expiryDate)}</span>
             </div>
             <div className="flex items-center text-sm text-slate-600">
-              <MapPin className="w-4 h-4 mr-2 text-sage-500" />
+              <MapPin className="w-4 h-4 flex-shrink-0 mr-2 text-sage-500" />
               <span className="truncate">{donation.pickupAddress}</span>
             </div>
             <div className="flex items-center text-sm text-slate-600">
