@@ -145,18 +145,37 @@ router.put("/:id/reserve", protect, async (req, res) => {
     if (req.user.role !== "orphanage") {
       return res.status(403).json({ message: "Only orphanages can reserve donations" });
     }
+    
     const donation = await Donation.findById(req.params.id);
     if (!donation) {
       return res.status(404).json({ message: "Donation not found" });
     }
+    
     if (donation.status !== "available") {
       return res.status(400).json({ message: "This donation is not available for reservation" });
     }
+    
+    // Check if donation is expired
+    const now = new Date();
+    if (new Date(donation.expiryDate) < now) {
+      return res.status(400).json({ message: "This donation has expired" });
+    }
+    
     donation.status = "reserved";
     donation.reservedBy = req.user._id;
     donation.reservedByName = req.user.name;
+    donation.reservedAt = new Date();
+    
     const updatedDonation = await donation.save();
-    res.json(updatedDonation);
+    
+    // Here you would typically send a notification to the donor
+    // For now, we'll just log it
+    console.log(`Notification: Donation "${donation.title}" has been reserved by ${req.user.name} (${req.user.organization})`);
+    
+    res.json({
+      ...updatedDonation.toObject(),
+      message: "Donation reserved successfully. Donor has been notified."
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

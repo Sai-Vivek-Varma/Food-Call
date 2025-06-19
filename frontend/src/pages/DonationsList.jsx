@@ -51,8 +51,13 @@ const DonationsList = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       
-      // Only show available donations for orphanages
-      const availableDonations = response.data.filter(donation => donation.status === "available");
+      // Filter out expired donations and only show available ones for orphanages
+      const now = new Date();
+      const availableDonations = response.data.filter(donation => {
+        const isExpired = new Date(donation.expiryDate) < now;
+        return donation.status === "available" && !isExpired;
+      });
+      
       setDonations(availableDonations);
       setFilteredDonations(availableDonations);
       setIsLoading(false);
