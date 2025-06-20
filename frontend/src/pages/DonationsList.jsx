@@ -277,15 +277,15 @@ const DonationsList = () => {
           ) : (
             <>
               <div className="mb-8 p-6 bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl border border-green-200">
-                <div className="flex items-center text-green-700 mb-2">
-                  <Heart className="w-6 h-6 mr-3" />
-                  <span className="font-semibold text-lg">
+                <div className="flex flex-col sm:flex-row items-center sm:items-start text-green-700 mb-2 gap-2 sm:gap-3 flex-wrap">
+                  <Heart className="w-6 h-6 mr-0 sm:mr-3 mb-2 sm:mb-0" />
+                  <span className="font-semibold text-lg text-center sm:text-left break-words">
                     {filteredDonations.length} donation
                     {filteredDonations.length !== 1 ? "s" : ""} ready for
                     reservation
                   </span>
                 </div>
-                <p className="text-green-600 text-sm">
+                <p className="text-green-600 text-sm text-center sm:text-left break-words">
                   Click on any donation to view full details and make a
                   reservation. Our integrated delivery system supports
                   self-pickup, Swiggy, Dunzo, and Porter delivery options.

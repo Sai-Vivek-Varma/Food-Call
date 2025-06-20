@@ -89,7 +89,7 @@ const Dashboard = () => {
           {/* Summary Cards */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-10">
             {/* Role Card */}
-            <div className="bg-white p-6 rounded-xl border border-border flex items-center space-x-4">
+            <div className="bg-white p-6 rounded-xl border border-border flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-2 sm:gap-4">
               <div className="w-12 h-12 flex items-center justify-center rounded-full bg-sage-100 aspect-square min-w-[3rem] min-h-[3rem]">
                 {user.role === "donor" ? (
                   <Heart className="w-6 h-6 text-sage-500" />
@@ -106,7 +106,7 @@ const Dashboard = () => {
             </div>
 
             {/* Total Donations Card */}
-            <div className="bg-white p-6 rounded-xl border border-border flex items-center space-x-4">
+            <div className="bg-white p-6 rounded-xl border border-border flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-2 sm:gap-4">
               <div className="w-12 h-12 flex items-center justify-center rounded-full bg-sage-100 aspect-square min-w-[3rem] min-h-[3rem]">
                 <Package className="w-6 h-6 text-sage-500" />
               </div>
@@ -121,7 +121,7 @@ const Dashboard = () => {
             </div>
 
             {/* Completed Donations Card */}
-            <div className="bg-white p-6 rounded-xl border border-border flex items-center space-x-4">
+            <div className="bg-white p-6 rounded-xl border border-border flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-2 sm:gap-4">
               <div className="w-12 h-12 flex items-center justify-center rounded-full bg-green-100 aspect-square min-w-[3rem] min-h-[3rem]">
                 <CheckCircle2 className="w-6 h-6 text-green-500" />
               </div>
@@ -134,7 +134,7 @@ const Dashboard = () => {
             </div>
 
             {/* Active Listings Card */}
-            <div className="bg-white p-6 rounded-xl border border-border flex items-center space-x-4">
+            <div className="bg-white p-6 rounded-xl border border-border flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-2 sm:gap-4">
               <div className="w-12 h-12 flex items-center justify-center rounded-full bg-orange-100 aspect-square min-w-[3rem] min-h-[3rem]">
                 <Clock className="w-6 h-6 text-orange-500" />
               </div>
@@ -193,16 +193,16 @@ const Dashboard = () => {
               </p>
             </div>
           ) : filteredDonations.length === 0 ? (
-            <div className="flex flex-col items-center justify-center bg-white rounded-xl border border-border shadow-sm p-16">
+            <div className="flex flex-col items-center justify-center bg-white rounded-xl border border-border shadow-sm p-16 text-center">
               <Package className="w-16 h-16 text-sage-200 mb-4" />
-              <h3 className="text-xl font-medium mb-2">
+              <h3 className="text-xl font-medium mb-2 text-center">
                 {activeTab === "active"
                   ? user.role === "donor"
                     ? "No Active Donations"
                     : "No Active Reservations"
                   : "No History Found"}
               </h3>
-              <p className="text-muted-foreground text-center max-w-md mb-6">
+              <p className="text-muted-foreground text-center max-w-md mb-6 mx-auto">
                 {activeTab === "active" ? (
                   user.role === "donor" ? (
                     "You don't have any active donations. Create a new donation to get started!"
@@ -213,12 +213,14 @@ const Dashboard = () => {
                       <span className="block mt-2">
                         Browse available donations to make a reservation.
                       </span>
-                      <button
-                        onClick={() => navigate("/donations")}
-                        className="mt-4 btn-primary bg-sage-600 hover:bg-sage-700"
-                      >
-                        Browse Donations
-                      </button>
+                      <div className="flex justify-center">
+                        <button
+                          onClick={() => navigate("/donations")}
+                          className="mt-4 btn-primary bg-sage-600 hover:bg-sage-700"
+                        >
+                          Browse Donations
+                        </button>
+                      </div>
                     </>
                   )
                 ) : user.role === "donor" ? (
@@ -230,7 +232,7 @@ const Dashboard = () => {
               {user.role === "donor" && activeTab === "active" && (
                 <button
                   onClick={() => setIsDonationModalOpen(true)}
-                  className="bg-sage-500 text-white px-6 py-2 rounded-md hover:bg-sage-600 transition-colors"
+                  className="bg-sage-500 text-white px-6 py-2 rounded-md hover:bg-sage-600 transition-colors mx-auto"
                 >
                   Create a Donation
                 </button>
