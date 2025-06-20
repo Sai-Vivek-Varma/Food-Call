@@ -87,10 +87,10 @@ const Dashboard = () => {
           </div>
 
           {/* Summary Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-10">
             {/* Role Card */}
             <div className="bg-white p-6 rounded-xl border border-border flex items-center space-x-4">
-              <div className="w-12 h-12 rounded-full bg-sage-100 flex items-center justify-center">
+              <div className="w-12 h-12 flex items-center justify-center rounded-full bg-sage-100 aspect-square min-w-[3rem] min-h-[3rem]">
                 {user.role === "donor" ? (
                   <Heart className="w-6 h-6 text-sage-500" />
                 ) : (
@@ -107,7 +107,7 @@ const Dashboard = () => {
 
             {/* Total Donations Card */}
             <div className="bg-white p-6 rounded-xl border border-border flex items-center space-x-4">
-              <div className="w-12 h-12 rounded-full bg-sage-100 flex items-center justify-center">
+              <div className="w-12 h-12 flex items-center justify-center rounded-full bg-sage-100 aspect-square min-w-[3rem] min-h-[3rem]">
                 <Package className="w-6 h-6 text-sage-500" />
               </div>
               <div>
@@ -122,7 +122,7 @@ const Dashboard = () => {
 
             {/* Completed Donations Card */}
             <div className="bg-white p-6 rounded-xl border border-border flex items-center space-x-4">
-              <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
+              <div className="w-12 h-12 flex items-center justify-center rounded-full bg-green-100 aspect-square min-w-[3rem] min-h-[3rem]">
                 <CheckCircle2 className="w-6 h-6 text-green-500" />
               </div>
               <div>
@@ -135,7 +135,7 @@ const Dashboard = () => {
 
             {/* Active Listings Card */}
             <div className="bg-white p-6 rounded-xl border border-border flex items-center space-x-4">
-              <div className="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center">
+              <div className="w-12 h-12 flex items-center justify-center rounded-full bg-orange-100 aspect-square min-w-[3rem] min-h-[3rem]">
                 <Clock className="w-6 h-6 text-orange-500" />
               </div>
               <div>

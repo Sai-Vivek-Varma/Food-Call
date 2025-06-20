@@ -21,7 +21,7 @@ const Footer = React.memo(() => {
   return (
     <footer className="bg-sage-900 text-white">
       <div className="container mx-auto max-w-7xl px-4 py-10 sm:py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 gap-y-8 text-left">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 gap-y-8 text-left">
           <div className="space-y-4 flex flex-col items-start">
             <Link to="/" className="text-2xl font-bold inline-block">
               <span className="text-sage-400">Food</span>Call

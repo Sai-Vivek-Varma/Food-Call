@@ -223,7 +223,7 @@ const DonationFormModal = ({ isOpen, onClose, onSuccess, donation }) => {
       style={{ pointerEvents: "auto" }}
     >
       <div
-        className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-8 relative border border-sage-200 animate-fade-in mx-2"
+        className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-2 relative border border-sage-200 animate-fade-in mx-4"
         onClick={(e) => e.stopPropagation()}
         style={{ pointerEvents: "auto" }}
       >
@@ -273,7 +273,7 @@ const DonationFormModal = ({ isOpen, onClose, onSuccess, donation }) => {
                   ) : isEdit ? (
                     "Save Changes"
                   ) : (
-                    "Create Donation & Help Feed The Hungry"
+                    "Create Donation"
                   )}
                 </button>
                 {isEdit && (

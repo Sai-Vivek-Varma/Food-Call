@@ -62,6 +62,7 @@ const DonationsList = () => {
   }, [user, navigate]);
 
   useEffect(() => {
+    // Show only available donations
     let filtered = donations.filter(
       (donation) => donation.status === "available"
     );
@@ -131,6 +132,10 @@ const DonationsList = () => {
     setFilteredDonations(filtered);
   }, [searchTerm, donations, sortBy, userLocation]);
 
+  // Debug logs
+  console.log("ALL DONATIONS FROM REDUX:", donations);
+  console.log("FILTERED DONATIONS TO DISPLAY:", filteredDonations);
+
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
   };
@@ -169,7 +174,7 @@ const DonationsList = () => {
       <section className="pt-32 pb-16 px-4">
         <div className="container mx-auto max-w-7xl">
           <div className="text-center mb-12">
-            <span className="px-4 py-2 rounded-full bg-green-100 text-green-700 font-medium text-sm mb-4 flex items-center justify-center w-fit mx-auto">
+            <span className="px-4 py-2 rounded-full bg-green-100 text-sage-700 font-medium text-sm mb-4 flex items-center justify-center w-fit mx-auto">
               <Building className="w-4 h-4 mr-2" />
               Available for {user.organization || "Your Organization"}
             </span>
@@ -183,23 +188,23 @@ const DonationsList = () => {
             </p>
           </div>
 
-          <div className="flex flex-col md:flex-row gap-4 mb-8">
-            <div className="flex-1 relative">
+          <div className="flex flex-row gap-4 mb-8">
+            <div className="grow basis-0 min-w-0 relative">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
                 type="text"
                 placeholder="Search by food name, description, donor, or location..."
                 value={searchTerm}
                 onChange={handleSearch}
-                className="w-full pl-12 pr-4 py-3 rounded-xl border-2 border-gray-300 focus:outline-none focus:ring-4 focus:ring-green-200 focus:border-green-500 transition-all text-gray-700"
+                className="w-full pl-12 pr-4 py-3 rounded-xl border-2 border-gray-300 focus:outline-none focus:ring-4 focus:ring-sage-200 focus:border-sage-500 transition-all text-gray-700"
               />
             </div>
-            <div className="flex gap-2 items-center">
-              <div className="relative">
+            <div className="flex-shrink-0 w-[160px] flex gap-2 items-center">
+              <div className="relative w-full">
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="py-3 px-4 rounded-xl border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-500 text-gray-700 bg-white appearance-none pr-10"
+                  className="w-full py-3 px-4 rounded-xl border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-sage-200 focus:border-sage-500 text-gray-700 bg-white appearance-none pr-10"
                 >
                   <option disabled value="sortby">
                     Sort by
@@ -288,14 +293,17 @@ const DonationsList = () => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {filteredDonations.map((donation) => (
-                  <DonationCard
-                    key={donation._id || donation.id}
-                    donation={donation}
-                    isOrphanage={true}
-                    onReservationSuccess={handleReservationSuccess}
-                  />
-                ))}
+                {filteredDonations.map((donation) => {
+                  console.log("RENDERING DONATION:", donation);
+                  return (
+                    <DonationCard
+                      key={donation._id || donation.id}
+                      donation={donation}
+                      isOrphanage={true}
+                      onReservationSuccess={handleReservationSuccess}
+                    />
+                  );
+                })}
               </div>
             </>
           )}
