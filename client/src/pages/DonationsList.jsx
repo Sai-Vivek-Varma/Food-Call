@@ -174,7 +174,7 @@ const DonationsList = () => {
       <section className="pt-32 pb-16 px-4">
         <div className="container mx-auto max-w-7xl">
           <div className="text-center mb-12">
-            <span className="px-4 py-2 rounded-full bg-green-100 text-sage-700 font-medium text-sm mb-4 flex items-center justify-center w-fit mx-auto">
+            <span className="px-4 py-2 rounded-full bg-sage-100 text-sage-700 font-medium text-sm mb-4 flex items-center justify-center w-fit mx-auto">
               <Building className="w-4 h-4 mr-2" />
               Available for {user.organization || "Your Organization"}
             </span>
@@ -221,7 +221,7 @@ const DonationsList = () => {
 
           {isLoading ? (
             <div className="flex flex-col items-center justify-center py-20">
-              <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-green-500 mb-6"></div>
+              <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-sage-500 mb-6"></div>
               <p className="text-lg text-gray-600">
                 Loading available donations...
               </p>
@@ -276,8 +276,8 @@ const DonationsList = () => {
             </div>
           ) : (
             <>
-              <div className="mb-8 p-6 bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl border border-green-200">
-                <div className="flex flex-col sm:flex-row items-center sm:items-start text-green-700 mb-2 gap-2 sm:gap-3 flex-wrap">
+              <div className="mb-8 p-6 bg-gradient-to-r from-sage-50 to-blue-50 rounded-2xl border border-sage-200">
+                <div className="flex flex-col sm:flex-row items-center sm:items-start text-sage-700 mb-2 gap-2 sm:gap-3 flex-wrap">
                   <Heart className="w-6 h-6 mr-0 sm:mr-3 mb-2 sm:mb-0" />
                   <span className="font-semibold text-lg text-center sm:text-left break-words">
                     {filteredDonations.length} donation
@@ -285,7 +285,7 @@ const DonationsList = () => {
                     reservation
                   </span>
                 </div>
-                <p className="text-green-600 text-sm text-center sm:text-left break-words">
+                <p className="text-sage-600 text-sm text-center sm:text-left break-words">
                   Click on any donation to view full details and make a
                   reservation. Our integrated delivery system supports
                   self-pickup and ONDC delivery options.

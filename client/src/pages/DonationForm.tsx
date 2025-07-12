@@ -14,7 +14,7 @@ interface DonationFormData {
   expiryDate: string; // expected as YYYY-MM-DD from input
   pickupAddress: string;
   pickupTimeStart: string; // expected as HH:MM from input
-  pickupTimeEnd: string;   // expected as HH:MM from input
+  pickupTimeEnd: string; // expected as HH:MM from input
   image?: File;
 }
 
@@ -37,7 +37,7 @@ const DonationForm: React.FC = () => {
   // Scroll to top on mount and verify that a user is logged in.
   useEffect(() => {
     window.scrollTo(0, 0);
-    const userJson = localStorage.getItem("foodShareUser");
+    const userJson = localStorage.getItem("foodcallUser");
     if (!userJson) {
       toast.error("You must be logged in to create a donation");
       navigate("/auth");
@@ -76,12 +76,16 @@ const DonationForm: React.FC = () => {
   const validate = (): boolean => {
     const newErrors: Partial<DonationFormData> = {};
     if (!formData.title) newErrors.title = "Title is required";
-    if (!formData.description) newErrors.description = "Description is required";
+    if (!formData.description)
+      newErrors.description = "Description is required";
     if (!formData.quantity) newErrors.quantity = "Quantity is required";
     if (!formData.expiryDate) newErrors.expiryDate = "Expiry date is required";
-    if (!formData.pickupAddress) newErrors.pickupAddress = "Pickup address is required";
-    if (!formData.pickupTimeStart) newErrors.pickupTimeStart = "Pickup start time is required";
-    if (!formData.pickupTimeEnd) newErrors.pickupTimeEnd = "Pickup end time is required";
+    if (!formData.pickupAddress)
+      newErrors.pickupAddress = "Pickup address is required";
+    if (!formData.pickupTimeStart)
+      newErrors.pickupTimeStart = "Pickup start time is required";
+    if (!formData.pickupTimeEnd)
+      newErrors.pickupTimeEnd = "Pickup end time is required";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -140,10 +144,15 @@ const DonationForm: React.FC = () => {
                 className="w-full px-4 py-2 rounded-md border border-input focus:outline-none focus:ring-2 focus:ring-sage-500 transition-all"
                 placeholder="e.g., Fresh Bread from Local Bakery"
               />
-              {errors.title && <p className="mt-1 text-sm text-red-600">{errors.title}</p>}
+              {errors.title && (
+                <p className="mt-1 text-sm text-red-600">{errors.title}</p>
+              )}
             </div>
             <div>
-              <label htmlFor="description" className="block text-sm font-medium mb-1">
+              <label
+                htmlFor="description"
+                className="block text-sm font-medium mb-1"
+              >
                 Description
               </label>
               <textarea
@@ -155,10 +164,17 @@ const DonationForm: React.FC = () => {
                 className="w-full px-4 py-2 rounded-md border border-input focus:outline-none focus:ring-2 focus:ring-sage-500 transition-all"
                 placeholder="Describe the food in detail"
               />
-              {errors.description && <p className="mt-1 text-sm text-red-600">{errors.description}</p>}
+              {errors.description && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.description}
+                </p>
+              )}
             </div>
             <div>
-              <label htmlFor="quantity" className="block text-sm font-medium mb-1">
+              <label
+                htmlFor="quantity"
+                className="block text-sm font-medium mb-1"
+              >
                 Quantity
               </label>
               <input
@@ -170,11 +186,16 @@ const DonationForm: React.FC = () => {
                 className="w-full px-4 py-2 rounded-md border border-input focus:outline-none focus:ring-2 focus:ring-sage-500 transition-all"
                 placeholder="e.g., 20 loaves, 5kg of rice"
               />
-              {errors.quantity && <p className="mt-1 text-sm text-red-600">{errors.quantity}</p>}
+              {errors.quantity && (
+                <p className="mt-1 text-sm text-red-600">{errors.quantity}</p>
+              )}
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label htmlFor="expiryDate" className="block text-sm font-medium mb-1">
+                <label
+                  htmlFor="expiryDate"
+                  className="block text-sm font-medium mb-1"
+                >
                   Expiry Date
                 </label>
                 <input
@@ -185,10 +206,17 @@ const DonationForm: React.FC = () => {
                   onChange={handleChange}
                   className="w-full px-4 py-2 rounded-md border border-input focus:outline-none focus:ring-2 focus:ring-sage-500 transition-all"
                 />
-                {errors.expiryDate && <p className="mt-1 text-sm text-red-600">{errors.expiryDate}</p>}
+                {errors.expiryDate && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.expiryDate}
+                  </p>
+                )}
               </div>
               <div>
-                <label htmlFor="pickupAddress" className="block text-sm font-medium mb-1">
+                <label
+                  htmlFor="pickupAddress"
+                  className="block text-sm font-medium mb-1"
+                >
                   Pickup Address
                 </label>
                 <input
@@ -200,12 +228,19 @@ const DonationForm: React.FC = () => {
                   className="w-full px-4 py-2 rounded-md border border-input focus:outline-none focus:ring-2 focus:ring-sage-500 transition-all"
                   placeholder="Enter the address for pickup"
                 />
-                {errors.pickupAddress && <p className="mt-1 text-sm text-red-600">{errors.pickupAddress}</p>}
+                {errors.pickupAddress && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.pickupAddress}
+                  </p>
+                )}
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label htmlFor="pickupTimeStart" className="block text-sm font-medium mb-1">
+                <label
+                  htmlFor="pickupTimeStart"
+                  className="block text-sm font-medium mb-1"
+                >
                   Pickup Time - Start
                 </label>
                 <input
@@ -216,10 +251,17 @@ const DonationForm: React.FC = () => {
                   onChange={handleChange}
                   className="w-full px-4 py-2 rounded-md border border-input focus:outline-none focus:ring-2 focus:ring-sage-500 transition-all"
                 />
-                {errors.pickupTimeStart && <p className="mt-1 text-sm text-red-600">{errors.pickupTimeStart}</p>}
+                {errors.pickupTimeStart && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.pickupTimeStart}
+                  </p>
+                )}
               </div>
               <div>
-                <label htmlFor="pickupTimeEnd" className="block text-sm font-medium mb-1">
+                <label
+                  htmlFor="pickupTimeEnd"
+                  className="block text-sm font-medium mb-1"
+                >
                   Pickup Time - End
                 </label>
                 <input
@@ -230,7 +272,11 @@ const DonationForm: React.FC = () => {
                   onChange={handleChange}
                   className="w-full px-4 py-2 rounded-md border border-input focus:outline-none focus:ring-2 focus:ring-sage-500 transition-all"
                 />
-                {errors.pickupTimeEnd && <p className="mt-1 text-sm text-red-600">{errors.pickupTimeEnd}</p>}
+                {errors.pickupTimeEnd && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.pickupTimeEnd}
+                  </p>
+                )}
               </div>
             </div>
             <div>
@@ -247,7 +293,11 @@ const DonationForm: React.FC = () => {
               />
               {imagePreview && (
                 <div className="mt-2 relative w-full h-48 rounded-md overflow-hidden border border-input">
-                  <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                  <img
+                    src={imagePreview}
+                    alt="Preview"
+                    className="w-full h-full object-cover"
+                  />
                   <button
                     type="button"
                     onClick={() => {
@@ -269,9 +319,23 @@ const DonationForm: React.FC = () => {
             >
               {loading ? (
                 <>
-                  <svg className="w-5 h-5 mr-2 animate-spin" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                  <svg
+                    className="w-5 h-5 mr-2 animate-spin"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                    ></path>
                   </svg>
                   Creating Donation...
                 </>

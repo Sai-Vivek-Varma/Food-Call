@@ -20,7 +20,7 @@ const apiClient = axios.create({
 // Request interceptor to add auth token
 apiClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("foodShareToken");
+    const token = localStorage.getItem("foodcalltoken");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -37,9 +37,9 @@ apiClient.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       // Token expired or invalid
-      const token = localStorage.getItem("foodShareToken");
-      localStorage.removeItem("foodShareToken");
-      localStorage.removeItem("foodShareUser");
+      const token = localStorage.getItem("foodcalltoken");
+      localStorage.removeItem("foodcalltoken");
+      localStorage.removeItem("foodcalluser");
       // Only show toast if user was logged in (token existed)
       if (token) {
         toast.error("Session expired. Please log in again.");

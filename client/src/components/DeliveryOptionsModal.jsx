@@ -136,7 +136,7 @@ const DeliveryOptionsModal = ({ isOpen, onClose, donation, onReserve }) => {
 
           <div className="mt-6 pt-4 border-t border-slate-200">
             {ondcStatus && (
-              <div className="mb-4 text-center text-green-700 font-medium">
+              <div className="mb-4 text-center text-sage-700 font-medium">
                 {ondcStatus}
               </div>
             )}

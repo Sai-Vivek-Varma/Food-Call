@@ -1,19 +1,30 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { 
-  Truck, 
-  MapPin, 
-  Clock, 
-  DollarSign, 
-  Phone, 
-  User, 
+import {
+  Truck,
+  MapPin,
+  Clock,
+  DollarSign,
+  Phone,
+  User,
   Package,
   AlertCircle,
   CheckCircle,
-  Loader2
+  Loader2,
 } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -31,7 +42,7 @@ const DeliverySystemModal = ({ open, onClose, donation }) => {
     recipientPhone: "",
     deliveryAddress: "",
     specialInstructions: "",
-    preferredTime: ""
+    preferredTime: "",
   });
   const [isBooking, setIsBooking] = useState(false);
 
@@ -43,9 +54,13 @@ const DeliverySystemModal = ({ open, onClose, donation }) => {
       price: "₹45",
       time: "30-45 mins",
       description: "Quick delivery for nearby locations",
-      features: ["Real-time tracking", "Instant booking", "Cash/Digital payment"],
+      features: [
+        "Real-time tracking",
+        "Instant booking",
+        "Cash/Digital payment",
+      ],
       rating: 4.2,
-      available: true
+      available: true,
     },
     {
       id: "dunzo",
@@ -56,7 +71,7 @@ const DeliverySystemModal = ({ open, onClose, donation }) => {
       description: "Reliable delivery service",
       features: ["Live tracking", "Multiple payment options", "Quick support"],
       rating: 4.1,
-      available: true
+      available: true,
     },
     {
       id: "porter",
@@ -65,9 +80,13 @@ const DeliverySystemModal = ({ open, onClose, donation }) => {
       price: "₹60",
       time: "40-60 mins",
       description: "For larger quantity deliveries",
-      features: ["Heavy items support", "Professional handling", "Insurance covered"],
+      features: [
+        "Heavy items support",
+        "Professional handling",
+        "Insurance covered",
+      ],
       rating: 4.3,
-      available: true
+      available: true,
     },
     {
       id: "ondc",
@@ -78,7 +97,7 @@ const DeliverySystemModal = ({ open, onClose, donation }) => {
       description: "Government-backed open network",
       features: ["Lowest cost", "Transparent pricing", "Wide coverage"],
       rating: 4.0,
-      available: false // Will be available in Phase 3
+      available: false, // Will be available in Phase 3
     },
     {
       id: "volunteer",
@@ -89,23 +108,27 @@ const DeliverySystemModal = ({ open, onClose, donation }) => {
       description: "Community volunteers will collect",
       features: ["No cost", "Direct impact", "Community support"],
       rating: 4.8,
-      available: true
-    }
+      available: true,
+    },
   ];
 
   const handleBookDelivery = async () => {
     if (!selectedOption) {
       toast({
         title: "Please select a delivery option",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
 
-    if (!deliveryDetails.recipientName || !deliveryDetails.recipientPhone || !deliveryDetails.deliveryAddress) {
+    if (
+      !deliveryDetails.recipientName ||
+      !deliveryDetails.recipientPhone ||
+      !deliveryDetails.deliveryAddress
+    ) {
       toast({
         title: "Please fill in all required delivery details",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
@@ -114,7 +137,7 @@ const DeliverySystemModal = ({ open, onClose, donation }) => {
 
     try {
       // Simulate API call for delivery booking
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
       toast({
         title: "Delivery Booked Successfully! 🚚",
@@ -126,7 +149,7 @@ const DeliverySystemModal = ({ open, onClose, donation }) => {
       toast({
         title: "Booking Failed",
         description: "Please try again or contact support",
-        variant: "destructive"
+        variant: "destructive",
       });
     } finally {
       setIsBooking(false);
@@ -153,15 +176,21 @@ const DeliverySystemModal = ({ open, onClose, donation }) => {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                 <div>
                   <Label className="text-muted-foreground">Food Type</Label>
-                  <p className="font-medium">{donation?.foodType || "Mixed Items"}</p>
+                  <p className="font-medium">
+                    {donation?.foodType || "Mixed Items"}
+                  </p>
                 </div>
                 <div>
                   <Label className="text-muted-foreground">Quantity</Label>
-                  <p className="font-medium">{donation?.quantity || "5"} servings</p>
+                  <p className="font-medium">
+                    {donation?.quantity || "5"} servings
+                  </p>
                 </div>
                 <div>
                   <Label className="text-muted-foreground">Pickup From</Label>
-                  <p className="font-medium">{donation?.location || "Restaurant Location"}</p>
+                  <p className="font-medium">
+                    {donation?.location || "Restaurant Location"}
+                  </p>
                 </div>
                 <div>
                   <Label className="text-muted-foreground">Expiry</Label>
@@ -175,7 +204,7 @@ const DeliverySystemModal = ({ open, onClose, donation }) => {
             {/* Delivery Options */}
             <div className="space-y-4">
               <h3 className="text-lg font-semibold">Choose Delivery Option</h3>
-              
+
               <div className="space-y-3">
                 {deliveryOptions.map((option, index) => (
                   <motion.div
@@ -184,13 +213,17 @@ const DeliverySystemModal = ({ open, onClose, donation }) => {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.3, delay: index * 0.1 }}
                   >
-                    <Card 
+                    <Card
                       className={`cursor-pointer transition-all duration-300 hover:shadow-lg ${
-                        selectedOption?.id === option.id 
-                          ? 'ring-2 ring-primary border-primary shadow-lg' 
-                          : 'hover:border-primary/30'
-                      } ${!option.available ? 'opacity-50 cursor-not-allowed' : ''}`}
-                      onClick={() => option.available && setSelectedOption(option)}
+                        selectedOption?.id === option.id
+                          ? "ring-2 ring-primary border-primary shadow-lg"
+                          : "hover:border-primary/30"
+                      } ${
+                        !option.available ? "opacity-50 cursor-not-allowed" : ""
+                      }`}
+                      onClick={() =>
+                        option.available && setSelectedOption(option)
+                      }
                     >
                       <CardContent className="p-4">
                         <div className="flex items-start justify-between">
@@ -200,13 +233,24 @@ const DeliverySystemModal = ({ open, onClose, donation }) => {
                               <div className="flex items-center gap-2 mb-1">
                                 <h4 className="font-semibold">{option.name}</h4>
                                 {!option.available && (
-                                  <Badge variant="secondary" className="text-xs">Coming Soon</Badge>
+                                  <Badge
+                                    variant="secondary"
+                                    className="text-xs"
+                                  >
+                                    Coming Soon
+                                  </Badge>
                                 )}
                               </div>
-                              <p className="text-sm text-muted-foreground mb-2">{option.description}</p>
+                              <p className="text-sm text-muted-foreground mb-2">
+                                {option.description}
+                              </p>
                               <div className="flex flex-wrap gap-1 mb-2">
                                 {option.features.map((feature, i) => (
-                                  <Badge key={i} variant="outline" className="text-xs">
+                                  <Badge
+                                    key={i}
+                                    variant="outline"
+                                    className="text-xs"
+                                  >
                                     {feature}
                                   </Badge>
                                 ))}
@@ -214,7 +258,9 @@ const DeliverySystemModal = ({ open, onClose, donation }) => {
                               <div className="flex items-center gap-4 text-sm">
                                 <div className="flex items-center gap-1">
                                   <DollarSign className="w-3 h-3" />
-                                  <span className="font-medium">{option.price}</span>
+                                  <span className="font-medium">
+                                    {option.price}
+                                  </span>
                                 </div>
                                 <div className="flex items-center gap-1">
                                   <Clock className="w-3 h-3" />
@@ -241,7 +287,7 @@ const DeliverySystemModal = ({ open, onClose, donation }) => {
             {/* Delivery Details Form */}
             <div className="space-y-4">
               <h3 className="text-lg font-semibold">Delivery Details</h3>
-              
+
               <Card>
                 <CardContent className="p-4 space-y-4">
                   <div className="space-y-2">
@@ -252,7 +298,12 @@ const DeliverySystemModal = ({ open, onClose, donation }) => {
                         id="recipientName"
                         placeholder="Full name of recipient"
                         value={deliveryDetails.recipientName}
-                        onChange={(e) => setDeliveryDetails(prev => ({ ...prev, recipientName: e.target.value }))}
+                        onChange={(e) =>
+                          setDeliveryDetails((prev) => ({
+                            ...prev,
+                            recipientName: e.target.value,
+                          }))
+                        }
                         className="pl-10"
                       />
                     </div>
@@ -266,7 +317,12 @@ const DeliverySystemModal = ({ open, onClose, donation }) => {
                         id="recipientPhone"
                         placeholder="+91 98765 43210"
                         value={deliveryDetails.recipientPhone}
-                        onChange={(e) => setDeliveryDetails(prev => ({ ...prev, recipientPhone: e.target.value }))}
+                        onChange={(e) =>
+                          setDeliveryDetails((prev) => ({
+                            ...prev,
+                            recipientPhone: e.target.value,
+                          }))
+                        }
                         className="pl-10"
                       />
                     </div>
@@ -280,35 +336,54 @@ const DeliverySystemModal = ({ open, onClose, donation }) => {
                         id="deliveryAddress"
                         placeholder="Complete address with landmarks"
                         value={deliveryDetails.deliveryAddress}
-                        onChange={(e) => setDeliveryDetails(prev => ({ ...prev, deliveryAddress: e.target.value }))}
+                        onChange={(e) =>
+                          setDeliveryDetails((prev) => ({
+                            ...prev,
+                            deliveryAddress: e.target.value,
+                          }))
+                        }
                         className="pl-10 min-h-[80px]"
                       />
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="preferredTime">Preferred Delivery Time</Label>
+                    <Label htmlFor="preferredTime">
+                      Preferred Delivery Time
+                    </Label>
                     <div className="relative">
                       <Clock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                       <Input
                         id="preferredTime"
                         type="datetime-local"
                         value={deliveryDetails.preferredTime}
-                        onChange={(e) => setDeliveryDetails(prev => ({ ...prev, preferredTime: e.target.value }))}
+                        onChange={(e) =>
+                          setDeliveryDetails((prev) => ({
+                            ...prev,
+                            preferredTime: e.target.value,
+                          }))
+                        }
                         className="pl-10"
                       />
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="specialInstructions">Special Instructions</Label>
+                    <Label htmlFor="specialInstructions">
+                      Special Instructions
+                    </Label>
                     <div className="relative">
                       <Package className="absolute left-3 top-3 text-muted-foreground w-4 h-4" />
                       <Textarea
                         id="specialInstructions"
                         placeholder="Any special handling instructions..."
                         value={deliveryDetails.specialInstructions}
-                        onChange={(e) => setDeliveryDetails(prev => ({ ...prev, specialInstructions: e.target.value }))}
+                        onChange={(e) =>
+                          setDeliveryDetails((prev) => ({
+                            ...prev,
+                            specialInstructions: e.target.value,
+                          }))
+                        }
                         className="pl-10"
                       />
                     </div>
@@ -351,9 +426,12 @@ const DeliverySystemModal = ({ open, onClose, donation }) => {
                     <div className="flex items-start gap-3">
                       <AlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
                       <div>
-                        <h4 className="font-medium text-yellow-800">Coming Soon</h4>
+                        <h4 className="font-medium text-yellow-800">
+                          Coming Soon
+                        </h4>
                         <p className="text-sm text-yellow-700">
-                          ONDC delivery integration is currently in development. This option will be available in our next update.
+                          ONDC delivery integration is currently in development.
+                          This option will be available in our next update.
                         </p>
                       </div>
                     </div>
@@ -368,7 +446,7 @@ const DeliverySystemModal = ({ open, onClose, donation }) => {
             <Button variant="outline" onClick={onClose}>
               Cancel
             </Button>
-            <GradientButton 
+            <GradientButton
               onClick={handleBookDelivery}
               disabled={!selectedOption || isBooking}
               loading={isBooking}

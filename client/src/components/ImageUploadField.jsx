@@ -9,7 +9,7 @@ const ImageUploadField = ({ imagePreview, handleImageChange, removeImage }) => (
     >
       Food Image (Optional)
     </label>
-    <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-xl hover:border-green-400 transition-colors">
+    <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-xl hover:border-sage-400 transition-colors">
       <div className="space-y-1 text-center">
         {imagePreview ? (
           <div className="relative">
@@ -32,7 +32,7 @@ const ImageUploadField = ({ imagePreview, handleImageChange, removeImage }) => (
             <div className="flex text-sm text-gray-600">
               <label
                 htmlFor="image"
-                className="relative cursor-pointer bg-white rounded-md font-medium text-green-600 hover:text-green-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-green-500"
+                className="relative cursor-pointer bg-white rounded-md font-medium text-sage-600 hover:text-sage-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-sage-500"
               >
                 <span>Upload a photo</span>
                 <input

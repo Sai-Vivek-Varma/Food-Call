@@ -39,8 +39,8 @@ const Dashboard = () => {
   );
 
   const handleLogout = () => {
-    localStorage.removeItem("foodShareUser");
-    localStorage.removeItem("foodShareToken");
+    localStorage.removeItem("foodcallUser");
+    localStorage.removeItem("foodcallToken");
     toast.success("Logged out successfully");
     navigate("/");
   };
@@ -122,8 +122,8 @@ const Dashboard = () => {
 
             {/* Completed Donations Card */}
             <div className="bg-white p-6 rounded-xl border border-border flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-2 sm:gap-4">
-              <div className="w-12 h-12 flex items-center justify-center rounded-full bg-green-100 aspect-square min-w-[3rem] min-h-[3rem]">
-                <CheckCircle2 className="w-6 h-6 text-green-500" />
+              <div className="w-12 h-12 flex items-center justify-center rounded-full bg-sage-100 aspect-square min-w-[3rem] min-h-[3rem]">
+                <CheckCircle2 className="w-6 h-6 text-sage-500" />
               </div>
               <div>
                 <p className="text-muted-foreground text-sm">Completed</p>

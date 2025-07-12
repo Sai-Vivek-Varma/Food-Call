@@ -2,17 +2,15 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
-import { AuthFormData } from "@/lib/types";
 import { useDispatch, useSelector } from "react-redux";
-import { loginUserThunk, registerUserThunk } from "@/slices/userSlice";
+import {
+  loginUserThunk,
+  registerUserThunk,
+  clearError,
+} from "../slices/userSlice";
 
-interface AuthFormProps {
-  type: "login" | "register";
-  onSuccess: () => void;
-}
-
-const AuthForm = ({ type, onSuccess }: AuthFormProps) => {
-  const [formData, setFormData] = useState<AuthFormData>({
+const AuthForm = ({ type, onSuccess }) => {
+  const [formData, setFormData] = useState({
     email: "",
     password: "",
     name: "",
@@ -22,61 +20,91 @@ const AuthForm = ({ type, onSuccess }: AuthFormProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, error, user, token } = useSelector(
-    (state: any) => state.user
+  const { loading, error, user, token, isAuthenticated } = useSelector(
+    (state) => state.user
   );
 
   useEffect(() => {
-    if (user && token) {
+    if (user && token && isAuthenticated) {
       onSuccess();
-      navigate("/dashboard");
     }
-  }, [user, token, onSuccess, navigate]);
+  }, [user, token, isAuthenticated, onSuccess]);
 
   useEffect(() => {
     if (error) {
       toast.error(error);
+      // Clear error after showing it
+      dispatch(clearError());
     }
-  }, [error]);
+  }, [error, dispatch]);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (type === "register" && !formData.name) {
+
+    // Clear any previous errors
+    if (error) {
+      dispatch(clearError());
+    }
+
+    // Validation
+    if (type === "register" && !formData.name.trim()) {
       toast.error("Please enter your name");
       return;
     }
-    if (!formData.email) {
+    if (!formData.email.trim()) {
       toast.error("Please enter your email");
       return;
     }
-    if (!formData.password) {
+    if (!formData.password.trim()) {
       toast.error("Please enter your password");
+      return;
+    }
+    if (formData.password.length < 6) {
+      toast.error("Password must be at least 6 characters");
       return;
     }
     if (
       type === "register" &&
       formData.role === "orphanage" &&
-      !formData.organization
+      !formData.organization.trim()
     ) {
       toast.error("Please enter your organization name");
       return;
     }
-    if (type === "login") {
-      dispatch(
-        loginUserThunk({
-          email: formData.email,
-          password: formData.password,
-        }) as any
-      );
-    } else {
-      dispatch(registerUserThunk(formData) as any);
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
+
+    try {
+      if (type === "login") {
+        await dispatch(
+          loginUserThunk({
+            email: formData.email.trim(),
+            password: formData.password,
+          })
+        ).unwrap();
+      } else {
+        await dispatch(
+          registerUserThunk({
+            ...formData,
+            name: formData.name.trim(),
+            email: formData.email.trim(),
+            organization: formData.organization.trim(),
+          })
+        ).unwrap();
+      }
+    } catch (error) {
+      // Error is handled in Redux slice
+      console.error("Auth error:", error);
     }
   };
 
@@ -86,7 +114,7 @@ const AuthForm = ({ type, onSuccess }: AuthFormProps) => {
         <div>
           <label
             htmlFor="name"
-            className="form-label"
+            className="block text-sm font-medium text-gray-700 mb-1"
           >
             Name
           </label>
@@ -96,8 +124,9 @@ const AuthForm = ({ type, onSuccess }: AuthFormProps) => {
             type="text"
             value={formData.name}
             onChange={handleChange}
-            className="form-input"
+            className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-sage-500 transition-all"
             placeholder="Enter your full name"
+            required
           />
         </div>
       )}
@@ -105,7 +134,7 @@ const AuthForm = ({ type, onSuccess }: AuthFormProps) => {
       <div>
         <label
           htmlFor="email"
-          className="form-label"
+          className="block text-sm font-medium text-gray-700 mb-1"
         >
           Email
         </label>
@@ -115,15 +144,16 @@ const AuthForm = ({ type, onSuccess }: AuthFormProps) => {
           type="email"
           value={formData.email}
           onChange={handleChange}
-          className="form-input"
+          className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-sage-500 transition-all"
           placeholder="Enter your email"
+          required
         />
       </div>
 
       <div>
         <label
           htmlFor="password"
-          className="form-label"
+          className="block text-sm font-medium text-gray-700 mb-1"
         >
           Password
         </label>
@@ -134,13 +164,15 @@ const AuthForm = ({ type, onSuccess }: AuthFormProps) => {
             type={showPassword ? "text" : "password"}
             value={formData.password}
             onChange={handleChange}
-            className="form-input pr-12"
+            className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-sage-500 transition-all pr-10"
             placeholder="Enter your password"
+            minLength={6}
+            required
           />
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-4 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-sage-600 transition-colors"
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
           >
             {showPassword ? (
               <EyeOff className="w-5 h-5" />
@@ -156,7 +188,7 @@ const AuthForm = ({ type, onSuccess }: AuthFormProps) => {
           <div>
             <label
               htmlFor="role"
-              className="form-label"
+              className="block text-sm font-medium text-gray-700 mb-1"
             >
               Role
             </label>
@@ -165,7 +197,8 @@ const AuthForm = ({ type, onSuccess }: AuthFormProps) => {
               name="role"
               value={formData.role}
               onChange={handleChange}
-              className="form-input"
+              className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-sage-500 transition-all"
+              required
             >
               <option value="donor">Food Donor</option>
               <option value="orphanage">Orphanage</option>
@@ -176,9 +209,9 @@ const AuthForm = ({ type, onSuccess }: AuthFormProps) => {
             <div>
               <label
                 htmlFor="organization"
-                className="form-label"
+                className="block text-sm font-medium text-gray-700 mb-1"
               >
-                Organization Name
+                Organization Name *
               </label>
               <input
                 id="organization"
@@ -186,8 +219,9 @@ const AuthForm = ({ type, onSuccess }: AuthFormProps) => {
                 type="text"
                 value={formData.organization}
                 onChange={handleChange}
-                className="form-input"
+                className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-sage-500 transition-all"
                 placeholder="Enter your organization name"
+                required
               />
             </div>
           )}
@@ -197,11 +231,11 @@ const AuthForm = ({ type, onSuccess }: AuthFormProps) => {
       <button
         type="submit"
         disabled={loading}
-        className="btn-primary w-full py-4 mt-8 text-lg"
+        className="w-full bg-sage-500 text-white py-3 rounded-md hover:bg-sage-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all mt-6 flex items-center justify-center font-medium"
       >
         {loading ? (
           <>
-            <Loader2 className="w-6 h-6 mr-3 animate-spin" />
+            <Loader2 className="w-5 h-5 mr-2 animate-spin" />
             {type === "login" ? "Signing in..." : "Creating account..."}
           </>
         ) : type === "login" ? (

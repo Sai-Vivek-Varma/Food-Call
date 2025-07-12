@@ -31,7 +31,7 @@ const LocationPicker = ({
       setResults(data);
       setShowDropdown(true);
     } catch (error) {
-      console.error('Search failed:', error);
+      console.error("Search failed:", error);
       setResults([]);
     }
     setFetching(false);
@@ -63,7 +63,7 @@ const LocationPicker = ({
           setCurrentAddress(address);
           if (onLocationSelect) onLocationSelect(address);
         } catch (error) {
-          console.error('Reverse geocoding failed:', error);
+          console.error("Reverse geocoding failed:", error);
           const fallbackAddress = `${latitude}, ${longitude}`;
           setQuery(fallbackAddress);
           setCurrentAddress(fallbackAddress);
@@ -72,7 +72,7 @@ const LocationPicker = ({
         setLoading(false);
       },
       (error) => {
-        console.error('Geolocation failed:', error);
+        console.error("Geolocation failed:", error);
         setLoading(false);
       },
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 300000 }
@@ -87,7 +87,7 @@ const LocationPicker = ({
           value={query}
           onChange={handleInput}
           placeholder="Search for address or enter manually"
-          className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:ring-4 focus:ring-green-200 focus:border-green-500 transition-all pr-12"
+          className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:ring-4 focus:ring-sage-200 focus:border-sage-500 transition-all pr-12"
           autoComplete="off"
           onFocus={() => setShowDropdown(!!query)}
           onBlur={() => {
@@ -102,9 +102,9 @@ const LocationPicker = ({
           aria-label="Use current location"
         >
           {loading ? (
-            <Loader2 className="w-5 h-5 animate-spin text-green-600" />
+            <Loader2 className="w-5 h-5 animate-spin text-sage-600" />
           ) : (
-            <LocateFixed className="w-5 h-5 text-green-600" />
+            <LocateFixed className="w-5 h-5 text-sage-600" />
           )}
         </button>
         {showDropdown && (
@@ -138,12 +138,14 @@ const LocationPicker = ({
           </ul>
         )}
       </div>
-      
+
       <div className="w-full h-80 rounded-lg border border-gray-200 bg-gray-50 flex items-center justify-center">
         <div className="text-center text-gray-500">
           <LocateFixed className="w-12 h-12 mx-auto mb-2 text-gray-400" />
           <p className="text-sm">Interactive map temporarily disabled</p>
-          <p className="text-xs text-gray-400">Use the search above or location button</p>
+          <p className="text-xs text-gray-400">
+            Use the search above or location button
+          </p>
         </div>
       </div>
     </div>

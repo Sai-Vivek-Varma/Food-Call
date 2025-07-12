@@ -1,92 +1,58 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-@layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 222 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222 84% 4.9%;
-    --primary: 142 76% 36%;
-    --primary-foreground: 210 40% 98%;
-    --primary-light: 142 76% 50%;
-    --primary-dark: 142 76% 25%;
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222 84% 4.9%;
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 46%;
-    --accent: 210 40% 96%;
-    --accent-foreground: 222 84% 4.9%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 142 76% 36%;
-    --radius: 0.75rem;
-    --success: 142 76% 36%;
-    --warning: 38 92% 50%;
-    --info: 199 89% 48%;
-    --sage-50: 138 44% 96%;
-    --sage-100: 138 34% 92%;
-    --sage-200: 138 24% 85%;
-    --sage-300: 138 20% 76%;
-    --sage-400: 138 16% 64%;
-    --sage-500: 138 13% 52%;
-    --sage-600: 138 16% 42%;
-    --sage-700: 138 19% 34%;
-    --sage-800: 138 23% 27%;
-    --sage-900: 138 30% 22%;
-    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-light)));
-    --gradient-secondary: linear-gradient(135deg, hsl(var(--sage-100)), hsl(var(--sage-200)));
-    --gradient-hero: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--sage-500)) 50%, hsl(var(--primary-light)) 100%);
-    --shadow-elegant: 0 20px 40px -12px hsl(var(--primary) / 0.25);
-    --shadow-glow: 0 0 40px hsl(var(--primary) / 0.3);
-    --animation-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    --animation-smooth: cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .dark {
-    --background: 222 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 142 76% 50%;
-    --primary-foreground: 222 84% 4.9%;
-    --primary-light: 142 76% 60%;
-    --primary-dark: 142 76% 35%;
-    --secondary: 217 33% 17%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217 33% 17%;
-    --muted-foreground: 215 20% 65%;
-    --accent: 217 33% 17%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 63% 31%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217 33% 17%;
-    --input: 217 33% 17%;
-    --ring: 142 76% 50%;
-    --sage-50: 138 30% 8%;
-    --sage-100: 138 25% 12%;
-    --sage-200: 138 20% 18%;
-    --sage-300: 138 16% 25%;
-    --sage-400: 138 13% 35%;
-    --sage-500: 138 13% 45%;
-    --sage-600: 138 16% 55%;
-    --sage-700: 138 20% 65%;
-    --sage-800: 138 24% 75%;
-    --sage-900: 138 34% 85%;
-  }
+@theme {
+  --color-border: hsl(214 32% 91%);
+  --color-input: 214 32% 91%;
+  --color-ring: 142 76% 36%;
+  --color-background: 0 0% 100%;
+  --color-foreground: 222 84% 4.9%;
+  --color-primary: 142 76% 36%;
+  --color-primary-foreground: 210 40% 98%;
+  --color-primary-light: 142 76% 50%;
+  --color-primary-dark: 142 76% 25%;
+  --color-secondary: 210 40% 96%;
+  --color-secondary-foreground: 222 84% 4.9%;
+  --color-muted: 210 40% 96%;
+  --color-muted-foreground: 215 16% 46%;
+  --color-accent: 210 40% 96%;
+  --color-accent-foreground: 222 84% 4.9%;
+  --color-destructive: 0 84% 60%;
+  --color-destructive-foreground: 210 40% 98%;
+  --color-popover: 0 0% 100%;
+  --color-popover-foreground: 222 84% 4.9%;
+  --color-card: 0 0% 100%;
+  --color-card-foreground: 222 84% 4.9%;
+  --color-sage-50: #eef8ef;
+  --color-sage-100: #d8f0db;
+  --color-sage-200: #b6dfbb;
+  --color-sage-300: #94ce9c;
+  --color-sage-400: #72bd7c;
+  --color-sage-500: #0f9f14d7;
+  --color-sage-600: #439f47;
+  --color-sage-700: #284f29;
+  --color-sage-800: #1e3a1f;
+  --color-sage-900: #142615;
+  --color-sage-950: #0a130a;
+  --color-success: 142 76% 36%;
+  --color-warning: 38 92% 50%;
+  --color-info: 199 89% 48%;
+  
+  --radius: 0.75rem;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+  --shadow-elegant: 0 20px 40px -12px #0f9f14d7 / 0.25;
+  --shadow-glow: 0 0 40px #0f9f14d7 / 0.3;
 }
 
 @layer base {
   * {
     @apply border-border;
   }
+  
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
@@ -107,71 +73,71 @@
 
 @layer components {
   .gradient-text {
-    @apply bg-gradient-to-r from-primary via-primary-light to-primary bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-sage-500 via-sage-400 to-sage-500 bg-clip-text text-transparent;
   }
 
   .gradient-bg {
-    background: var(--gradient-primary);
+    background: linear-gradient(135deg, #0f9f14d7, #72bd7c);
   }
 
   .gradient-hero {
-    background: var(--gradient-hero);
+    background: linear-gradient(135deg, #0f9f14d7 0%, #439f47 50%, #72bd7c 100%);
   }
 
   .shadow-elegant {
-    box-shadow: var(--shadow-elegant);
+    box-shadow: 0 20px 40px -12px rgba(15, 159, 20, 0.25);
   }
 
   .shadow-glow {
-    box-shadow: var(--shadow-glow);
+    box-shadow: 0 0 40px rgba(15, 159, 20, 0.3);
   }
 
   .btn-primary {
-    @apply px-6 py-3 bg-primary text-primary-foreground rounded-xl hover:bg-primary-dark focus:ring-4 focus:ring-primary/20 transition-all duration-300 font-semibold text-center inline-flex items-center justify-center shadow-elegant hover:shadow-glow transform hover:-translate-y-1;
+    @apply px-6 py-3 bg-sage-500 text-white rounded-xl hover:bg-sage-600 focus:ring-4 focus:ring-sage-500/20 transition-all duration-300 font-semibold text-center inline-flex items-center justify-center shadow-elegant hover:shadow-glow transform hover:-translate-y-1;
   }
 
   .btn-outline {
-    @apply px-6 py-3 border-2 border-primary text-primary rounded-xl hover:bg-primary hover:text-primary-foreground focus:ring-4 focus:ring-primary/20 transition-all duration-300 font-semibold text-center inline-flex items-center justify-center;
+    @apply px-6 py-3 border-2 border-sage-500 text-sage-500 rounded-xl hover:bg-sage-500 hover:text-white focus:ring-4 focus:ring-sage-500/20 transition-all duration-300 font-semibold text-center inline-flex items-center justify-center;
   }
 
   .btn-secondary {
-    @apply px-6 py-3 bg-secondary text-secondary-foreground rounded-xl hover:bg-secondary/80 focus:ring-4 focus:ring-secondary/20 transition-all duration-300 font-medium text-center inline-flex items-center justify-center;
+    @apply px-6 py-3 bg-sage-100 text-sage-700 rounded-xl hover:bg-sage-200 focus:ring-4 focus:ring-sage-100/20 transition-all duration-300 font-medium text-center inline-flex items-center justify-center;
   }
 
   .card-glass {
-    @apply bg-white/80 backdrop-blur-lg border border-white/20 shadow-elegant hover:shadow-glow transition-all duration-500;
+    @apply bg-white/80 backdrop-blur-lg border border-sage-100/50 shadow-elegant hover:shadow-glow transition-all duration-500;
   }
 
   .card-hover {
-    @apply transition-all duration-500 hover:shadow-glow hover:border-primary/30 hover:-translate-y-2 hover:scale-[1.02];
+    @apply transition-all duration-500 hover:shadow-glow hover:border-sage-300/50 hover:-translate-y-2 hover:scale-[1.02];
   }
 
   .input-field {
-    @apply w-full px-4 py-3 text-sm rounded-xl border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-300;
+    @apply w-full px-4 py-3 text-sm rounded-xl border border-sage-200 bg-white focus:outline-none focus:ring-2 focus:ring-sage-500/20 focus:border-sage-500 transition-all duration-300;
   }
 
   .status-available {
-    @apply bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800;
+    @apply bg-sage-50 text-sage-700 border border-sage-200;
   }
 
   .status-reserved {
-    @apply bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-900/20 dark:text-amber-400 dark:border-amber-800;
+    @apply bg-amber-50 text-amber-700 border border-amber-200;
   }
 
   .status-completed {
-    @apply bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800;
+    @apply bg-blue-50 text-blue-700 border border-blue-200;
   }
 
   .status-expired {
-    @apply bg-red-50 text-red-700 border border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800;
+    @apply bg-red-50 text-red-700 border border-red-200;
   }
 
   .floating-action {
-    @apply fixed bottom-8 right-8 w-16 h-16 bg-primary text-primary-foreground rounded-full shadow-glow hover:shadow-elegant transition-all duration-300 hover:scale-110 z-50;
+    @apply fixed bottom-8 right-8 w-16 h-16 bg-sage-500 text-white rounded-full shadow-glow hover:shadow-elegant transition-all duration-300 hover:scale-110 z-50;
   }
 
   .shimmer {
-    @apply animate-pulse bg-gradient-to-r from-muted via-muted-foreground/10 to-muted bg-[length:200%_100%];
+    @apply animate-pulse bg-gradient-to-r from-sage-100 via-sage-200/50 to-sage-100 bg-[length:200%_100%];
     animation: shimmer 1.5s infinite;
   }
 }
@@ -187,8 +153,8 @@
 }
 
 @keyframes glow {
-  0%, 100% { box-shadow: 0 0 20px hsl(var(--primary) / 0.3); }
-  50% { box-shadow: 0 0 40px hsl(var(--primary) / 0.6); }
+  0%, 100% { box-shadow: 0 0 20px rgba(15, 159, 20, 0.3); }
+  50% { box-shadow: 0 0 40px rgba(15, 159, 20, 0.6); }
 }
 
 .animate-float {
@@ -207,7 +173,7 @@
 
 /* Loading spinner */
 .loading-spinner {
-  @apply animate-spin rounded-full border-b-2 border-green-500;
+  @apply animate-spin rounded-full border-b-2 border-sage-500;
 }
 
 /* Custom scrollbar */
@@ -220,9 +186,9 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-gray-400 rounded-full;
+  @apply bg-sage-400 rounded-full;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-gray-500;
+  @apply bg-sage-500;
 }

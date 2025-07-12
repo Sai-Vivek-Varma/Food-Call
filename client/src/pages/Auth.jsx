@@ -1,12 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
-import AuthForm from "@/components/AuthForm";
+import AuthForm from "../components/AuthForm";
 import { useSelector } from "react-redux";
 
 const Auth = () => {
   const [authType, setAuthType] = useState("login");
-  const [justLoggedIn, setJustLoggedIn] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { user, token } = useSelector((state) => state.user);
@@ -14,32 +13,29 @@ const Auth = () => {
   useEffect(() => {
     // Only redirect to dashboard if on /auth and already logged in
     if (user && token && location.pathname === "/auth") {
-      if (justLoggedIn) {
-        toast.success(
-          authType === "login"
-            ? "Successfully logged in!"
-            : "Account created successfully!"
-        );
-        setJustLoggedIn(false);
-      }
       navigate("/dashboard");
     }
-  }, [user, token, navigate, location.pathname, justLoggedIn, authType]);
+  }, [user, token, navigate, location.pathname]);
 
-  const handleSuccess = () => {
-    setJustLoggedIn(true);
-  };
+  const handleSuccess = useCallback(() => {
+    toast.success(
+      authType === "login"
+        ? "Successfully logged in!"
+        : "Account created successfully!"
+    );
+    // Navigation will be handled by the useEffect above
+  }, [authType]);
 
   const toggleAuthType = () => {
     setAuthType(authType === "login" ? "register" : "login");
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-sage-50 via-white to-sage-100">
-      <div className="container mx-auto px-4 py-10">
+    <div className="min-h-full bg-gradient-to-br from-sage-50 via-white to-sage-100">
+      <div className="container mx-auto px-4 py-10 mt-12">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <div className="text-center mb-8 md:mb-12">
+          {/* <div className="text-center mb-8 md:mb-12">
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-sage-700 mb-3">
               <span className="text-sage-500">Food</span>Call
             </h1>
@@ -47,7 +43,7 @@ const Auth = () => {
               Connecting food donors with orphanages to reduce waste and feed
               those in need
             </p>
-          </div>
+          </div> */}
 
           {/* Main Content Container */}
           <div className="grid md:grid-cols-2 gap-8 md:gap-16 items-center max-w-6xl mx-auto">
@@ -80,7 +76,7 @@ const Auth = () => {
 
             {/* Right Side - Auth Form Section */}
             <div className="order-1 lg:order-2">
-              <div className="bg-white/80 backdrop-blur-sm p-6 md:p-8 lg:p-10 rounded-2xl border border-sage-100 shadow-xl max-w-lg mx-auto lg:mx-0">
+              <div className="bg-white/80 backdrop-blur-sm p-8 rounded-2xl border border-sage-100 shadow-xl max-w-lg mx-auto lg:mx-0">
                 {/* Form Header */}
                 <div className="mb-8">
                   <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">

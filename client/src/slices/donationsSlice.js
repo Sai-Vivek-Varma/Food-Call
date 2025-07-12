@@ -177,7 +177,7 @@ const donationsSlice = createSlice({
       })
       .addCase(unreserveDonationThunk.fulfilled, (state, action) => {
         // Remove the unreserved donation from the list if it's no longer reserved by the current orphanage
-        const userStr = localStorage.getItem("foodShareUser");
+        const userStr = localStorage.getItem("foodcallUser");
         let userId, role;
         try {
           const user = userStr ? JSON.parse(userStr) : null;

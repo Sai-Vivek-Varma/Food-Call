@@ -12,7 +12,7 @@ const Navbar = React.memo(function Navbar({ onShowNotifications }) {
   const dropdownRef = useRef(null);
 
   useEffect(() => {
-    const userJson = localStorage.getItem("foodShareUser");
+    const userJson = localStorage.getItem("foodcalluser");
     if (userJson) {
       try {
         const parsedUser = JSON.parse(userJson);
@@ -39,8 +39,8 @@ const Navbar = React.memo(function Navbar({ onShowNotifications }) {
   }, [isDropdownOpen]);
 
   const handleLogout = () => {
-    localStorage.removeItem("foodShareUser");
-    localStorage.removeItem("foodShareToken");
+    localStorage.removeItem("foodcalluser");
+    localStorage.removeItem("foodcalltoken");
     setUser(null);
     setIsDropdownOpen(false);
     navigate("/");

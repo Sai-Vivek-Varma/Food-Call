@@ -6,7 +6,7 @@ import React from "react";
 const Footer = React.memo(() => {
   const [user, setUser] = useState(null);
   useEffect(() => {
-    const userJson = localStorage.getItem("foodShareUser");
+    const userJson = localStorage.getItem("foodcallUser");
     if (userJson) {
       try {
         const parsedUser = JSON.parse(userJson);

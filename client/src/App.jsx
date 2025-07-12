@@ -1,25 +1,22 @@
-
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster as Sonner } from "./components/ui/sonner";
+import { TooltipProvider } from "./components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { setUser } from "@/slices/userSlice";
+import { setUser } from "./slices/userSlice";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import DonationsList from "./pages/DonationsList";
-import Analytics from "./pages/Analytics";
 import DonationDetail from "./pages/DonationDetail";
 import NotFound from "./pages/NotFound";
 import HowItWorks from "./pages/HowItWorks";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import NotificationsModal from "@/components/NotificationsModal";
-import ParticleBackground from "@/components/ParticleBackground";
-import LoadingSpinner from "@/components/LoadingSpinner";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import NotificationsModal from "./components/NotificationsModal";
+import ParticleBackground from "./components/ParticleBackground";
+import LoadingSpinner from "./components/LoadingSpinner";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -34,11 +31,11 @@ const App = () => {
   const dispatch = useDispatch();
   const [showNotifications, setShowNotifications] = useState(false);
   const [rehydrated, setRehydrated] = useState(false);
-  
+
   useEffect(() => {
     // On app load, rehydrate Redux user state from localStorage
-    const userJson = localStorage.getItem("foodShareUser");
-    const token = localStorage.getItem("foodShareToken");
+    const userJson = localStorage.getItem("foodcalluser");
+    const token = localStorage.getItem("foodcalltoken");
     if (userJson && token) {
       try {
         const user = JSON.parse(userJson);
@@ -53,7 +50,9 @@ const App = () => {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-sage-50">
         <div className="text-center space-y-4">
           <LoadingSpinner size="xl" />
-          <p className="text-sage-600 text-lg font-semibold">Loading Food Call...</p>
+          <p className="text-sage-600 text-lg font-semibold">
+            Loading Food Call...
+          </p>
         </div>
       </div>
     );
@@ -62,7 +61,6 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <Toaster />
         <Sonner />
         <BrowserRouter>
           <div className="relative min-h-screen">
@@ -79,7 +77,6 @@ const App = () => {
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/donations" element={<DonationsList />} />
                 <Route path="/donations/:id" element={<DonationDetail />} />
-                <Route path="/analytics" element={<Analytics />} />
                 <Route path="/how-it-works" element={<HowItWorks />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>

@@ -1,18 +1,17 @@
-
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { toast } from "sonner";
-import { 
-  Calendar, 
-  MapPin, 
-  Clock, 
-  Package, 
-  User, 
+import {
+  Calendar,
+  MapPin,
+  Clock,
+  Package,
+  User,
   Phone,
   MessageSquare,
   ArrowLeft,
-  Truck
+  Truck,
 } from "lucide-react";
 import GradientButton from "../components/GradientButton";
 import LoadingSpinner from "../components/LoadingSpinner";
@@ -32,20 +31,24 @@ const DonationDetail = () => {
       const mockDonation = {
         id: id,
         title: "Fresh Vegetables from Restaurant",
-        description: "High-quality fresh vegetables including carrots, potatoes, onions, and leafy greens. Perfect for preparing nutritious meals.",
+        description:
+          "High-quality fresh vegetables including carrots, potatoes, onions, and leafy sages. Perfect for preparing nutritious meals.",
         quantity: "25kg mixed vegetables",
-        expiryDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
+        expiryDate: new Date(
+          Date.now() + 2 * 24 * 60 * 60 * 1000
+        ).toISOString(),
         pickupAddress: "123 Restaurant Street, Downtown",
         pickupTimeStart: "2024-01-15T10:00:00Z",
         pickupTimeEnd: "2024-01-15T16:00:00Z",
         status: "available",
-        imageUrl: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=500",
+        imageUrl:
+          "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=500",
         donor: {
-          name: "Green Plate Restaurant",
+          name: "sage Plate Restaurant",
           phone: "+1-234-567-8900",
-          email: "contact@greenplate.com"
+          email: "contact@sageplate.com",
         },
-        createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+        createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
       };
       setDonation(mockDonation);
       setLoading(false);
@@ -67,7 +70,7 @@ const DonationDetail = () => {
     try {
       // API call to reserve donation
       toast.success("Donation reserved successfully!");
-      setDonation(prev => ({ ...prev, status: "reserved" }));
+      setDonation((prev) => ({ ...prev, status: "reserved" }));
     } catch (error) {
       toast.error("Failed to reserve donation");
     }
@@ -123,13 +126,19 @@ const DonationDetail = () => {
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute top-4 right-4">
-                  <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                    donation.status === 'available' ? 'status-available' :
-                    donation.status === 'reserved' ? 'status-reserved' :
-                    donation.status === 'completed' ? 'status-completed' :
-                    'status-expired'
-                  }`}>
-                    {donation.status.charAt(0).toUpperCase() + donation.status.slice(1)}
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                      donation.status === "available"
+                        ? "status-available"
+                        : donation.status === "reserved"
+                        ? "status-reserved"
+                        : donation.status === "completed"
+                        ? "status-completed"
+                        : "status-expired"
+                    }`}
+                  >
+                    {donation.status.charAt(0).toUpperCase() +
+                      donation.status.slice(1)}
                   </span>
                 </div>
               </div>
@@ -172,7 +181,9 @@ const DonationDetail = () => {
                   <div className="flex items-start space-x-3 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl">
                     <MapPin className="w-5 h-5 text-blue-600 mt-1" />
                     <div>
-                      <p className="font-semibold text-gray-700">Pickup Location</p>
+                      <p className="font-semibold text-gray-700">
+                        Pickup Location
+                      </p>
                       <p className="text-blue-600">{donation.pickupAddress}</p>
                     </div>
                   </div>
@@ -182,7 +193,10 @@ const DonationDetail = () => {
                     <div>
                       <p className="font-semibold text-gray-700">Pickup Time</p>
                       <p className="text-purple-600">
-                        {new Date(donation.pickupTimeStart).toLocaleTimeString()} - {' '}
+                        {new Date(
+                          donation.pickupTimeStart
+                        ).toLocaleTimeString()}{" "}
+                        -{" "}
                         {new Date(donation.pickupTimeEnd).toLocaleTimeString()}
                       </p>
                     </div>
@@ -214,31 +228,38 @@ const DonationDetail = () => {
 
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-4">
-                {user?.role === "orphanage" && donation.status === "available" && (
-                  <>
-                    <GradientButton onClick={handleReserve} className="flex-1">
-                      <MessageSquare className="w-4 h-4" />
-                      Reserve Donation
-                    </GradientButton>
-                    <GradientButton 
-                      onClick={handleDeliveryBook} 
-                      variant="secondary" 
-                      className="flex-1"
-                    >
-                      <Truck className="w-4 h-4" />
-                      Book Delivery
-                    </GradientButton>
-                  </>
-                )}
-                
+                {user?.role === "orphanage" &&
+                  donation.status === "available" && (
+                    <>
+                      <GradientButton
+                        onClick={handleReserve}
+                        className="flex-1"
+                      >
+                        <MessageSquare className="w-4 h-4" />
+                        Reserve Donation
+                      </GradientButton>
+                      <GradientButton
+                        onClick={handleDeliveryBook}
+                        variant="secondary"
+                        className="flex-1"
+                      >
+                        <Truck className="w-4 h-4" />
+                        Book Delivery
+                      </GradientButton>
+                    </>
+                  )}
+
                 {user?.role === "donor" && (
-                  <GradientButton onClick={() => navigate(`/donations/edit/${id}`)} className="flex-1">
+                  <GradientButton
+                    onClick={() => navigate(`/donations/edit/${id}`)}
+                    className="flex-1"
+                  >
                     Edit Donation
                   </GradientButton>
                 )}
 
-                <GradientButton 
-                  onClick={() => window.open(`tel:${donation.donor.phone}`)} 
+                <GradientButton
+                  onClick={() => window.open(`tel:${donation.donor.phone}`)}
                   variant="secondary"
                 >
                   <Phone className="w-4 h-4" />

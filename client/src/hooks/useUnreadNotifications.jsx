@@ -6,7 +6,7 @@ export default function useUnreadNotifications() {
 
   useEffect(() => {
     let isMounted = true;
-    const token = localStorage.getItem("foodShareToken");
+    const token = localStorage.getItem("foodcallToken");
     if (!token) {
       setUnreadCount(0);
       return;
