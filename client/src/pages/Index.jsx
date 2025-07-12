@@ -18,7 +18,7 @@ const Index = React.memo(function Index() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-sage-50 via-white to-emerald-50">
       {/* Hero Section */}
-      <section className="relative pt-20 pb-10 sm:pt-24 sm:pb-16 overflow-hidden">
+      <section className="relative section-padding overflow-hidden">
         {/* Background decorations */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-sage-100 rounded-full opacity-20 animate-pulse-slow"></div>
@@ -26,65 +26,65 @@ const Index = React.memo(function Index() {
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-sage-100 to-emerald-100 rounded-full opacity-10 float"></div>
         </div>
         
-        <div className="container mx-auto max-w-6xl relative z-10 px-4 sm:px-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center fade-in">
+        <div className="container-custom relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center fade-in">
             {/* Left Content */}
-            <div className="space-y-6 py-8 sm:py-12 order-2 md:order-1 text-center md:text-left">
-              <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-sage-100 to-emerald-100 rounded-full text-sage-700 text-sm font-semibold mx-auto md:mx-0 shadow-lg border border-sage-200">
+            <div className="space-y-content text-center lg:text-left">
+              <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-sage-100 to-emerald-100 rounded-full text-sage-700 text-sm font-semibold shadow-lg border border-sage-200">
                 <Sparkles className="w-4 h-4 mr-2 text-sage-500" />
                 Reducing Waste • Fighting Hunger
               </div>
 
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight text-balance">
                 Turn Surplus Food into
                 <span className="block gradient-text mt-2">Hope & Meals</span>
               </h1>
 
-              <p className="text-lg sm:text-xl text-gray-600 leading-relaxed max-w-lg mx-auto md:mx-0 font-medium">
+              <p className="text-lg sm:text-xl lg:text-2xl text-gray-600 leading-relaxed max-w-2xl mx-auto lg:mx-0 font-medium text-pretty">
                 Connect surplus food with orphanages in need. Our platform makes
                 food donation simple, efficient, and impactful for everyone
                 involved.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4 pt-4 w-full sm:w-auto justify-center md:justify-start">
+              <div className="btn-group pt-4">
                 <Link
                   to="/auth"
-                  className="btn-primary group w-full sm:w-auto"
+                  className="btn-primary group text-lg px-8 py-4"
                 >
                   Start Sharing Food
                   <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Link>
-                <button className="btn-outline group w-full sm:w-auto">
+                <button className="btn-outline group text-lg px-8 py-4">
                   <Play className="mr-2 w-5 h-5 group-hover:scale-110 transition-transform" />
                   Watch Demo
                 </button>
               </div>
 
               {/* Stats Row */}
-              <div className="flex flex-row items-center gap-6 sm:gap-8 pt-8 justify-center md:justify-start">
+              <div className="stats-grid pt-8 max-w-md mx-auto lg:mx-0">
                 <div className="text-center">
-                  <div className="text-3xl font-bold gradient-text">
+                  <div className="stat-value gradient-text">
                     <AnimatedNumber value={1000} start={0} duration={1200} />+
                   </div>
-                  <div className="text-sm text-gray-600 font-medium">Meals Shared</div>
+                  <div className="stat-label">Meals Shared</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold gradient-text">
+                  <div className="stat-value gradient-text">
                     <AnimatedNumber value={50} start={0} duration={1200} />+
                   </div>
-                  <div className="text-sm text-gray-600 font-medium">Organizations</div>
+                  <div className="stat-label">Organizations</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold gradient-text">
+                  <div className="stat-value gradient-text">
                     <AnimatedNumber value={95} start={0} duration={1200} />%
                   </div>
-                  <div className="text-sm text-gray-600 font-medium">Waste Reduced</div>
+                  <div className="stat-label">Waste Reduced</div>
                 </div>
               </div>
             </div>
 
             {/* Right Visual */}
-            <div className="relative order-1 md:order-2 w-full max-w-md mx-auto md:mx-0 scale-in">
+            <div className="relative w-full max-w-lg mx-auto lg:max-w-none scale-in">
               <div className="relative group">
                 {/* Floating background elements */}
                 <div className="absolute -top-4 -left-4 w-full h-full bg-gradient-to-br from-sage-200 to-emerald-200 rounded-2xl opacity-20 group-hover:opacity-30 transition-opacity duration-500 float"></div>
@@ -93,7 +93,8 @@ const Index = React.memo(function Index() {
                 <img
                   src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=2070&auto=format&fit=crop"
                   alt="Food donation"
-                  className="relative rounded-2xl shadow-2xl w-full h-64 sm:h-80 md:h-96 object-cover group-hover:shadow-3xl transition-all duration-500 border-4 border-white"
+                  className="relative image-rounded image-shadow w-full h-64 sm:h-80 lg:h-96 xl:h-[28rem] object-cover group-hover:shadow-large transition-all duration-500 border-4 border-white"
+                  loading="eager"
                 />
                 
                 {/* Overlay badge */}
@@ -110,29 +111,28 @@ const Index = React.memo(function Index() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-16 sm:py-20 px-4 sm:px-6 bg-gradient-to-r from-sage-50 via-white to-emerald-50">
-        <div className="container mx-auto max-w-6xl">
-          <div className="text-center mb-12 sm:mb-16 fade-in">
+      <section className="section-padding bg-gradient-to-r from-sage-50 via-white to-emerald-50">
+        <div className="container-custom">
+          <div className="text-center mb-16 fade-in">
             <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-sage-100 to-emerald-100 rounded-full text-sage-700 text-sm font-semibold mb-6">
               <Globe className="w-4 h-4 mr-2" />
               Community Stories
             </div>
-            <h2 className="text-3xl sm:text-4xl font-bold mb-6 text-gray-900">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 text-gray-900 text-balance">
               Stories of Impact
             </h2>
-            <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto text-pretty">
               Real stories from our community members
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 slide-up">
-            <div className="card-enhanced p-8 group">
+          <div className="card-grid slide-up">
+            <div className="card-enhanced p-6 lg:p-8 group">
               <div className="flex items-center gap-1 mb-4">
                 {[...Array(5)].map((_, i) => (
                   <Star
                     key={i}
-                    style={{ fill: "#facc15", stroke: "#facc15" }}
-                    className="w-5 h-5 group-hover:scale-110 transition-transform duration-300"
+                    className="w-5 h-5 text-yellow-400 fill-current group-hover:scale-110 transition-transform duration-300"
                     style={{transitionDelay: `${i * 100}ms`}}
                   />
                 ))}
@@ -144,24 +144,21 @@ const Index = React.memo(function Index() {
               </p>
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 bg-gradient-to-br from-sage-100 to-emerald-100 rounded-full flex items-center justify-center shadow-md">
-                  <span className="font-bold text-sage-600">
-                    MS
-                  </span>
+                  <span className="font-bold text-sage-600">MS</span>
                 </div>
                 <div>
-                  <div className="font-semibold">Maria Santos</div>
+                  <div className="font-semibold text-gray-900">Maria Santos</div>
                   <div className="text-sm text-gray-500">Restaurant Owner</div>
                 </div>
               </div>
             </div>
 
-            <div className="card-enhanced p-8 group">
+            <div className="card-enhanced p-6 lg:p-8 group">
               <div className="flex items-center gap-1 mb-4">
                 {[...Array(5)].map((_, i) => (
                   <Star
                     key={i}
-                    style={{ fill: "#facc15", stroke: "#facc15" }}
-                    className="w-5 h-5 group-hover:scale-110 transition-transform duration-300"
+                    className="w-5 h-5 text-yellow-400 fill-current group-hover:scale-110 transition-transform duration-300"
                     style={{transitionDelay: `${i * 100}ms`}}
                   />
                 ))}
@@ -169,28 +166,25 @@ const Index = React.memo(function Index() {
               <p className="text-gray-600 mb-6 text-base leading-relaxed">
                 "With the support from donors on this app, our children no
                 longer go to bed hungry. They now enjoy warm, healthy meals
-                every day. It’s brought joy and energy back into their lives."
+                every day. It's brought joy and energy back into their lives."
               </p>
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 bg-gradient-to-br from-sage-100 to-emerald-100 rounded-full flex items-center justify-center shadow-md">
-                  <span className="font-bold text-sage-600">
-                    VV
-                  </span>
+                  <span className="font-bold text-sage-600">VV</span>
                 </div>
                 <div>
-                  <div className="font-semibold">Vijay Varma</div>
+                  <div className="font-semibold text-gray-900">Vijay Varma</div>
                   <div className="text-sm text-gray-500">Orphanage Head</div>
                 </div>
               </div>
             </div>
 
-            <div className="card-enhanced p-8 group">
+            <div className="card-enhanced p-6 lg:p-8 group">
               <div className="flex items-center gap-1 mb-4">
                 {[...Array(4)].map((_, i) => (
                   <Star
                     key={i}
-                    style={{ fill: "#facc15", stroke: "#facc15" }}
-                    className="w-5 h-5 group-hover:scale-110 transition-transform duration-300"
+                    className="w-5 h-5 text-yellow-400 fill-current group-hover:scale-110 transition-transform duration-300"
                     style={{transitionDelay: `${i * 100}ms`}}
                   />
                 ))}
@@ -198,31 +192,26 @@ const Index = React.memo(function Index() {
               <p className="text-gray-600 mb-6 text-base leading-relaxed">
                 "I started donating through this app a few months ago, and
                 seeing how my small contributions help provide fresh meals to
-                hungry children is incredibly rewarding. Knowing I’m making a
+                hungry children is incredibly rewarding. Knowing I'm making a
                 real impact keeps me coming back."
               </p>
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 bg-gradient-to-br from-sage-100 to-emerald-100 rounded-full flex items-center justify-center shadow-md">
-                  <span className="font-bold text-sage-600">
-                    JD
-                  </span>
+                  <span className="font-bold text-sage-600">JD</span>
                 </div>
                 <div>
-                  <div className="font-semibold">John Davis</div>
-                  <div className="text-sm text-gray-500">
-                    Orphanage Director
-                  </div>
+                  <div className="font-semibold text-gray-900">John Davis</div>
+                  <div className="text-sm text-gray-500">Orphanage Director</div>
                 </div>
               </div>
             </div>
 
-            <div className="card-enhanced p-8 group">
+            <div className="card-enhanced p-6 lg:p-8 group">
               <div className="flex items-center gap-1 mb-4">
                 {[...Array(4)].map((_, i) => (
                   <Star
                     key={i}
-                    style={{ fill: "#facc15", stroke: "#facc15" }}
-                    className="w-5 h-5 group-hover:scale-110 transition-transform duration-300"
+                    className="w-5 h-5 text-yellow-400 fill-current group-hover:scale-110 transition-transform duration-300"
                     style={{transitionDelay: `${i * 100}ms`}}
                   />
                 ))}
@@ -234,12 +223,10 @@ const Index = React.memo(function Index() {
               </p>
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 bg-gradient-to-br from-sage-100 to-emerald-100 rounded-full flex items-center justify-center shadow-md">
-                  <span className="font-bold text-sage-600">
-                    MS
-                  </span>
+                  <span className="font-bold text-sage-600">MS</span>
                 </div>
                 <div>
-                  <div className="font-semibold">Murai Sharma</div>
+                  <div className="font-semibold text-gray-900">Murai Sharma</div>
                   <div className="text-sm text-gray-500">Cafe Manager</div>
                 </div>
               </div>
@@ -249,25 +236,25 @@ const Index = React.memo(function Index() {
       </section>
 
       {/* Features Showcase */}
-      <section className="py-20 px-6 bg-white">
-        <div className="container mx-auto max-w-6xl">
-          <div className="grid md:grid-cols-2 gap-16 items-center">
-            <div className="fade-in">
-              <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-sage-100 to-emerald-100 rounded-full text-sage-700 text-sm font-semibold mb-6">
+      <section className="section-padding bg-white">
+        <div className="container-custom">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            <div className="fade-in space-y-content">
+              <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-sage-100 to-emerald-100 rounded-full text-sage-700 text-sm font-semibold">
                 <Shield className="w-4 h-4 mr-2" />
                 Platform Features
               </div>
-              <h2 className="text-4xl font-bold mb-8 text-gray-900">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 text-balance">
                 Built for Real Impact
               </h2>
-              <p className="text-xl text-gray-600 mb-10 leading-relaxed">
+              <p className="text-lg sm:text-xl text-gray-600 leading-relaxed text-pretty">
                 Our platform connects the dots between food waste and hunger,
                 creating meaningful change in communities.
               </p>
 
               <div className="space-y-6">
                 <div className="flex items-start gap-4 group">
-                  <div className="w-8 h-8 bg-gradient-to-br from-sage-100 to-emerald-100 rounded-xl flex items-center justify-center flex-shrink-0 mt-1 group-hover:scale-110 transition-transform duration-300 shadow-md">
+                  <div className="stat-icon bg-gradient-to-br from-sage-100 to-emerald-100 group-hover:scale-110 transition-transform duration-300 shadow-md">
                     <Check className="w-5 h-5 text-sage-600" />
                   </div>
                   <div>
@@ -281,7 +268,7 @@ const Index = React.memo(function Index() {
                 </div>
 
                 <div className="flex items-start gap-4 group">
-                  <div className="w-8 h-8 bg-gradient-to-br from-sage-100 to-emerald-100 rounded-xl flex items-center justify-center flex-shrink-0 mt-1 group-hover:scale-110 transition-transform duration-300 shadow-md">
+                  <div className="stat-icon bg-gradient-to-br from-sage-100 to-emerald-100 group-hover:scale-110 transition-transform duration-300 shadow-md">
                     <Check className="w-5 h-5 text-sage-600" />
                   </div>
                   <div>
@@ -296,7 +283,7 @@ const Index = React.memo(function Index() {
                 </div>
 
                 <div className="flex items-start gap-4 group">
-                  <div className="w-8 h-8 bg-gradient-to-br from-sage-100 to-emerald-100 rounded-xl flex items-center justify-center flex-shrink-0 mt-1 group-hover:scale-110 transition-transform duration-300 shadow-md">
+                  <div className="stat-icon bg-gradient-to-br from-sage-100 to-emerald-100 group-hover:scale-110 transition-transform duration-300 shadow-md">
                     <Check className="w-5 h-5 text-sage-600" />
                   </div>
                   <div>
@@ -312,12 +299,13 @@ const Index = React.memo(function Index() {
               </div>
             </div>
 
-            <div className="relative hidden md:block scale-in">
+            <div className="relative hidden lg:block scale-in">
               <div className="absolute inset-0 bg-gradient-to-br from-sage-100 to-emerald-100 rounded-2xl transform rotate-3 opacity-20"></div>
               <img
                 src="https://media.istockphoto.com/id/1498170916/photo/a-couple-is-taking-a-bag-of-food-at-the-food-and-clothes-bank.webp?a=1&b=1&s=612x612&w=0&k=20&c=WIKBpmpSbwZBW5EEk6ZbXPaji47EUrfhmS5uBxBu9jA="
                 alt="Community impact"
-                className="relative rounded-2xl shadow-2xl w-full h-80 object-cover border-4 border-white hover:shadow-3xl transition-all duration-500"
+                className="relative image-rounded image-shadow w-full h-80 lg:h-96 object-cover border-4 border-white hover:shadow-large transition-all duration-500"
+                loading="lazy"
               />
             </div>
           </div>
@@ -325,25 +313,25 @@ const Index = React.memo(function Index() {
       </section>
 
       {/* How it works */}
-      <section className="py-20 px-6 bg-gradient-to-br from-gray-50 to-sage-50">
-        <div className="container mx-auto max-w-6xl">
+      <section className="section-padding bg-gradient-to-br from-gray-50 to-sage-50">
+        <div className="container-custom">
           <div className="text-center mb-16 fade-in">
             <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-sage-100 to-emerald-100 rounded-full text-sage-700 text-sm font-semibold mb-6">
               <Package className="w-4 h-4 mr-2" />
               How It Works
             </div>
-            <h2 className="text-4xl font-bold mb-6 text-gray-900">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 text-gray-900 text-balance">
               Ready to Make a Difference?
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto text-pretty">
               Three easy steps to turn food waste into community support
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-12 slide-up">
+          <div className="grid md:grid-cols-3 gap-8 lg:gap-12 slide-up">
             <div className="text-center group relative">
               <div className="relative mb-6">
-                <div className="w-20 h-20 bg-gradient-to-br from-sage-100 to-emerald-100 rounded-2xl flex items-center justify-center mx-auto group-hover:scale-110 transition-all duration-300 shadow-lg group-hover:shadow-xl">
+                <div className="stat-icon w-20 h-20 bg-gradient-to-br from-sage-100 to-emerald-100 mx-auto group-hover:scale-110 transition-all duration-300 shadow-lg group-hover:shadow-xl">
                   <Package className="w-10 h-10 text-sage-600" />
                 </div>
                 <div className="absolute -top-2 -left-2 w-8 h-8 bg-gradient-to-r from-sage-500 to-emerald-500 text-white rounded-full flex items-center justify-center text-sm font-bold shadow-lg">
@@ -361,7 +349,7 @@ const Index = React.memo(function Index() {
 
             <div className="text-center group relative">
               <div className="relative mb-6">
-                <div className="w-20 h-20 bg-gradient-to-br from-sage-100 to-emerald-100 rounded-2xl flex items-center justify-center mx-auto group-hover:scale-110 transition-all duration-300 shadow-lg group-hover:shadow-xl">
+                <div className="stat-icon w-20 h-20 bg-gradient-to-br from-sage-100 to-emerald-100 mx-auto group-hover:scale-110 transition-all duration-300 shadow-lg group-hover:shadow-xl">
                   <Users className="w-10 h-10 text-sage-600" />
                 </div>
                 <div className="absolute -top-2 -left-2 w-8 h-8 bg-gradient-to-r from-sage-500 to-emerald-500 text-white rounded-full flex items-center justify-center text-sm font-bold shadow-lg">
@@ -379,7 +367,7 @@ const Index = React.memo(function Index() {
 
             <div className="text-center group relative">
               <div className="relative mb-6">
-                <div className="w-20 h-20 bg-gradient-to-br from-sage-100 to-emerald-100 rounded-2xl flex items-center justify-center mx-auto group-hover:scale-110 transition-all duration-300 shadow-lg group-hover:shadow-xl">
+                <div className="stat-icon w-20 h-20 bg-gradient-to-br from-sage-100 to-emerald-100 mx-auto group-hover:scale-110 transition-all duration-300 shadow-lg group-hover:shadow-xl">
                   <Heart className="w-10 h-10 text-sage-600" />
                 </div>
                 <div className="absolute -top-2 -left-2 w-8 h-8 bg-gradient-to-r from-sage-500 to-emerald-500 text-white rounded-full flex items-center justify-center text-sm font-bold shadow-lg">
@@ -396,7 +384,7 @@ const Index = React.memo(function Index() {
             </div>
           </div>
           
-          <div className="py-16 container mx-auto max-w-4xl text-center fade-in">
+          <div className="text-center mt-16 fade-in">
             <Link
               to="/auth"
               className="btn-outline group text-lg px-10 py-4"

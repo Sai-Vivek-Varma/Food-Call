@@ -5,7 +5,6 @@ import { Search, Package, Heart, Building, ChevronDown } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import DonationCard from "@/components/DonationCard";
 import { fetchDonations } from "../slices/donationsSlice";
-import { setUser } from "../slices/userSlice";
 
 // Haversine formula for distance in km
 function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
@@ -49,9 +48,7 @@ const DonationsList = () => {
       navigate("/dashboard");
       return;
     }
-    // Always fetch all donations for browse page
     dispatch(fetchDonations());
-    // eslint-disable-next-line
   }, [user, navigate, dispatch]);
 
   useEffect(() => {
@@ -109,7 +106,6 @@ const DonationsList = () => {
         } else if (sortBy === "quantity") {
           return (b.quantity || 0) - (a.quantity || 0);
         } else if (sortBy === "distance" && userLocation) {
-          // Parse coordinates as numbers, fallback to null if invalid
           const aLat = Number(a.latitude);
           const aLon = Number(a.longitude);
           const bLat = Number(b.latitude);
@@ -132,16 +128,11 @@ const DonationsList = () => {
     setFilteredDonations(filtered);
   }, [searchTerm, donations, sortBy, userLocation]);
 
-  // Debug logs
-  console.log("ALL DONATIONS FROM REDUX:", donations);
-  console.log("FILTERED DONATIONS TO DISPLAY:", filteredDonations);
-
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
   };
 
   const handleReservationSuccess = () => {
-    // Re-fetch all donations after a reservation is made
     dispatch(fetchDonations());
   };
 
@@ -171,36 +162,38 @@ const DonationsList = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-sage-50">
-      <section className="pt-32 pb-16 px-4 fade-in">
-        <div className="container mx-auto max-w-6xl">
-          <div className="text-center mb-16">
-            <span className="px-6 py-3 rounded-full bg-gradient-to-r from-green-100 to-emerald-100 text-sage-700 font-semibold text-sm mb-6 flex items-center justify-center w-fit mx-auto shadow-lg border border-sage-200">
+      <section className="section-padding pt-24 fade-in">
+        <div className="container-custom">
+          {/* Header */}
+          <div className="text-center mb-16 space-y-content">
+            <span className="inline-flex items-center px-6 py-3 rounded-full bg-gradient-to-r from-green-100 to-emerald-100 text-sage-700 font-semibold text-sm shadow-lg border border-sage-200">
               <Building className="w-4 h-4 mr-2" />
               Available for {user.organization || "Your Organization"}
             </span>
-            <h1 className="text-5xl font-bold mb-6">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-balance">
               <span className="gradient-text">Browse Food Donations</span>
             </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-lg sm:text-xl lg:text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed text-pretty">
               Find and reserve available food donations for your organization.
               All listings show real-time availability with detailed pickup
               information and delivery options.
             </p>
           </div>
 
-          <div className="flex flex-row gap-6 mb-12 slide-up">
-            <div className="grow basis-0 min-w-0 relative">
+          {/* Search and Filter */}
+          <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 mb-12 slide-up">
+            <div className="flex-1 relative">
               <Search className="absolute left-5 top-1/2 transform -translate-y-1/2 text-gray-400 w-6 h-6" />
               <input
                 type="text"
                 placeholder="Search by food name, description, donor, or location..."
                 value={searchTerm}
                 onChange={handleSearch}
-                className="w-full pl-14 pr-6 py-4 rounded-2xl border-2 border-gray-200 focus:outline-none focus:ring-4 focus:ring-sage-100 focus:border-sage-500 transition-all text-gray-700 text-lg shadow-sm hover:border-gray-300"
+                className="w-full pl-14 pr-6 py-4 rounded-2xl border-2 border-gray-200 focus:outline-none focus:ring-4 focus:ring-sage-100 focus:border-sage-500 transition-all text-gray-700 text-lg shadow-sm hover:border-gray-300 bg-white"
               />
             </div>
-            <div className="flex-shrink-0 w-[180px] flex gap-2 items-center">
-              <div className="relative w-full">
+            <div className="flex-shrink-0 w-full lg:w-48">
+              <div className="relative">
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
@@ -219,6 +212,15 @@ const DonationsList = () => {
             </div>
           </div>
 
+          {/* Distance sort warning */}
+          {sortBy === "distance" && !userLocation && (
+            <div className="mb-8 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700">
+              <p className="font-medium">Location not available</p>
+              <p className="text-sm">Please allow location access to sort by distance.</p>
+            </div>
+          )}
+
+          {/* Content */}
           {isLoading ? (
             <div className="flex flex-col items-center justify-center py-24 scale-in">
               <div className="animate-spin rounded-full h-20 w-20 border-b-4 border-sage-500 mb-8"></div>
@@ -227,14 +229,14 @@ const DonationsList = () => {
               </p>
             </div>
           ) : filteredDonations.length === 0 ? (
-            <div className="flex flex-col items-center justify-center card-enhanced p-24 fade-in">
+            <div className="flex flex-col items-center justify-center card-enhanced p-16 lg:p-24 fade-in">
               {searchTerm ? (
                 <>
                   <Search className="w-24 h-24 text-gray-300 mb-8" />
-                  <h3 className="text-3xl font-bold text-gray-900 mb-4">
+                  <h3 className="text-3xl font-bold text-gray-900 mb-4 text-balance">
                     No Matching Donations Found
                   </h3>
-                  <p className="text-gray-600 text-center max-w-md mb-10 text-lg">
+                  <p className="text-gray-600 text-center max-w-md mb-10 text-lg leading-relaxed">
                     No donations matching "{searchTerm}" were found. Try
                     adjusting your search terms or clear the search to see all
                     available donations.
@@ -249,17 +251,17 @@ const DonationsList = () => {
               ) : (
                 <>
                   <Heart className="w-24 h-24 text-gray-300 mb-8" />
-                  <h3 className="text-3xl font-bold text-gray-900 mb-4">
+                  <h3 className="text-3xl font-bold text-gray-900 mb-4 text-balance">
                     No Donations Available
                   </h3>
-                  <p className="text-gray-600 text-center max-w-md mb-10 text-lg">
+                  <p className="text-gray-600 text-center max-w-md mb-10 text-lg leading-relaxed">
                     There are currently no food donations available in your
                     area. Check back later or encourage local food donors to
                     share their surplus through our platform.
                   </p>
-                  <div className="flex flex-col sm:flex-row gap-6">
+                  <div className="btn-group">
                     <button
-                      onClick={fetchDonations}
+                      onClick={() => dispatch(fetchDonations())}
                       className="btn-primary"
                     >
                       Refresh List
@@ -276,43 +278,35 @@ const DonationsList = () => {
             </div>
           ) : (
             <>
-              <div className="mb-12 p-8 bg-gradient-to-r from-green-50 via-emerald-50 to-sage-50 rounded-3xl border border-green-200 shadow-lg slide-up">
-                <div className="flex flex-col sm:flex-row items-center sm:items-start text-green-700 mb-3 gap-3 sm:gap-4 flex-wrap">
-                  <Heart className="w-8 h-8 mr-0 sm:mr-3 mb-2 sm:mb-0" />
-                  <span className="font-bold text-xl text-center sm:text-left break-words">
+              {/* Results summary */}
+              <div className="mb-12 p-6 lg:p-8 bg-gradient-to-r from-green-50 via-emerald-50 to-sage-50 rounded-3xl border border-green-200 shadow-lg slide-up">
+                <div className="flex flex-col sm:flex-row items-center gap-4 text-green-700 mb-3">
+                  <Heart className="w-8 h-8 flex-shrink-0" />
+                  <span className="font-bold text-xl text-center sm:text-left">
                     {filteredDonations.length} donation
                     {filteredDonations.length !== 1 ? "s" : ""} ready for
                     reservation
                   </span>
                 </div>
-                <p className="text-green-600 text-center sm:text-left break-words text-lg">
+                <p className="text-green-600 text-center sm:text-left text-lg leading-relaxed">
                   Click on any donation to view full details and make a
                   reservation. Our integrated delivery system supports
                   self-pickup and ONDC delivery options.
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 slide-up">
-                {filteredDonations.map((donation) => {
-                  console.log("RENDERING DONATION:", donation);
-                  return (
-                    <DonationCard
-                      key={donation._id || donation.id}
-                      donation={donation}
-                      isOrphanage={true}
-                      onReservationSuccess={handleReservationSuccess}
-                    />
-                  );
-                })}
+              {/* Donations grid */}
+              <div className="card-grid slide-up">
+                {filteredDonations.map((donation) => (
+                  <DonationCard
+                    key={donation._id || donation.id}
+                    donation={donation}
+                    isOrphanage={true}
+                    onReservationSuccess={handleReservationSuccess}
+                  />
+                ))}
               </div>
             </>
-          )}
-          {/* Show a warning if user selects distance sort but location is not available */}
-          {sortBy === "distance" && !userLocation && (
-            <div className="text-red-500 mb-4 p-4 bg-red-50 rounded-xl border border-red-200">
-              Location not available. Please allow location access to sort by
-              distance.
-            </div>
           )}
         </div>
       </section>

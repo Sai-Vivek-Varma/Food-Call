@@ -21,7 +21,6 @@ const formatDate = (date) => {
 };
 
 const formatTimeIST = (date) => {
-  // Always format as IST (Asia/Kolkata)
   return new Date(date).toLocaleTimeString("en-US", {
     hour: "2-digit",
     minute: "2-digit",
@@ -47,10 +46,10 @@ const DonationCard = React.memo(
     }
 
     const statusClasses = {
-      available: "bg-sage-100 text-sage-700",
-      reserved: "bg-amber-100 text-amber-700",
-      completed: "bg-blue-100 text-blue-700",
-      expired: "bg-red-100 text-red-700",
+      available: "status-available",
+      reserved: "status-reserved", 
+      completed: "status-completed",
+      expired: "status-expired",
     };
 
     const handleReserve = async (deliveryOption) => {
@@ -87,7 +86,6 @@ const DonationCard = React.memo(
       setIsDeliveryModalOpen(true);
     };
 
-    // Use useCallback for handlers
     const handleOpenDetailModal = useCallback(
       () => setIsDetailModalOpen(true),
       []
@@ -97,7 +95,7 @@ const DonationCard = React.memo(
       []
     );
 
-    // Get orphanage userId if needed
+    // Get user info for ownership checks
     let userId;
     if (isOrphanage) {
       const user = localStorage.getItem("foodShareUser");
@@ -111,170 +109,175 @@ const DonationCard = React.memo(
     return (
       <>
         <div
-          className="card-enhanced cursor-pointer group overflow-hidden"
+          className="card-enhanced cursor-pointer group"
           onClick={handleCardClick}
         >
-          {donation.imageUrl && donation.imageUrl.trim() !== "" ? (
-            <div className="relative h-48 overflow-hidden">
+          {/* Image Section */}
+          <div className="relative h-48 sm:h-52 lg:h-56 overflow-hidden">
+            {donation.imageUrl && donation.imageUrl.trim() !== "" ? (
               <img
                 src={donation.imageUrl}
                 alt={donation.title}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                className="image-cover group-hover:scale-105 transition-transform duration-500"
+                loading="lazy"
               />
-              <div className="absolute top-4 right-4">
-                <span
-                  className={`px-3 py-2 rounded-full text-xs font-semibold shadow-lg backdrop-blur-sm ${
-                    statusClasses[donation.status]
-                  }`}
+            ) : (
+              <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-12 w-12 text-gray-300 mb-2 group-hover:scale-110 transition-transform duration-300"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
                 >
-                  {donation.status.charAt(0).toUpperCase() +
-                    donation.status.slice(1)}
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M3 5a2 2 0 012-2h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5zm16 10l-4-4a2 2 0 00-2.828 0l-4 4M8 13l-2 2m8-2l2 2"
+                  />
+                </svg>
+                <span className="text-gray-400 text-xs select-none">
+                  No photo uploaded
                 </span>
               </div>
-            </div>
-          ) : (
-            <div className="relative h-48 overflow-hidden flex flex-col items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-12 w-12 text-gray-300 mb-2 group-hover:scale-110 transition-transform duration-300"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth="1.5"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M3 5a2 2 0 012-2h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5zm16 10l-4-4a2 2 0 00-2.828 0l-4 4M8 13l-2 2m8-2l2 2"
-                />
-              </svg>
-              <span className="text-gray-400 text-xs select-none">
-                No photo uploaded
+            )}
+            
+            {/* Status Badge */}
+            <div className="absolute top-4 right-4">
+              <span className={`${statusClasses[donation.status]} shadow-lg backdrop-blur-sm`}>
+                {donation.status.charAt(0).toUpperCase() + donation.status.slice(1)}
               </span>
-              <div className="absolute top-4 right-4">
-                <span
-                  className={`px-3 py-2 rounded-full text-xs font-semibold shadow-lg backdrop-blur-sm ${
-                    statusClasses[donation.status]
-                  }`}
-                >
-                  {donation.status.charAt(0).toUpperCase() +
-                    donation.status.slice(1)}
-                </span>
-              </div>
             </div>
-          )}
+          </div>
 
-          <div className="p-6">
-            {/* Remove duplicate status badge for cards with no image */}
-            <h3 className="text-xl font-bold mb-3 truncate text-slate-900 group-hover:text-sage-600 transition-colors">
+          {/* Content Section */}
+          <div className="p-6 space-y-4">
+            {/* Title */}
+            <h3 className="text-xl font-bold text-gray-900 group-hover:text-sage-600 transition-colors line-clamp-2">
               {donation.title}
             </h3>
 
-            <p className="text-slate-600 mb-4 line-clamp-2 leading-relaxed">
+            {/* Description */}
+            <p className="text-gray-600 line-clamp-2 leading-relaxed">
               {donation.description}
             </p>
 
+            {/* Details Grid */}
             <div className="space-y-3">
-              <div className="flex items-center text-slate-600">
-                <div className="w-8 h-8 bg-sage-50 rounded-lg flex items-center justify-center mr-3">
+              <div className="flex items-center gap-3 text-gray-600">
+                <div className="stat-icon w-8 h-8 bg-sage-50">
                   <Package className="w-4 h-4 text-sage-500" />
                 </div>
-                <span className="font-medium">{donation.quantity}</span>
+                <span className="font-medium text-sm">{donation.quantity}</span>
               </div>
-              <div className="flex items-center text-slate-600">
-                <div className="w-8 h-8 bg-sage-50 rounded-lg flex items-center justify-center mr-3">
+              
+              <div className="flex items-center gap-3 text-gray-600">
+                <div className="stat-icon w-8 h-8 bg-sage-50">
                   <CalendarIcon className="w-4 h-4 text-sage-500" />
                 </div>
-                <span className="font-medium">Expires: {formatDate(donation.expiryDate)}</span>
+                <span className="font-medium text-sm">
+                  Expires: {formatDate(donation.expiryDate)}
+                </span>
               </div>
-              <div className="flex items-center text-slate-600">
-                <div className="w-8 h-8 bg-sage-50 rounded-lg flex items-center justify-center mr-3 flex-shrink-0">
+              
+              <div className="flex items-start gap-3 text-gray-600">
+                <div className="stat-icon w-8 h-8 bg-sage-50 flex-shrink-0">
                   <MapPin className="w-4 h-4 text-sage-500" />
                 </div>
-                <span className="truncate font-medium">{donation.pickupAddress}</span>
+                <span className="font-medium text-sm line-clamp-2 leading-relaxed">
+                  {donation.pickupAddress}
+                </span>
               </div>
-              <div className="flex items-center text-slate-600">
-                <div className="w-8 h-8 bg-sage-50 rounded-lg flex items-center justify-center mr-3">
+              
+              <div className="flex items-center gap-3 text-gray-600">
+                <div className="stat-icon w-8 h-8 bg-sage-50">
                   <Clock className="w-4 h-4 text-sage-500" />
                 </div>
-                <span>
-                  Pickup: {formatTimeIST(donation.pickupTimeStart)} -{" "}
-                  {formatTimeIST(donation.pickupTimeEnd)}
+                <span className="font-medium text-sm">
+                  {formatTimeIST(donation.pickupTimeStart)} - {formatTimeIST(donation.pickupTimeEnd)}
                 </span>
               </div>
             </div>
 
-            <div className="mt-6 pt-4 border-t border-slate-200 flex gap-3">
-              {isOrphanage && donation.status === "available" ? (
-                <button
-                  onClick={handleReserveClick}
-                  className="btn-primary w-full py-3"
-                >
-                  Reserve Donation
-                </button>
-              ) : null}
-              {/* Allow orphanage to unreserve their own reserved donation */}
-              {isOrphanage && donation.status === "reserved" && (
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setShowCancelConfirm(true);
-                  }}
-                  className="w-full py-3 px-4 border-2 border-red-500 text-red-600 rounded-xl hover:bg-red-50 hover:border-red-600 transition-all duration-300 font-semibold"
-                >
-                  Cancel Reservation
-                </button>
-              )}
-              {/* Edit button for donor's own donations, not completed */}
-              {!isOrphanage &&
-                donation.donorId ===
-                  (localStorage.getItem("foodShareUser")
-                    ? JSON.parse(localStorage.getItem("foodShareUser"))._id
-                    : undefined) &&
-                donation.status !== "completed" && (
+            {/* Action Buttons */}
+            <div className="pt-4 border-t border-gray-100">
+              <div className="btn-group">
+                {isOrphanage && donation.status === "available" ? (
+                  <button
+                    onClick={handleReserveClick}
+                    className="btn-primary w-full py-3"
+                  >
+                    Reserve Donation
+                  </button>
+                ) : null}
+                
+                {/* Orphanage cancel reservation */}
+                {isOrphanage && donation.status === "reserved" && (
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      setIsEditModalOpen(true);
+                      setShowCancelConfirm(true);
                     }}
-                    className="w-full py-3 px-4 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-300 font-semibold flex items-center justify-center gap-2"
+                    className="w-full py-3 px-4 border-2 border-red-500 text-red-600 rounded-xl hover:bg-red-50 hover:border-red-600 transition-all duration-300 font-semibold"
                   >
-                    <Pencil className="w-4 h-4" /> Edit
+                    Cancel Reservation
                   </button>
                 )}
-              {/* Show Finish Donation button for donor if reserved and owner */}
-              {!isOrphanage &&
-                donation.status === "reserved" &&
-                donation.donorId ===
-                  (localStorage.getItem("foodShareUser")
-                    ? JSON.parse(localStorage.getItem("foodShareUser"))._id
-                    : undefined) && (
-                  <button
-                    onClick={async (e) => {
-                      e.stopPropagation();
-                      try {
-                        await dispatch(
-                          completeDonationThunk({
-                            id: donation._id || donation.id,
-                          })
-                        ).unwrap();
-                        toast.success("Donation marked as completed!");
-                        if (onReservationSuccess) {
-                          onReservationSuccess();
+                
+                {/* Donor edit button */}
+                {!isOrphanage &&
+                  donation.donorId ===
+                    (localStorage.getItem("foodShareUser")
+                      ? JSON.parse(localStorage.getItem("foodShareUser"))._id
+                      : undefined) &&
+                  donation.status !== "completed" && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsEditModalOpen(true);
+                      }}
+                      className="w-full py-3 px-4 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-300 font-semibold flex items-center justify-center gap-2"
+                    >
+                      <Pencil className="w-4 h-4" /> Edit
+                    </button>
+                  )}
+                
+                {/* Donor finish donation button */}
+                {!isOrphanage &&
+                  donation.status === "reserved" &&
+                  donation.donorId ===
+                    (localStorage.getItem("foodShareUser")
+                      ? JSON.parse(localStorage.getItem("foodShareUser"))._id
+                      : undefined) && (
+                    <button
+                      onClick={async (e) => {
+                        e.stopPropagation();
+                        try {
+                          await dispatch(
+                            completeDonationThunk({
+                              id: donation._id || donation.id,
+                            })
+                          ).unwrap();
+                          toast.success("Donation marked as completed!");
+                          if (onReservationSuccess) {
+                            onReservationSuccess();
+                          }
+                        } catch (error) {
+                          toast.error("Failed to complete donation");
                         }
-                      } catch (error) {
-                        toast.error("Failed to complete donation");
-                      }
-                    }}
-                    className="btn-primary w-full py-3"
-                  >
-                    Finish Donation
-                  </button>
-                )}
+                      }}
+                      className="btn-primary w-full py-3"
+                    >
+                      Finish Donation
+                    </button>
+                  )}
+              </div>
             </div>
           </div>
         </div>
 
+        {/* Modals */}
         <DonationDetailModal
           isOpen={isDetailModalOpen}
           onClose={() => setIsDetailModalOpen(false)}
@@ -305,7 +308,7 @@ const DonationCard = React.memo(
             setIsEditModalOpen(false);
             if (onReservationSuccess) {
               onReservationSuccess();
-            } // removed reload, rely on parent to update
+            }
           }}
         />
 
@@ -314,20 +317,20 @@ const DonationCard = React.memo(
           onClose={() => setShowCancelConfirm(false)}
           title="Cancel Reservation?"
         >
-          <div className="space-y-4">
-            <p>
+          <div className="space-y-6">
+            <p className="text-gray-600 leading-relaxed">
               Are you sure you want to cancel this reservation? This donation
               will become available to others.
             </p>
-            <div className="flex gap-2 justify-end">
+            <div className="btn-group">
               <button
-                className="px-4 py-2 rounded bg-gray-100 text-gray-700 hover:bg-gray-200"
+                className="px-6 py-3 rounded-xl bg-gray-100 text-gray-700 hover:bg-gray-200 font-medium transition-colors"
                 onClick={() => setShowCancelConfirm(false)}
               >
-                No, Keep Reserved
+                Keep Reserved
               </button>
               <button
-                className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700"
+                className="px-6 py-3 rounded-xl bg-red-600 text-white hover:bg-red-700 font-medium transition-colors"
                 onClick={async () => {
                   try {
                     await dispatch(
@@ -347,7 +350,7 @@ const DonationCard = React.memo(
                   }
                 }}
               >
-                Yes, Cancel Reservation
+                Cancel Reservation
               </button>
             </div>
           </div>

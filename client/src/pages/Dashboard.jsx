@@ -6,7 +6,6 @@ import { useSelector, useDispatch } from "react-redux";
 import DonationCard from "@/components/DonationCard";
 import DonationFormModal from "@/components/DonationFormModal";
 import { fetchDonations } from "../slices/donationsSlice";
-import { setUser } from "../slices/userSlice";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -20,9 +19,8 @@ const Dashboard = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    if (!user) return; // Don't fetch or redirect if user is not loaded yet
+    if (!user) return;
     dispatch(fetchDonations(user.role));
-    // eslint-disable-next-line
   }, [dispatch, user]);
 
   useEffect(() => {
@@ -38,13 +36,6 @@ const Dashboard = () => {
       : ["completed", "expired"].includes(donation.status)
   );
 
-  const handleLogout = () => {
-    localStorage.removeItem("foodShareUser");
-    localStorage.removeItem("foodShareToken");
-    toast.success("Logged out successfully");
-    navigate("/");
-  };
-
   const handleDonationSuccess = () => {
     setIsDonationModalOpen(false);
     if (user) {
@@ -56,41 +47,42 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-sage-50">
-      <section className="pt-28 pb-16 px-4 fade-in">
-        <div className="container mx-auto max-w-6xl">
+      <section className="section-padding pt-24 fade-in">
+        <div className="container-custom">
           {/* Dashboard Header */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between mb-12">
-            <div>
-              <span className="inline-block px-6 py-3 rounded-full bg-gradient-to-r from-sage-100 to-emerald-100 text-sage-700 font-semibold text-sm mb-6 shadow-lg border border-sage-200">
-                {user.role === "donor"
-                  ? "Donor Dashboard"
-                  : "Orphanage Dashboard"}
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-12 space-y-6 lg:space-y-0">
+            <div className="space-y-4">
+              <span className="inline-block px-6 py-3 rounded-full bg-gradient-to-r from-sage-100 to-emerald-100 text-sage-700 font-semibold text-sm shadow-lg border border-sage-200">
+                {user.role === "donor" ? "Donor Dashboard" : "Orphanage Dashboard"}
               </span>
-              <h1 className="text-4xl font-bold mb-4 gradient-text">Welcome, {user.name}</h1>
-              <p className="text-gray-600 text-lg">
+              <h1 className="text-4xl lg:text-5xl font-bold gradient-text">
+                Welcome, {user.name}
+              </h1>
+              <p className="text-gray-600 text-lg lg:text-xl max-w-2xl text-pretty">
                 {user.role === "donor"
                   ? "Manage your food donations and see their status."
                   : "View your reserved donations and manage pickups."}
               </p>
             </div>
-            <div className="mt-8 md:mt-0 flex space-x-4">
-              {user.role === "donor" && (
+            
+            {user.role === "donor" && (
+              <div className="flex-shrink-0">
                 <button
                   onClick={() => setIsDonationModalOpen(true)}
-                  className="btn-primary group"
+                  className="btn-primary group text-lg px-8 py-4"
                 >
                   <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
                   <span>New Donation</span>
                 </button>
-              )}
-            </div>
+              </div>
+            )}
           </div>
 
           {/* Summary Cards */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12 slide-up">
+          <div className="stats-grid mb-12 slide-up">
             {/* Role Card */}
-            <div className="card-enhanced p-6 flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-2 sm:gap-4 group">
-              <div className="w-14 h-14 flex items-center justify-center rounded-2xl bg-gradient-to-br from-sage-100 to-emerald-100 aspect-square min-w-[3.5rem] min-h-[3.5rem] group-hover:scale-110 transition-transform duration-300 shadow-md">
+            <div className="stat-card">
+              <div className="stat-icon bg-gradient-to-br from-sage-100 to-emerald-100">
                 {user.role === "donor" ? (
                   <Heart className="w-7 h-7 text-sage-600" />
                 ) : (
@@ -98,7 +90,7 @@ const Dashboard = () => {
                 )}
               </div>
               <div>
-                <p className="text-gray-500 text-sm font-medium">Role</p>
+                <p className="text-gray-500 text-sm font-medium mb-1">Role</p>
                 <p className="font-bold capitalize text-lg">
                   {user.role === "donor" ? "Food Donor" : "Orphanage"}
                 </p>
@@ -106,50 +98,42 @@ const Dashboard = () => {
             </div>
 
             {/* Total Donations Card */}
-            <div className="card-enhanced p-6 flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-2 sm:gap-4 group">
-              <div className="w-14 h-14 flex items-center justify-center rounded-2xl bg-gradient-to-br from-sage-100 to-emerald-100 aspect-square min-w-[3.5rem] min-h-[3.5rem] group-hover:scale-110 transition-transform duration-300 shadow-md">
+            <div className="stat-card">
+              <div className="stat-icon bg-gradient-to-br from-sage-100 to-emerald-100">
                 <Package className="w-7 h-7 text-sage-600" />
               </div>
               <div>
-                <p className="text-gray-500 text-sm font-medium">
-                  {user.role === "donor"
-                    ? "Total Donations"
-                    : "Total Reservations"}
+                <p className="text-gray-500 text-sm font-medium mb-1">
+                  {user.role === "donor" ? "Total Donations" : "Total Reservations"}
                 </p>
-                <span className="font-bold text-2xl gradient-text">{donations.length}</span>
+                <span className="stat-value gradient-text">{donations.length}</span>
               </div>
             </div>
 
             {/* Completed Donations Card */}
-            <div className="card-enhanced p-6 flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-2 sm:gap-4 group">
-              <div className="w-14 h-14 flex items-center justify-center rounded-2xl bg-gradient-to-br from-green-100 to-emerald-100 aspect-square min-w-[3.5rem] min-h-[3.5rem] group-hover:scale-110 transition-transform duration-300 shadow-md">
+            <div className="stat-card">
+              <div className="stat-icon bg-gradient-to-br from-green-100 to-emerald-100">
                 <CheckCircle2 className="w-7 h-7 text-green-600" />
               </div>
               <div>
-                <p className="text-gray-500 text-sm font-medium">Completed</p>
-                <span className="font-bold text-2xl text-green-600">
+                <p className="text-gray-500 text-sm font-medium mb-1">Completed</p>
+                <span className="stat-value text-green-600">
                   {donations.filter((d) => d.status === "completed").length}
                 </span>
               </div>
             </div>
 
             {/* Active Listings Card */}
-            <div className="card-enhanced p-6 flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-2 sm:gap-4 group">
-              <div className="w-14 h-14 flex items-center justify-center rounded-2xl bg-gradient-to-br from-orange-100 to-amber-100 aspect-square min-w-[3.5rem] min-h-[3.5rem] group-hover:scale-110 transition-transform duration-300 shadow-md">
+            <div className="stat-card">
+              <div className="stat-icon bg-gradient-to-br from-orange-100 to-amber-100">
                 <Clock className="w-7 h-7 text-orange-600" />
               </div>
               <div>
-                <p className="text-gray-500 text-sm font-medium">
-                  {user.role === "donor"
-                    ? "Active Listings"
-                    : "Pending Pickups"}
+                <p className="text-gray-500 text-sm font-medium mb-1">
+                  {user.role === "donor" ? "Active Listings" : "Pending Pickups"}
                 </p>
-                <span className="font-bold text-2xl text-orange-600">
-                  {
-                    donations.filter(
-                      (d) => d.status === "available" || d.status === "reserved"
-                    ).length
-                  }
+                <span className="stat-value text-orange-600">
+                  {donations.filter((d) => d.status === "available" || d.status === "reserved").length}
                 </span>
               </div>
             </div>
@@ -157,21 +141,19 @@ const Dashboard = () => {
 
           {/* Tabs for Active vs History */}
           <div className="mb-10">
-            <div className="flex border-b-2 border-gray-200 bg-white rounded-t-2xl p-2 shadow-sm">
+            <div className="flex bg-white rounded-2xl p-2 shadow-sm border border-gray-100 max-w-md">
               <button
-                className={`px-8 py-4 font-semibold rounded-xl transition-all duration-300 ${
+                className={`flex-1 px-6 py-3 font-semibold rounded-xl transition-all duration-300 ${
                   activeTab === "active"
                     ? "text-white bg-gradient-to-r from-sage-500 to-emerald-500 shadow-lg transform scale-105"
                     : "text-gray-600 hover:text-sage-600 hover:bg-sage-50"
                 }`}
                 onClick={() => setActiveTab("active")}
               >
-                {user.role === "donor"
-                  ? "Active Donations"
-                  : "Active Reservations"}
+                {user.role === "donor" ? "Active Donations" : "Active Reservations"}
               </button>
               <button
-                className={`px-8 py-4 font-semibold rounded-xl transition-all duration-300 ${
+                className={`flex-1 px-6 py-3 font-semibold rounded-xl transition-all duration-300 ${
                   activeTab === "history"
                     ? "text-white bg-gradient-to-r from-sage-500 to-emerald-500 shadow-lg transform scale-105"
                     : "text-gray-600 hover:text-sage-600 hover:bg-sage-50"
@@ -188,21 +170,20 @@ const Dashboard = () => {
             <div className="flex flex-col items-center justify-center py-20 scale-in">
               <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-sage-500 mb-6"></div>
               <p className="text-gray-600 text-lg">
-                Loading {user.role === "donor" ? "donations" : "reservations"}
-                ...
+                Loading {user.role === "donor" ? "donations" : "reservations"}...
               </p>
             </div>
           ) : filteredDonations.length === 0 ? (
-            <div className="flex flex-col items-center justify-center card-enhanced p-20 text-center fade-in">
+            <div className="flex flex-col items-center justify-center card-enhanced p-16 lg:p-20 text-center fade-in">
               <Package className="w-20 h-20 text-sage-200 mb-6" />
-              <h3 className="text-2xl font-bold mb-4 text-center">
+              <h3 className="text-2xl lg:text-3xl font-bold mb-4">
                 {activeTab === "active"
                   ? user.role === "donor"
                     ? "No Active Donations"
                     : "No Active Reservations"
                   : "No History Found"}
               </h3>
-              <p className="text-gray-600 text-center max-w-md mb-8 mx-auto text-lg">
+              <p className="text-gray-600 max-w-md mx-auto mb-8 text-lg leading-relaxed text-pretty">
                 {activeTab === "active" ? (
                   user.role === "donor" ? (
                     "You don't have any active donations. Create a new donation to get started!"
@@ -213,14 +194,6 @@ const Dashboard = () => {
                       <span className="block mt-2">
                         Browse available donations to make a reservation.
                       </span>
-                      <div className="flex justify-center">
-                        <button
-                          onClick={() => navigate("/donations")}
-                          className="mt-6 btn-primary"
-                        >
-                          Browse Donations
-                        </button>
-                      </div>
                     </>
                   )
                 ) : user.role === "donor" ? (
@@ -229,22 +202,31 @@ const Dashboard = () => {
                   "You don't have any completed reservations yet."
                 )}
               </p>
-              {user.role === "donor" && activeTab === "active" && (
+              
+              {user.role === "donor" && activeTab === "active" ? (
                 <button
                   onClick={() => setIsDonationModalOpen(true)}
-                  className="btn-primary mx-auto"
+                  className="btn-primary"
                 >
                   Create a Donation
                 </button>
-              )}
+              ) : user.role === "orphanage" && activeTab === "active" ? (
+                <button
+                  onClick={() => navigate("/donations")}
+                  className="btn-primary"
+                >
+                  Browse Donations
+                </button>
+              ) : null}
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 slide-up">
+            <div className="card-grid slide-up">
               {filteredDonations.map((donation) => (
                 <DonationCard
                   key={donation._id || donation.id}
                   donation={donation}
                   isOrphanage={user.role === "orphanage"}
+                  onReservationSuccess={handleDonationSuccess}
                 />
               ))}
             </div>

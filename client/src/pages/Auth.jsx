@@ -12,7 +12,6 @@ const Auth = () => {
   const { user, token } = useSelector((state) => state.user);
 
   useEffect(() => {
-    // Only redirect to dashboard if on /auth and already logged in
     if (user && token && location.pathname === "/auth") {
       if (justLoggedIn) {
         toast.success(
@@ -43,23 +42,23 @@ const Auth = () => {
         <div className="absolute top-1/2 left-1/4 w-24 h-24 bg-gradient-to-r from-sage-100 to-emerald-100 rounded-full opacity-10 float"></div>
       </div>
       
-      <div className="container mx-auto px-4 py-10">
-        <div className="max-w-6xl mx-auto relative z-10">
+      <div className="container-custom section-padding relative z-10">
+        <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <div className="text-center mb-8 md:mb-12 fade-in">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
+          <div className="text-center mb-12 lg:mb-16 fade-in">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6">
               <span className="gradient-text">Food</span>Call
             </h1>
-            <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed font-medium">
+            <p className="text-xl sm:text-2xl lg:text-3xl text-gray-600 max-w-4xl mx-auto leading-relaxed font-medium text-balance">
               Connecting food donors with orphanages to reduce waste and feed
               those in need
             </p>
           </div>
 
           {/* Main Content Container */}
-          <div className="grid md:grid-cols-2 gap-8 md:gap-16 items-center max-w-6xl mx-auto slide-up">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center slide-up">
             {/* Left Side - Image Section */}
-            <div className="order- md:order-1">
+            <div className="order-2 lg:order-1">
               <div className="relative group scale-in">
                 {/* Background decoration */}
                 <div className="absolute -top-6 -left-6 w-full h-full rounded-3xl bg-gradient-to-br from-sage-200/30 to-emerald-200/30 -z-10 group-hover:from-sage-200/40 group-hover:to-emerald-200/40 transition-all duration-500 float"></div>
@@ -69,7 +68,8 @@ const Auth = () => {
                   <img
                     src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=2070&auto=format&fit=crop"
                     alt="Food donation and community support"
-                    className="w-full h-[400px] lg:h-[500px] object-cover transition-transform duration-500 group-hover:scale-105 border-4 border-white"
+                    className="w-full h-[400px] lg:h-[500px] xl:h-[600px] object-cover transition-transform duration-500 group-hover:scale-105 border-4 border-white"
+                    loading="eager"
                   />
 
                   {/* Overlay with gradient */}
@@ -87,13 +87,13 @@ const Auth = () => {
 
             {/* Right Side - Auth Form Section */}
             <div className="order-1 lg:order-2">
-              <div className="glass-effect p-8 md:p-10 lg:p-12 rounded-3xl max-w-lg mx-auto lg:mx-0 card-enhanced">
+              <div className="glass-effect p-8 lg:p-12 xl:p-16 rounded-3xl max-w-2xl mx-auto lg:mx-0 card-enhanced">
                 {/* Form Header */}
-                <div className="mb-10">
-                  <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                <div className="mb-10 space-y-4">
+                  <h2 className="text-3xl lg:text-4xl xl:text-5xl font-bold text-gray-900 text-balance">
                     {authType === "login" ? "Welcome Back" : "Join FoodCall"}
                   </h2>
-                  <p className="text-gray-600 leading-relaxed text-lg">
+                  <p className="text-gray-600 leading-relaxed text-lg lg:text-xl text-pretty">
                     {authType === "login"
                       ? "Sign in to your account to continue making a difference in your community."
                       : "Create an account to start sharing food or receiving donations for those in need."}
