@@ -111,19 +111,19 @@ const DonationCard = React.memo(
     return (
       <>
         <div
-          className="bg-white rounded-xl border border-slate-200 shadow-sm transition-all hover:shadow-md cursor-pointer card-hover"
+          className="card-enhanced cursor-pointer group overflow-hidden"
           onClick={handleCardClick}
         >
           {donation.imageUrl && donation.imageUrl.trim() !== "" ? (
-            <div className="relative h-48 rounded-t-xl overflow-hidden">
+            <div className="relative h-48 overflow-hidden">
               <img
                 src={donation.imageUrl}
                 alt={donation.title}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               />
-              <div className="absolute top-3 right-3">
+              <div className="absolute top-4 right-4">
                 <span
-                  className={`px-3 py-1 rounded-full text-xs font-medium ${
+                  className={`px-3 py-2 rounded-full text-xs font-semibold shadow-lg backdrop-blur-sm ${
                     statusClasses[donation.status]
                   }`}
                 >
@@ -133,10 +133,10 @@ const DonationCard = React.memo(
               </div>
             </div>
           ) : (
-            <div className="relative h-48 rounded-t-xl overflow-hidden flex flex-col items-center justify-center bg-gray-100 border-b border-slate-200">
+            <div className="relative h-48 overflow-hidden flex flex-col items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-12 w-12 text-gray-300 mb-2"
+                className="h-12 w-12 text-gray-300 mb-2 group-hover:scale-110 transition-transform duration-300"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -151,9 +151,9 @@ const DonationCard = React.memo(
               <span className="text-gray-400 text-xs select-none">
                 No photo uploaded
               </span>
-              <div className="absolute top-3 right-3">
+              <div className="absolute top-4 right-4">
                 <span
-                  className={`px-3 py-1 rounded-full text-xs font-medium ${
+                  className={`px-3 py-2 rounded-full text-xs font-semibold shadow-lg backdrop-blur-sm ${
                     statusClasses[donation.status]
                   }`}
                 >
@@ -164,31 +164,39 @@ const DonationCard = React.memo(
             </div>
           )}
 
-          <div className="p-5">
+          <div className="p-6">
             {/* Remove duplicate status badge for cards with no image */}
-            <h3 className="text-lg font-semibold mb-2 truncate text-slate-900">
+            <h3 className="text-xl font-bold mb-3 truncate text-slate-900 group-hover:text-sage-600 transition-colors">
               {donation.title}
             </h3>
 
-            <p className="text-slate-600 text-sm mb-4 line-clamp-2">
+            <p className="text-slate-600 mb-4 line-clamp-2 leading-relaxed">
               {donation.description}
             </p>
 
-            <div className="space-y-2">
-              <div className="flex items-center text-sm text-slate-600">
-                <Package className="w-4 h-4 mr-2 text-sage-500" />
-                <span>{donation.quantity}</span>
+            <div className="space-y-3">
+              <div className="flex items-center text-slate-600">
+                <div className="w-8 h-8 bg-sage-50 rounded-lg flex items-center justify-center mr-3">
+                  <Package className="w-4 h-4 text-sage-500" />
+                </div>
+                <span className="font-medium">{donation.quantity}</span>
               </div>
-              <div className="flex items-center text-sm text-slate-600">
-                <CalendarIcon className="w-4 h-4 mr-2 text-sage-500" />
-                <span>Expires: {formatDate(donation.expiryDate)}</span>
+              <div className="flex items-center text-slate-600">
+                <div className="w-8 h-8 bg-sage-50 rounded-lg flex items-center justify-center mr-3">
+                  <CalendarIcon className="w-4 h-4 text-sage-500" />
+                </div>
+                <span className="font-medium">Expires: {formatDate(donation.expiryDate)}</span>
               </div>
-              <div className="flex items-center text-sm text-slate-600">
-                <MapPin className="w-4 h-4 flex-shrink-0 mr-2 text-sage-500" />
-                <span className="truncate">{donation.pickupAddress}</span>
+              <div className="flex items-center text-slate-600">
+                <div className="w-8 h-8 bg-sage-50 rounded-lg flex items-center justify-center mr-3 flex-shrink-0">
+                  <MapPin className="w-4 h-4 text-sage-500" />
+                </div>
+                <span className="truncate font-medium">{donation.pickupAddress}</span>
               </div>
-              <div className="flex items-center text-sm text-slate-600">
-                <Clock className="w-4 h-4 mr-2 text-sage-500" />
+              <div className="flex items-center text-slate-600">
+                <div className="w-8 h-8 bg-sage-50 rounded-lg flex items-center justify-center mr-3">
+                  <Clock className="w-4 h-4 text-sage-500" />
+                </div>
                 <span>
                   Pickup: {formatTimeIST(donation.pickupTimeStart)} -{" "}
                   {formatTimeIST(donation.pickupTimeEnd)}
@@ -196,11 +204,11 @@ const DonationCard = React.memo(
               </div>
             </div>
 
-            <div className="mt-4 pt-4 border-t border-slate-200 flex gap-2">
+            <div className="mt-6 pt-4 border-t border-slate-200 flex gap-3">
               {isOrphanage && donation.status === "available" ? (
                 <button
                   onClick={handleReserveClick}
-                  className="w-full py-2 px-4 bg-sage-600 text-white rounded-md hover:bg-sage-700 transition-colors text-center text-sm font-medium"
+                  className="btn-primary w-full py-3"
                 >
                   Reserve Donation
                 </button>
@@ -212,7 +220,7 @@ const DonationCard = React.memo(
                     e.stopPropagation();
                     setShowCancelConfirm(true);
                   }}
-                  className="w-full py-2 px-4 border border-red-500 text-red-600 rounded-md hover:bg-red-50 transition-colors text-center text-sm font-medium"
+                  className="w-full py-3 px-4 border-2 border-red-500 text-red-600 rounded-xl hover:bg-red-50 hover:border-red-600 transition-all duration-300 font-semibold"
                 >
                   Cancel Reservation
                 </button>
@@ -229,9 +237,9 @@ const DonationCard = React.memo(
                       e.stopPropagation();
                       setIsEditModalOpen(true);
                     }}
-                    className="w-full py-2 px-4 border border-black text-black rounded-md hover:bg-gray-100 transition-colors text-center text-sm font-medium flex items-center justify-center gap-2"
+                    className="w-full py-3 px-4 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-300 font-semibold flex items-center justify-center gap-2"
                   >
-                    <Pencil className="w-4 h-4 mr-1" /> Edit
+                    <Pencil className="w-4 h-4" /> Edit
                   </button>
                 )}
               {/* Show Finish Donation button for donor if reserved and owner */}
@@ -258,7 +266,7 @@ const DonationCard = React.memo(
                         toast.error("Failed to complete donation");
                       }
                     }}
-                    className="w-full py-2 px-4 bg-sage-600 text-white rounded-md hover:bg-sage-700 transition-colors text-center text-sm font-medium"
+                    className="btn-primary w-full py-3"
                   >
                     Finish Donation
                   </button>

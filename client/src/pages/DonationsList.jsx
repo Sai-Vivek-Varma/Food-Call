@@ -170,41 +170,41 @@ const DonationsList = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <section className="pt-32 pb-16 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-sage-50">
+      <section className="pt-32 pb-16 px-4 fade-in">
         <div className="container mx-auto max-w-6xl">
-          <div className="text-center mb-12">
-            <span className="px-4 py-2 rounded-full bg-green-100 text-sage-700 font-medium text-sm mb-4 flex items-center justify-center w-fit mx-auto">
+          <div className="text-center mb-16">
+            <span className="px-6 py-3 rounded-full bg-gradient-to-r from-green-100 to-emerald-100 text-sage-700 font-semibold text-sm mb-6 flex items-center justify-center w-fit mx-auto shadow-lg border border-sage-200">
               <Building className="w-4 h-4 mr-2" />
               Available for {user.organization || "Your Organization"}
             </span>
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              Browse Food Donations
+            <h1 className="text-5xl font-bold mb-6">
+              <span className="gradient-text">Browse Food Donations</span>
             </h1>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
               Find and reserve available food donations for your organization.
               All listings show real-time availability with detailed pickup
               information and delivery options.
             </p>
           </div>
 
-          <div className="flex flex-row gap-4 mb-8">
+          <div className="flex flex-row gap-6 mb-12 slide-up">
             <div className="grow basis-0 min-w-0 relative">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <Search className="absolute left-5 top-1/2 transform -translate-y-1/2 text-gray-400 w-6 h-6" />
               <input
                 type="text"
                 placeholder="Search by food name, description, donor, or location..."
                 value={searchTerm}
                 onChange={handleSearch}
-                className="w-full pl-12 pr-4 py-3 rounded-xl border-2 border-gray-300 focus:outline-none focus:ring-4 focus:ring-sage-200 focus:border-sage-500 transition-all text-gray-700"
+                className="w-full pl-14 pr-6 py-4 rounded-2xl border-2 border-gray-200 focus:outline-none focus:ring-4 focus:ring-sage-100 focus:border-sage-500 transition-all text-gray-700 text-lg shadow-sm hover:border-gray-300"
               />
             </div>
-            <div className="flex-shrink-0 w-[160px] flex gap-2 items-center">
+            <div className="flex-shrink-0 w-[180px] flex gap-2 items-center">
               <div className="relative w-full">
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="w-full py-3 px-4 rounded-xl border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-sage-200 focus:border-sage-500 text-gray-700 bg-white appearance-none pr-10"
+                  className="w-full py-4 px-5 rounded-2xl border-2 border-gray-200 focus:outline-none focus:ring-4 focus:ring-sage-100 focus:border-sage-500 text-gray-700 bg-white appearance-none pr-12 text-lg shadow-sm hover:border-gray-300"
                 >
                   <option disabled value="sortby">
                     Sort by
@@ -214,27 +214,27 @@ const DonationsList = () => {
                   <option value="quantity">Quantity (High to Low)</option>
                   <option value="distance">Distance (Nearest)</option>
                 </select>
-                <ChevronDown className="w-4 h-4 text-gray-400 absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none" />
+                <ChevronDown className="w-5 h-5 text-gray-400 absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none" />
               </div>
             </div>
           </div>
 
           {isLoading ? (
-            <div className="flex flex-col items-center justify-center py-20">
-              <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-green-500 mb-6"></div>
-              <p className="text-lg text-gray-600">
+            <div className="flex flex-col items-center justify-center py-24 scale-in">
+              <div className="animate-spin rounded-full h-20 w-20 border-b-4 border-sage-500 mb-8"></div>
+              <p className="text-xl text-gray-600">
                 Loading available donations...
               </p>
             </div>
           ) : filteredDonations.length === 0 ? (
-            <div className="flex flex-col items-center justify-center bg-white rounded-2xl border border-gray-200 shadow-sm p-20">
+            <div className="flex flex-col items-center justify-center card-enhanced p-24 fade-in">
               {searchTerm ? (
                 <>
-                  <Search className="w-20 h-20 text-gray-300 mb-6" />
-                  <h3 className="text-2xl font-semibold text-gray-900 mb-3">
+                  <Search className="w-24 h-24 text-gray-300 mb-8" />
+                  <h3 className="text-3xl font-bold text-gray-900 mb-4">
                     No Matching Donations Found
                   </h3>
-                  <p className="text-gray-600 text-center max-w-md mb-8">
+                  <p className="text-gray-600 text-center max-w-md mb-10 text-lg">
                     No donations matching "{searchTerm}" were found. Try
                     adjusting your search terms or clear the search to see all
                     available donations.
@@ -248,19 +248,19 @@ const DonationsList = () => {
                 </>
               ) : (
                 <>
-                  <Heart className="w-20 h-20 text-gray-300 mb-6" />
-                  <h3 className="text-2xl font-semibold text-gray-900 mb-3">
+                  <Heart className="w-24 h-24 text-gray-300 mb-8" />
+                  <h3 className="text-3xl font-bold text-gray-900 mb-4">
                     No Donations Available
                   </h3>
-                  <p className="text-gray-600 text-center max-w-md mb-8">
+                  <p className="text-gray-600 text-center max-w-md mb-10 text-lg">
                     There are currently no food donations available in your
                     area. Check back later or encourage local food donors to
                     share their surplus through our platform.
                   </p>
-                  <div className="flex flex-col sm:flex-row gap-4">
+                  <div className="flex flex-col sm:flex-row gap-6">
                     <button
                       onClick={fetchDonations}
-                      className="btn-primary bg-sage-600 hover:bg-sage-700"
+                      className="btn-primary"
                     >
                       Refresh List
                     </button>
@@ -276,23 +276,23 @@ const DonationsList = () => {
             </div>
           ) : (
             <>
-              <div className="mb-8 p-6 bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl border border-green-200">
-                <div className="flex flex-col sm:flex-row items-center sm:items-start text-green-700 mb-2 gap-2 sm:gap-3 flex-wrap">
-                  <Heart className="w-6 h-6 mr-0 sm:mr-3 mb-2 sm:mb-0" />
-                  <span className="font-semibold text-lg text-center sm:text-left break-words">
+              <div className="mb-12 p-8 bg-gradient-to-r from-green-50 via-emerald-50 to-sage-50 rounded-3xl border border-green-200 shadow-lg slide-up">
+                <div className="flex flex-col sm:flex-row items-center sm:items-start text-green-700 mb-3 gap-3 sm:gap-4 flex-wrap">
+                  <Heart className="w-8 h-8 mr-0 sm:mr-3 mb-2 sm:mb-0" />
+                  <span className="font-bold text-xl text-center sm:text-left break-words">
                     {filteredDonations.length} donation
                     {filteredDonations.length !== 1 ? "s" : ""} ready for
                     reservation
                   </span>
                 </div>
-                <p className="text-green-600 text-sm text-center sm:text-left break-words">
+                <p className="text-green-600 text-center sm:text-left break-words text-lg">
                   Click on any donation to view full details and make a
                   reservation. Our integrated delivery system supports
                   self-pickup and ONDC delivery options.
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 slide-up">
                 {filteredDonations.map((donation) => {
                   console.log("RENDERING DONATION:", donation);
                   return (
@@ -309,7 +309,7 @@ const DonationsList = () => {
           )}
           {/* Show a warning if user selects distance sort but location is not available */}
           {sortBy === "distance" && !userLocation && (
-            <div className="text-red-500 text-sm mb-2">
+            <div className="text-red-500 mb-4 p-4 bg-red-50 rounded-xl border border-red-200">
               Location not available. Please allow location access to sort by
               distance.
             </div>

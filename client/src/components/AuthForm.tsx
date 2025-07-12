@@ -86,7 +86,7 @@ const AuthForm = ({ type, onSuccess }: AuthFormProps) => {
         <div>
           <label
             htmlFor="name"
-            className="block text-sm font-medium text-foreground mb-1"
+            className="form-label"
           >
             Name
           </label>
@@ -96,7 +96,7 @@ const AuthForm = ({ type, onSuccess }: AuthFormProps) => {
             type="text"
             value={formData.name}
             onChange={handleChange}
-            className="w-full px-4 py-2 rounded-md border border-input focus:outline-none focus:ring-2 focus:ring-sage-500 transition-all"
+            className="form-input"
             placeholder="Enter your full name"
           />
         </div>
@@ -105,7 +105,7 @@ const AuthForm = ({ type, onSuccess }: AuthFormProps) => {
       <div>
         <label
           htmlFor="email"
-          className="block text-sm font-medium text-foreground mb-1"
+          className="form-label"
         >
           Email
         </label>
@@ -115,7 +115,7 @@ const AuthForm = ({ type, onSuccess }: AuthFormProps) => {
           type="email"
           value={formData.email}
           onChange={handleChange}
-          className="w-full px-4 py-2 rounded-md border border-input focus:outline-none focus:ring-2 focus:ring-sage-500 transition-all"
+          className="form-input"
           placeholder="Enter your email"
         />
       </div>
@@ -123,7 +123,7 @@ const AuthForm = ({ type, onSuccess }: AuthFormProps) => {
       <div>
         <label
           htmlFor="password"
-          className="block text-sm font-medium text-foreground mb-1"
+          className="form-label"
         >
           Password
         </label>
@@ -134,13 +134,13 @@ const AuthForm = ({ type, onSuccess }: AuthFormProps) => {
             type={showPassword ? "text" : "password"}
             value={formData.password}
             onChange={handleChange}
-            className="w-full px-4 py-2 rounded-md border border-input focus:outline-none focus:ring-2 focus:ring-sage-500 transition-all"
+            className="form-input pr-12"
             placeholder="Enter your password"
           />
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-sage-600 transition-colors"
           >
             {showPassword ? (
               <EyeOff className="w-5 h-5" />
@@ -156,7 +156,7 @@ const AuthForm = ({ type, onSuccess }: AuthFormProps) => {
           <div>
             <label
               htmlFor="role"
-              className="block text-sm font-medium text-foreground mb-1"
+              className="form-label"
             >
               Role
             </label>
@@ -165,7 +165,7 @@ const AuthForm = ({ type, onSuccess }: AuthFormProps) => {
               name="role"
               value={formData.role}
               onChange={handleChange}
-              className="w-full px-4 py-2 rounded-md border border-input focus:outline-none focus:ring-2 focus:ring-sage-500 transition-all"
+              className="form-input"
             >
               <option value="donor">Food Donor</option>
               <option value="orphanage">Orphanage</option>
@@ -176,7 +176,7 @@ const AuthForm = ({ type, onSuccess }: AuthFormProps) => {
             <div>
               <label
                 htmlFor="organization"
-                className="block text-sm font-medium text-foreground mb-1"
+                className="form-label"
               >
                 Organization Name
               </label>
@@ -186,7 +186,7 @@ const AuthForm = ({ type, onSuccess }: AuthFormProps) => {
                 type="text"
                 value={formData.organization}
                 onChange={handleChange}
-                className="w-full px-4 py-2 rounded-md border border-input focus:outline-none focus:ring-2 focus:ring-sage-500 transition-all"
+                className="form-input"
                 placeholder="Enter your organization name"
               />
             </div>
@@ -197,11 +197,11 @@ const AuthForm = ({ type, onSuccess }: AuthFormProps) => {
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-sage-500 text-white py-2 rounded-md hover:bg-sage-600 transition-all mt-6 flex items-center justify-center"
+        className="btn-primary w-full py-4 mt-8 text-lg"
       >
         {loading ? (
           <>
-            <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+            <Loader2 className="w-6 h-6 mr-3 animate-spin" />
             {type === "login" ? "Signing in..." : "Creating account..."}
           </>
         ) : type === "login" ? (

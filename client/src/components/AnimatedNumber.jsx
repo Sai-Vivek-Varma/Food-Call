@@ -17,14 +17,38 @@ export default function AnimatedNumber({
   const raf = useRef();
   const startTimestamp = useRef();
   const prevValue = useRef(start);
+  const [isVisible, setIsVisible] = useState(false);
+  const elementRef = useRef();
+
+  // Intersection Observer to trigger animation when element is visible
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !isVisible) {
+          setIsVisible(true);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (elementRef.current) {
+      observer.observe(elementRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [isVisible]);
 
   useEffect(() => {
+    if (!isVisible) return;
+    
     let cancelled = false;
     function animate(ts) {
       if (!startTimestamp.current) startTimestamp.current = ts;
       const progress = Math.min((ts - startTimestamp.current) / duration, 1);
+      // Use easing function for smoother animation
+      const easeOutQuart = 1 - Math.pow(1 - progress, 4);
       const next = Math.round(
-        prevValue.current + (value - prevValue.current) * progress
+        prevValue.current + (value - prevValue.current) * easeOutQuart
       );
       setDisplay(next);
       if (progress < 1 && !cancelled) {
@@ -41,9 +65,16 @@ export default function AnimatedNumber({
       cancelAnimationFrame(raf.current);
       startTimestamp.current = null;
     };
-    // Only animate when value changes
+    // Only animate when value changes or becomes visible
     // eslint-disable-next-line
-  }, [value]);
+  }, [value, isVisible]);
 
-  return <span className={className}>{display.toLocaleString()}</span>;
+  return (
+    <span 
+      ref={elementRef}
+      className={`${className} transition-all duration-300`}
+    >
+      {display.toLocaleString()}
+    </span>
+  );
 }
