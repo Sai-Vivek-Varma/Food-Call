@@ -47,68 +47,77 @@ const Navbar = React.memo(function Navbar({ onShowNotifications }) {
   };
 
   return (
-    <header className="fixed top-0 left-0 w-full z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm transition-all duration-200">
-      <div className="container-custom">
-        <div className="flex items-center justify-between h-16 lg:h-18">
-          {/* Logo */}
+    <header className="fixed top-0 left-0 w-full z-40 bg-white/80 backdrop-blur border-b border-border shadow-sm transition-all duration-200">
+      <div className="container mx-auto max-w-7xl px-4">
+        <div className="flex items-center justify-between h-16">
           <Link
             to="/"
-            className="text-xl lg:text-2xl font-bold text-sage-700 flex items-center hover:text-sage-600 transition-colors"
+            className="text-xl font-bold text-sage-700 flex items-center"
           >
             <span className="text-sage-500">Food</span>Call
           </Link>
 
-          {/* Mobile menu button and notifications */}
-          <div className="flex items-center gap-2 lg:hidden">
+          {/* Bell icon and hamburger in one div for mobile */}
+          <div className="flex items-center md:hidden">
             {user && (
               <button
-                className="relative p-2 rounded-xl hover:bg-sage-50 transition-colors"
+                className="relative p-2 rounded-full hover:bg-sage-100 transition-colors"
                 onClick={() => onShowNotifications && onShowNotifications()}
                 aria-label="Show notifications"
               >
-                <Bell className="w-5 h-5 text-sage-600" />
+                <Bell className="w-6 h-6 text-sage-600" />
                 {unreadCount > 0 && (
-                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold">
-                    {unreadCount > 9 ? '9+' : unreadCount}
-                  </span>
+                  <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
                 )}
               </button>
             )}
             <button
-              className="p-2 rounded-xl hover:bg-sage-50 transition-colors"
+              className="p-2"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               aria-label={isMenuOpen ? "Close menu" : "Open menu"}
             >
               {isMenuOpen ? (
-                <X className="w-6 h-6 text-gray-700" />
+                <X className="w-6 h-6 text-foreground" />
               ) : (
-                <Menu className="w-6 h-6 text-gray-700" />
+                <Menu className="w-6 h-6 text-foreground" />
               )}
             </button>
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-1">
+          <nav className="hidden md:flex items-center space-x-1">
             <Link
               to="/"
-              className={`nav-link ${location.pathname === "/" ? "active" : ""}`}
+              className={`px-4 py-2 rounded-md text-sm font-medium ${
+                location.pathname === "/"
+                  ? "text-sage-700 bg-sage-50"
+                  : "text-foreground hover:text-sage-700 hover:bg-sage-50/80"
+              } transition-colors`}
             >
               Home
             </Link>
             <Link
               to="/how-it-works"
-              className={`nav-link ${location.pathname === "/how-it-works" ? "active" : ""}`}
+              className={`px-4 py-2 rounded-md text-sm font-medium ${
+                location.pathname === "/how-it-works"
+                  ? "text-sage-700 bg-sage-50"
+                  : "text-foreground hover:text-sage-700 hover:bg-sage-50/80"
+              } transition-colors`}
             >
               How It Works
             </Link>
 
-            {/* User-specific navigation */}
+            {/* Show different navigation based on user type */}
             {user && (
               <>
                 {user.role === "orphanage" && (
                   <Link
                     to="/donations"
-                    className={`nav-link ${location.pathname === "/donations" ? "active" : ""}`}
+                    className={`px-4 py-2 rounded-md text-sm font-medium ${
+                      location.pathname === "/donations"
+                        ? "text-sage-700 bg-sage-50"
+                        : "text-foreground hover:text-sage-700 hover:bg-sage-50/80"
+                    } transition-colors`}
                   >
                     Browse Donations
                   </Link>
@@ -116,71 +125,64 @@ const Navbar = React.memo(function Navbar({ onShowNotifications }) {
 
                 <Link
                   to="/dashboard"
-                  className={`nav-link ${location.pathname === "/dashboard" ? "active" : ""}`}
+                  className={`px-4 py-2 rounded-md text-sm font-medium ${
+                    location.pathname === "/dashboard"
+                      ? "text-sage-700 bg-sage-50"
+                      : "text-foreground hover:text-sage-700 hover:bg-sage-50/80"
+                  } transition-colors`}
                 >
                   Dashboard
                 </Link>
               </>
             )}
 
-            {/* User actions */}
             {user ? (
-              <div className="flex items-center gap-3 ml-4">
-                {/* Notifications */}
+              <>
                 <button
-                  className="relative p-2 rounded-xl hover:bg-sage-50 transition-colors"
+                  className="relative ml-2 p-2 rounded-full hover:bg-sage-50 transition-colors md:inline-flex inline-flex"
                   onClick={() => onShowNotifications && onShowNotifications()}
                   aria-label="Show notifications"
                 >
-                  <Bell className="w-5 h-5 text-sage-600" />
+                  <Bell className="w-5 h-5 text-sage-700" />
                   {unreadCount > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-2 py-0.5 min-w-[20px] h-5 flex items-center justify-center font-bold shadow-sm">
-                      {unreadCount > 9 ? '9+' : unreadCount}
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5 shadow font-bold">
+                      {unreadCount}
                     </span>
                   )}
                 </button>
-
-                {/* User dropdown */}
-                <div className="relative">
+                <div className="relative ml-2">
                   <button
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                    className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-gray-700 hover:text-sage-700 hover:bg-sage-50 transition-colors"
+                    className="flex items-center space-x-2 px-4 py-2 rounded-md text-sm font-medium text-foreground hover:text-sage-700 hover:bg-sage-50/80 transition-colors"
                   >
-                    <div className="w-8 h-8 bg-gradient-to-br from-sage-100 to-emerald-100 rounded-full flex items-center justify-center">
-                      <User className="w-4 h-4 text-sage-600" />
-                    </div>
-                    <span className="hidden xl:block capitalize">
+                    <User className="w-4 h-4" />
+                    <span className="capitalize">
                       {user.name.split(" ")[0]}
                     </span>
                   </button>
-                  
                   {isDropdownOpen && (
                     <div
                       ref={dropdownRef}
-                      className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-large border border-gray-100 py-2 z-50"
+                      className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 border border-border"
                     >
-                      <div className="px-4 py-3 border-b border-gray-100">
-                        <p className="text-sm font-medium text-gray-900">{user.name}</p>
-                        <p className="text-xs text-gray-500 capitalize">
-                          {user.role === "donor" ? "Food Donor" : "Orphanage"}
-                        </p>
-                        <p className="text-xs text-gray-400 mt-1">{user.email}</p>
+                      <div className="px-4 py-2 text-sm text-muted-foreground border-b">
+                        {user.role === "donor" ? "Food Donor" : "Orphanage"}
+                        <p className="text-sage-500">{user.email}</p>
                       </div>
                       <button
                         onClick={handleLogout}
-                        className="flex items-center gap-2 w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                        className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
                       >
-                        <LogOut className="w-4 h-4" />
                         Sign Out
                       </button>
                     </div>
                   )}
                 </div>
-              </div>
+              </>
             ) : (
               <Link
                 to="/auth"
-                className="ml-4 btn-primary text-sm px-6 py-2"
+                className="ml-2 px-4 py-2 bg-sage-500 text-white rounded-md hover:bg-sage-600 transition-colors text-sm font-medium"
               >
                 Sign In
               </Link>
@@ -189,29 +191,27 @@ const Navbar = React.memo(function Navbar({ onShowNotifications }) {
         </div>
       </div>
 
-      {/* Mobile Navigation Menu */}
+      {/* Mobile Navigation */}
       {isMenuOpen && (
-        <div className="lg:hidden bg-white border-t border-gray-100 shadow-large">
-          <div className="container-custom py-4 space-y-2">
+        <div className="md:hidden bg-white border-t border-border">
+          <div className="container mx-auto px-4 py-3 space-y-1">
             <Link
               to="/"
-              className={`block px-4 py-3 rounded-xl text-base font-medium transition-colors ${
+              className={`block px-3 py-2 rounded-md text-base font-medium ${
                 location.pathname === "/"
                   ? "text-sage-700 bg-sage-50"
-                  : "text-gray-700 hover:text-sage-700 hover:bg-sage-50"
-              }`}
-              onClick={() => setIsMenuOpen(false)}
+                  : "text-foreground hover:text-sage-700 hover:bg-sage-50/80"
+              } transition-colors`}
             >
               Home
             </Link>
             <Link
               to="/how-it-works"
-              className={`block px-4 py-3 rounded-xl text-base font-medium transition-colors ${
+              className={`block px-3 py-2 rounded-md text-base font-medium ${
                 location.pathname === "/how-it-works"
                   ? "text-sage-700 bg-sage-50"
-                  : "text-gray-700 hover:text-sage-700 hover:bg-sage-50"
-              }`}
-              onClick={() => setIsMenuOpen(false)}
+                  : "text-foreground hover:text-sage-700 hover:bg-sage-50/80"
+              } transition-colors`}
             >
               How It Works
             </Link>
@@ -221,12 +221,11 @@ const Navbar = React.memo(function Navbar({ onShowNotifications }) {
                 {user.role === "orphanage" && (
                   <Link
                     to="/donations"
-                    className={`block px-4 py-3 rounded-xl text-base font-medium transition-colors ${
+                    className={`block px-3 py-2 rounded-md text-base font-medium ${
                       location.pathname === "/donations"
                         ? "text-sage-700 bg-sage-50"
-                        : "text-gray-700 hover:text-sage-700 hover:bg-sage-50"
-                    }`}
-                    onClick={() => setIsMenuOpen(false)}
+                        : "text-foreground hover:text-sage-700 hover:bg-sage-50/80"
+                    } transition-colors`}
                   >
                     Browse Donations
                   </Link>
@@ -234,38 +233,25 @@ const Navbar = React.memo(function Navbar({ onShowNotifications }) {
 
                 <Link
                   to="/dashboard"
-                  className="block px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-sage-700 hover:bg-sage-50 transition-colors"
-                  onClick={() => setIsMenuOpen(false)}
+                  className="block px-3 py-2 rounded-md text-base font-medium text-foreground hover:text-sage-700 hover:bg-sage-50/80 transition-colors"
                 >
                   Dashboard
                 </Link>
-
-                <div className="border-t border-gray-100 pt-4 mt-4">
-                  <div className="px-4 py-2">
-                    <p className="text-sm font-medium text-gray-900">{user.name}</p>
-                    <p className="text-xs text-gray-500 capitalize">
-                      {user.role === "donor" ? "Food Donor" : "Orphanage"}
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => {
-                      handleLogout();
-                      setIsMenuOpen(false);
-                    }}
-                    className="flex items-center gap-2 w-full px-4 py-3 text-base font-medium text-red-600 hover:bg-red-50 rounded-xl transition-colors"
-                  >
-                    <LogOut className="w-5 h-5" />
-                    Sign Out
-                  </button>
-                </div>
               </>
             )}
 
-            {!user && (
+            {user ? (
+              <button
+                onClick={handleLogout}
+                className="flex w-full items-center px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-red-50 transition-colors"
+              >
+                <LogOut className="w-4 h-4 mr-2" />
+                Sign Out
+              </button>
+            ) : (
               <Link
                 to="/auth"
-                className="block w-full mt-4 btn-primary text-center"
-                onClick={() => setIsMenuOpen(false)}
+                className="block w-full px-3 py-2 bg-sage-500 text-white rounded-md hover:bg-sage-600 transition-colors text-base font-medium text-center"
               >
                 Sign In
               </Link>
