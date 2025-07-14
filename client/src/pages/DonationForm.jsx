@@ -1,25 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import { useDispatch, useSelector } from "react-redux";
-import { createDonationThunk } from "@/slices/donationsSlice";
+import { createDonationThunk } from "../slices/donationsSlice";
 
-// Define the shape of your donation form data
-interface DonationFormData {
-  title: string;
-  description: string;
-  quantity: string;
-  expiryDate: string; // expected as YYYY-MM-DD from input
-  pickupAddress: string;
-  pickupTimeStart: string; // expected as HH:MM from input
-  pickupTimeEnd: string; // expected as HH:MM from input
-  image?: File;
-}
-
-const DonationForm: React.FC = () => {
-  const [formData, setFormData] = useState<DonationFormData>({
+const DonationForm = () => {
+  const [formData, setFormData] = useState({
     title: "",
     description: "",
     quantity: "",
@@ -28,16 +16,16 @@ const DonationForm: React.FC = () => {
     pickupTimeStart: "",
     pickupTimeEnd: "",
   });
-  const [errors, setErrors] = useState<Partial<DonationFormData>>({});
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [errors, setErrors] = useState({});
+  const [imagePreview, setImagePreview] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { loading } = useSelector((state: any) => state.donations);
+  const { loading } = useSelector((state) => state.donations);
 
   // Scroll to top on mount and verify that a user is logged in.
   useEffect(() => {
     window.scrollTo(0, 0);
-    const userJson = localStorage.getItem("foodcallUser");
+    const userJson = localStorage.getItem("foodcalluser");
     if (!userJson) {
       toast.error("You must be logged in to create a donation");
       navigate("/auth");
@@ -45,18 +33,16 @@ const DonationForm: React.FC = () => {
   }, [navigate]);
 
   // Handle input changes for text and textarea fields
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    if (errors[name as keyof DonationFormData]) {
+    if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: undefined }));
     }
   };
 
   // Handle image file selection and create a preview URL
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = (e) => {
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
@@ -66,15 +52,15 @@ const DonationForm: React.FC = () => {
       setFormData((prev) => ({ ...prev, image: file }));
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImagePreview(reader.result as string);
+        setImagePreview(reader.result);
       };
       reader.readAsDataURL(file);
     }
   };
 
   // Basic client-side validation
-  const validate = (): boolean => {
-    const newErrors: Partial<DonationFormData> = {};
+  const validate = () => {
+    const newErrors = {};
     if (!formData.title) newErrors.title = "Title is required";
     if (!formData.description)
       newErrors.description = "Description is required";
@@ -91,7 +77,7 @@ const DonationForm: React.FC = () => {
   };
 
   // Combine a time string (HH:MM) with today's date to create a full ISO datetime string.
-  const combineTimeWithToday = (timeString: string): string => {
+  const combineTimeWithToday = (timeString) => {
     // Get today's date in YYYY-MM-DD format
     const today = new Date().toISOString().split("T")[0];
     // Construct full datetime (assumes timeString is in HH:MM format)
@@ -99,7 +85,7 @@ const DonationForm: React.FC = () => {
   };
 
   // Handle form submission
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
     try {
@@ -113,10 +99,10 @@ const DonationForm: React.FC = () => {
         pickupTimeEnd: combineTimeWithToday(formData.pickupTimeEnd),
         imageUrl: imagePreview || "",
       };
-      await dispatch(createDonationThunk(submissionData) as any);
+      await dispatch(createDonationThunk(submissionData));
       toast.success("Donation created successfully!");
       navigate("/dashboard");
-    } catch (error: any) {
+    } catch (error) {
       toast.error("Failed to create donation. Please try again.");
     }
   };
@@ -130,7 +116,7 @@ const DonationForm: React.FC = () => {
           <p className="text-muted-foreground mb-8">
             Provide details about the food you'd like to donate.
           </p>
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6 p-2">
             <div>
               <label htmlFor="title" className="block text-sm font-medium mb-1">
                 Donation Title

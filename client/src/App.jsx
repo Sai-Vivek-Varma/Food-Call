@@ -15,7 +15,6 @@ import HowItWorks from "./pages/HowItWorks";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import NotificationsModal from "./components/NotificationsModal";
-import ParticleBackground from "./components/ParticleBackground";
 import LoadingSpinner from "./components/LoadingSpinner";
 
 const queryClient = new QueryClient({
@@ -64,7 +63,6 @@ const App = () => {
         <Sonner />
         <BrowserRouter>
           <div className="relative min-h-screen">
-            <ParticleBackground />
             <div className="relative z-10">
               <Navbar onShowNotifications={() => setShowNotifications(true)} />
               <NotificationsModal

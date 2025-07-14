@@ -13,7 +13,7 @@ import AnimatedNumber from "@/components/AnimatedNumber";
 
 const Index = React.memo(function Index() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen ">
       {/* Hero Section */}
       <section className="relative pt-20 pb-10 sm:pt-24 sm:pb-16">
         <div className="container mx-auto max-w-7xl relative z-10 px-4 sm:px-6">
