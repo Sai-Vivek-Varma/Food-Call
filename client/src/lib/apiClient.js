@@ -5,7 +5,7 @@ import { navigateTo } from "@/lib/navigation";
 // Use localhost if available, else fallback to Render
 const API_BASE_URL =
   window.location.hostname === "localhost"
-    ? "http://localhost:5000/api"
+    ? "http://localhost:5173/api"
     : "https://food-call.onrender.com/api";
 
 // Create axios instance with default config
