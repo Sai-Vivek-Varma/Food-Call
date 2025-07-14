@@ -13,7 +13,16 @@ dotenv.config();
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:5173',
+    'https://food-call.netlify.app'
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
 
 // Connect to MongoDB
@@ -30,6 +39,10 @@ console.log("Cloudinary env in server.js:", {
 });
 
 // Routes
+app.get('/api/health', (req, res) => {
+  res.json({ message: 'Server is running!', timestamp: new Date().toISOString() });
+});
+
 app.use("/api/users", userRoutes);
 app.use("/api/donations", donationRoutes);
 // app.use("/api/ondc", ondcRoutes);
